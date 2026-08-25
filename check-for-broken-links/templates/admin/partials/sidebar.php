@@ -15,9 +15,9 @@ $wpcbl_sidebar_page_map = array(
 	'wpcbl-check-for-broken-links-reports'      => 'reports',
 	'wpcbl-check-for-broken-links-rank-tracker' => 'rank-tracker',
 	'wpcbl-check-for-broken-links-uptime'       => 'uptime',
+	'wpcbl-check-for-broken-links-seo-audit'   => 'seo-audit',
 	'wpcbl-check-for-broken-links-settings'     => 'settings',
 	'wpcbl-check-for-broken-links-seo-tip'  => 'seo-tip',
-	'wpcbl-check-for-broken-links-pro-tools' => 'pro-tools',
 	'wpcbl-check-for-broken-links-help'     => 'help',
 	'wpcbl-check-for-broken-links-upgrade'  => 'upgrade',
 );
@@ -73,11 +73,31 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 	</div>
 
 	<?php
-	// SaaS deep links: /go/{target} resolves this site's project and lands
-	// on the right dashboard page. External items open in a new tab.
-	$wpcbl_go = function ( $target ) {
-		return 'https://brokenlinkchecker.io/go/' . rawurlencode( $target ) . '?site=' . rawurlencode( home_url() );
-	};
+	// SaaS deep links. wpcbl_go_url() is shared with the admin bar menu so
+	// the two cannot drift apart. External items open in a new tab.
+	$wpcbl_go = 'wpcbl_go_url';
+
+	// Shown to connected accounts still on Free. A site that has not been
+	// connected yet gets the Connect prompt above instead, because connecting
+	// is the step that has to happen first either way. A paying customer must
+	// never see this.
+	$wpcbl_is_free = $wpcbl_conn
+		&& $wpcbl_conn->is_connected()
+		&& ( empty( $wpcbl_conn_meta['plan'] ) || 'free' === strtolower( (string) $wpcbl_conn_meta['plan'] ) );
+
+	if ( $wpcbl_is_free ) :
+		?>
+		<a class="cbl-upgrade-pill" href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' ) ); ?>">
+			<span class="cbl-upgrade-pill-top">
+				<span class="dashicons dashicons-star-filled"></span>
+				<?php esc_html_e( 'Upgrade to Pro', 'check-for-broken-links' ); ?>
+			</span>
+			<span class="cbl-upgrade-pill-sub">
+				<?php esc_html_e( 'Automatic scans, AI fixes, rank tracking and uptime alerts.', 'check-for-broken-links' ); ?>
+			</span>
+		</a>
+		<?php
+	endif;
 	?>
 
 	<nav class="cbl-nav">
@@ -108,6 +128,12 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 			<?php esc_html_e( 'Keyword Rank Tracker', 'check-for-broken-links' ); ?>
 		</a>
 
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-seo-audit' ) ); ?>"
+			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'seo-audit' ) ); ?>">
+			<span class="dashicons dashicons-visibility"></span>
+			<?php esc_html_e( 'SEO / AEO Audit', 'check-for-broken-links' ); ?>
+		</a>
+
 		<a href="<?php echo esc_url( $wpcbl_go( 'ai-visibility' ) ); ?>" target="_blank" rel="noopener" class="cbl-nav-item cbl-nav-item-top">
 		<span class="dashicons dashicons-format-chat"></span>
 		<?php esc_html_e( 'AI Visibility Tracker', 'check-for-broken-links' ); ?>
@@ -117,12 +143,6 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 	<a href="<?php echo esc_url( $wpcbl_go( 'internal-links' ) ); ?>" target="_blank" rel="noopener" class="cbl-nav-item cbl-nav-item-top">
 			<span class="dashicons dashicons-admin-links"></span>
 			<?php esc_html_e( 'Internal Link Optimizer', 'check-for-broken-links' ); ?>
-			<span class="cbl-nav-ext" aria-hidden="true">&#8599;</span>
-		</a>
-
-		<a href="<?php echo esc_url( $wpcbl_go( 'seo-audit' ) ); ?>" target="_blank" rel="noopener" class="cbl-nav-item cbl-nav-item-top">
-			<span class="dashicons dashicons-visibility"></span>
-			<?php esc_html_e( 'SEO / AEO Audit', 'check-for-broken-links' ); ?>
 			<span class="cbl-nav-ext" aria-hidden="true">&#8599;</span>
 		</a>
 

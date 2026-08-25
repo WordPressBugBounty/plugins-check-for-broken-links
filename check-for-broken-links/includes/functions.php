@@ -391,3 +391,165 @@ if ( ! function_exists( 'wpcbl_uptime_sanitize_payload' ) ) {
 		return $body;
 	}
 }
+
+if ( ! function_exists( 'wpcbl_collect_site_urls' ) ) {
+	/**
+	 * Every public URL this site publishes, home first, then most recently
+	 * modified. WordPress knows its own permalinks better than a crawler
+	 * does, so an audit started here sends this list instead of waiting for
+	 * a site crawl to discover the same pages.
+	 *
+	 * The limit is a transport cap, not the account's page allowance. The
+	 * SaaS truncates to the plan cap and reports how many it received, which
+	 * is what lets the report say plainly that coverage was capped.
+	 *
+	 * @since 3.0.7
+	 *
+	 * @param int $limit Most URLs to return.
+	 *
+	 * @return array List of absolute URLs.
+	 */
+	function wpcbl_collect_site_urls( $limit = 2000 ) {
+		$limit = max( 1, (int) $limit );
+		$urls  = array( home_url( '/' ) );
+
+		$types = wpcbl_auditable_post_types();
+
+		if ( array() !== $types ) {
+			// 'fields' => 'ids' keeps this query itself cheap, but it does
+			// NOT avoid loading post objects overall: get_permalink() below
+			// calls get_post() per id, and with no cache primed that is one
+			// database round trip per post, up to $limit of them, inside a
+			// synchronous admin-ajax request. _prime_post_caches() below
+			// loads every row for this batch of ids in one query so the
+			// permalink loop that follows hits the cache instead.
+			$ids = get_posts(
+				array(
+					'post_type'              => $types,
+					'post_status'            => 'publish',
+					'fields'                 => 'ids',
+					'orderby'                => 'modified',
+					'order'                  => 'DESC',
+					'posts_per_page'         => $limit,
+					'no_found_rows'          => true,
+					'ignore_sticky_posts'    => true,
+					'suppress_filters'       => false,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				)
+			);
+
+			if ( array() !== $ids ) {
+				_prime_post_caches( $ids, false, false );
+			}
+
+			foreach ( (array) $ids as $id ) {
+				$permalink = get_permalink( $id );
+				if ( is_string( $permalink ) && '' !== $permalink ) {
+					$urls[] = esc_url_raw( $permalink );
+				}
+			}
+		}
+
+		$urls = array_values( array_unique( $urls ) );
+
+		return array_slice( $urls, 0, $limit );
+	}
+}
+
+if ( ! function_exists( 'wpcbl_go_url' ) ) {
+	/**
+	 * Deep link to a tool on brokenlinkchecker.io.
+	 *
+	 * /go/{target} resolves this site's project and lands on the right
+	 * dashboard page, so the visitor never has to pick their site first.
+	 *
+	 * @since 3.0.7
+	 *
+	 * @param string $target Tool slug, for example ai-visibility.
+	 *
+	 * @return string
+	 */
+	function wpcbl_go_url( $target ) {
+		return 'https://brokenlinkchecker.io/go/' . rawurlencode( $target )
+			. '?site=' . rawurlencode( home_url() );
+	}
+}
+
+if ( ! function_exists( 'wpcbl_auditable_post_types' ) ) {
+	/**
+	 * Content types worth auditing.
+	 *
+	 * Starts from the Content Types to Scan setting, so the audit covers the
+	 * same content the broken link scan does rather than inventing a second
+	 * answer the user never chose.
+	 *
+	 * Page builders register internal record types as public: Themify global
+	 * styles, Elementor library entries, reusable blocks. They are publicly
+	 * queryable but nobody reads them, and auditing them reports missing
+	 * titles and descriptions on records that should never have either.
+	 *
+	 * @since 3.0.7
+	 *
+	 * @return array List of post type names.
+	 */
+	function wpcbl_auditable_post_types() {
+		$types = get_post_types( array( 'public' => true ), 'names' );
+
+		// Core plumbing plus the builder record types that show up as public.
+		$never = array(
+			'attachment',
+			'nav_menu_item',
+			'revision',
+			'custom_css',
+			'customize_changeset',
+			'oembed_cache',
+			'user_request',
+			'wp_block',
+			'wp_template',
+			'wp_template_part',
+			'wp_global_styles',
+			'wp_navigation',
+			'wp_font_family',
+			'wp_font_face',
+			'tglobal_style',
+			'elementor_library',
+			'e-landing-page',
+			'themify_layout',
+			'themify_layout_part',
+		);
+
+		$types = array_values( array_diff( (array) $types, $never ) );
+
+		// Anything hidden from site search or from menus is a record, not a
+		// page someone reads. Catches builder types this list has not met yet.
+		$types = array_values( array_filter( $types, static function ( $type ) {
+			$object = get_post_type_object( $type );
+
+			if ( ! $object ) {
+				return false;
+			}
+
+			return empty( $object->exclude_from_search ) && ! empty( $object->publicly_queryable );
+		} ) );
+
+		// The user's own choice wins when they have made one.
+		$selected = wpcbl_get_option( 'scan_post_types', array() );
+		if ( is_array( $selected ) && ! empty( $selected ) ) {
+			$types = array_values( array_intersect( $types, array_map( 'sanitize_key', $selected ) ) );
+		}
+
+		if ( empty( $types ) ) {
+			$types = array( 'post', 'page' );
+		}
+
+		/**
+		 * Filters the content types an SEO audit covers.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param array $types Post type names.
+		 */
+		return (array) apply_filters( 'wpcbl_auditable_post_types', $types );
+	}
+}

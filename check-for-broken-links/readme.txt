@@ -1,15 +1,15 @@
-=== Check for Broken Links - Broken Link Checker & 404 Monitor ===
+=== Check for Broken Links - Broken Link Checker & SEO Suite ===
 Contributors: mvirik
 Donate link: https://brokenlinkchecker.io/wordpress-plugin
-Tags: broken links, broken link checker, link checker, 404, seo
+Tags: broken link checker, rank tracker, uptime monitor, ai visibility, seo audit
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.0.6
+Stable tag: 3.0.7
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
-Broken link checker for WordPress. Find broken links, 404 errors, dead links and broken images. Automatic scans and AI fixes with Pro.
+Find broken links, 404 errors and broken images. Plus rank tracking, AI visibility, SEO audits and uptime monitoring inside wp-admin.
 
 == Description ==
 
@@ -20,6 +20,8 @@ Broken link checker for WordPress. Find broken links, 404 errors, dead links and
 Your site breaks quietly while you are busy. Pages get deleted, plugins get abandoned, external sites go offline. Google finds the 404 errors before you do, and your rankings pay the price. This plugin finds every broken link across your posts, pages, custom post types and slider content, and Pro extends the scan to comments and custom fields.
 
 Unlike external link checker tools, the plugin runs inside WordPress. It scans private content, drafts and pages behind login that no external crawler can reach.
+
+Version 3 adds five more tools to the same plugin. You can now track your keyword positions, watch how AI assistants mention your brand, repair your internal linking, audit your site for SEO and AEO, and monitor uptime. All of it runs in wp-admin. See the section below.
 
 ## How It Works
 
@@ -42,13 +44,59 @@ Run manual scans anytime and get a full results table. You see every broken link
 * Results table showing where each broken link was found
 * Filter results by link type, content type and error status
 * Export results to CSV
+* Track 10 keywords in the Rank Tracker
+* Run one SEO / AEO audit a month
 * Lightweight and fast scanning
 * No automatic changes to your content
 * Free forever, no credit card required
 
+## The SEO Suite: Five More Tools in wp-admin
+
+Every tool below connects to your [brokenlinkchecker.io](https://brokenlinkchecker.io/seo-tools) account. One account covers all of them, on the web and in WordPress. Connecting is free and takes one click from the Settings page.
+
+### Keyword Rank Tracker
+
+Track your Google and Bing positions for the keywords you choose, without leaving WordPress. Each keyword shows its current position, its change since the last check, its best position, search volume, CPC and search intent. You pick the market, device and search engine when you add a keyword.
+
+Add or remove keywords at any time, refresh on demand and export the table to CSV. Rankings update weekly on every plan, and daily updates are available as an add-on. The free plan tracks 10 keywords. Paid plans start at 50 and go up to 1,000.
+
+[More about the Keyword Rank Tracker](https://brokenlinkchecker.io/keyword-rank-tracker) and the dedicated [Bing Rank Tracker](https://brokenlinkchecker.io/bing-rank-tracker).
+
+### AI Visibility Tracker
+
+People now ask ChatGPT, Perplexity and Google AI Overviews the questions they used to type into Google. This tracker shows you the answers. You add the prompts your customers actually use, and the tracker checks them weekly to see whether your site gets mentioned or cited.
+
+One credit tracks one prompt. Business and Agency plans include 10 credits, and larger packs are available for any plan. The plugin opens your project's prompt tracking straight from the sidebar.
+
+[More about the AI Visibility Tracker](https://brokenlinkchecker.io/ai-visibility-monitor)
+
+### Internal Link Optimizer
+
+Some of your pages have no internal links pointing to them. Search engines rarely find those orphan pages, and they almost never rank. This tool maps the links between your own pages, lists the orphans and suggests which posts should link to which, with anchor text written by AI.
+
+Internal links pass ranking value between your pages. Fix the gaps and your strongest pages start lifting the weaker ones.
+
+[More about the Internal Link Optimizer](https://brokenlinkchecker.io/internal-link-optimizer)
+
+### SEO / AEO Audit
+
+Run a full audit of your site and get a fix list sorted by impact. The audit covers technical SEO, on-page factors and how well your content answers questions in Google and Bing.
+
+AEO means Answer Engine Optimization. It covers the parts that decide whether AI assistants quote your content: clear headings, structured data, direct answers and clean markup. The audit scores both sides and tells you what to fix first. Every plan includes monthly audits, from one on Free up to 25 on Agency.
+
+[More about the SEO / AEO Audit](https://brokenlinkchecker.io/seo-audit)
+
+### Uptime Monitor
+
+A site that is down earns nothing and ranks worse. The Uptime Monitor checks your site from outside and reports incidents and response times inside wp-admin. One click adds a monitor for your connected site. Email alerts go out the moment your site stops responding, and you set the alert address and sensitivity in the plugin.
+
+It also watches WP-Cron with a separate heartbeat monitor. WP-Cron runs your scheduled jobs, and on many hosts it fails without a word. The plugin gives you a paste-ready snippet for it. Check frequency depends on your plan.
+
+[More about the Uptime Monitor](https://brokenlinkchecker.io/uptime-monitor)
+
 ## Pro Version: Set It Once, Forget It
 
-Pro turns the plugin from a checker into a monitor. It runs automatic scheduled scans, emails you the moment a link breaks, and helps you repair links with AI. Pro is included in every [Broken Link Checker plan](https://brokenlinkchecker.io/pricing), starting at $29 per year.
+Pro turns the plugin from a checker into a monitor. It runs automatic scheduled scans, emails you the moment a link breaks, and helps you repair links with AI. Pro is included in every [Broken Link Checker plan](https://brokenlinkchecker.io/pricing), starting at $49 per year.
 
 **Pro features:**
 
@@ -64,6 +112,12 @@ Pro turns the plugin from a checker into a monitor. It runs automatic scheduled 
 * Auto-fix permanently redirected URLs
 * Replacement suggestions from the Wayback Machine
 * Export as XLSX, TXT, PDF and Markdown for AI
+* 50 to 1,000 rank-tracked keywords
+* AI Visibility credits on Business and Agency plans
+* Internal Link Optimizer
+* 5 to 25 SEO / AEO audits a month
+* Uptime monitoring with email alerts
+* SEO optimized report page
 * Priority support
 * Plans for 1, 5 or 250 sites
 
@@ -96,22 +150,42 @@ Or install manually:
 2. Go to Plugins > Add New > Upload Plugin and select the zip file.
 3. Activate the plugin and run your first scan.
 
+To use the Rank Tracker, AI Visibility Tracker, Internal Link Optimizer, SEO / AEO Audit and Uptime Monitor, open Settings and connect the site to a free or paid brokenlinkchecker.io account. There are no license keys.
+
 == Frequently Asked Questions ==
 
 = How do I find broken links on my WordPress site? =
 Install the plugin, go to the plugin page and click Start Manual Scan. The plugin scans your content and shows the results in a table with the broken URL, HTTP status code and the exact page it was found on.
 
 = What does the Check for Broken Links plugin do? =
-The plugin scans your WordPress site for broken URLs, dead links, 404 errors and broken images. It covers posts, pages, custom post types and slider content, and Pro adds comments and custom fields. Each result shows where the broken link was found so you can fix it fast.
+The plugin scans your WordPress site for broken URLs, dead links, 404 errors and broken images. It covers posts, pages, custom post types and slider content, and Pro adds comments and custom fields. It also includes a Keyword Rank Tracker, an AI Visibility Tracker, an Internal Link Optimizer, an SEO / AEO Audit and an Uptime Monitor.
 
 = Does the plugin detect broken images? =
 Yes. The plugin checks image URLs during a scan and reports images that no longer load, together with the page they appear on.
 
+= Can I track my Google rankings from WordPress? =
+Yes. The Rank Tracker page shows your Google and Bing positions for the keywords you add, with position, change, best position, search volume, CPC and intent. You choose the market, device and search engine per keyword. Free accounts track 10 keywords. See the [Keyword Rank Tracker](https://brokenlinkchecker.io/keyword-rank-tracker) page for details.
+
+= What is the AI Visibility Tracker? =
+It shows whether ChatGPT, Perplexity and Google AI Overviews mention your site when people ask about your topic. You add the prompts you care about, and each one is checked weekly. One credit covers one prompt. Read more on the [AI Visibility Tracker](https://brokenlinkchecker.io/ai-visibility-monitor) page.
+
+= What does the Internal Link Optimizer do? =
+It maps the links between your own pages and finds the ones nothing links to. Those orphan pages get little crawl attention and rarely rank. The tool suggests which posts should link to which, with AI-written anchor text. Read more on the [Internal Link Optimizer](https://brokenlinkchecker.io/internal-link-optimizer) page.
+
+= What does the SEO / AEO Audit check? =
+It checks technical SEO, on-page factors and answer engine readiness, then sorts the fixes by impact. AEO covers what decides whether AI assistants quote your content, such as headings, structured data and direct answers. Every plan includes monthly audits. Read more on the [SEO / AEO Audit](https://brokenlinkchecker.io/seo-audit) page.
+
+= How does the Uptime Monitor work? =
+It checks your site from outside and reports incidents and response times in wp-admin. One click adds a monitor for your connected site. Email alerts go out the moment the site stops responding. A separate heartbeat monitor watches WP-Cron. Read more on the [Uptime Monitor](https://brokenlinkchecker.io/uptime-monitor) page.
+
+= Do I have to connect my site to an account? =
+Only for the SEO Suite tools. Broken link scanning works with no account at all. Connecting a free account activates the Rank Tracker and the monthly SEO / AEO audit, and it takes one click from Settings.
+
 = Do I need the Pro version? =
-No. The free version gives you full manual scanning with no limits. Pro adds automatic scheduled scans, email alerts and the SEO Toolkit with Fix with AI, so the plugin watches your links and helps repair them for you.
+No. The free version gives you full manual scanning with no limits. Pro adds automatic scheduled scans, email alerts, Fix with AI, more rank-tracked keywords, more audits, uptime monitoring and the Internal Link Optimizer.
 
 = How is this different from other broken link checkers? =
-Most external tools scan your site from the outside. They miss private content, drafts and pages behind login. This plugin lives inside WordPress and scans everything, including content no external tool can reach.
+Most external tools scan your site from the outside. They miss private content, drafts and pages behind login. This plugin lives inside WordPress and scans everything, including content no external tool can reach. It also covers rankings, AI visibility, internal linking, audits and uptime in the same place.
 
 = Will fixing broken links improve SEO? =
 Yes. Every time Google crawls your site and hits a 404 it signals that your site is poorly maintained. Over time this damages rankings and wastes crawl budget. Fixing broken links keeps your site healthy.
@@ -132,7 +206,7 @@ No. Scans only run when you trigger them manually or on your set schedule, typic
 Yes. The plugin checks both internal and external links. It uses a browser-like fallback request to reduce false positives on file-hosting links.
 
 = Is the plugin free? =
-Yes. The core plugin is free forever. Pro plans start at $29 per year for 1 site, $49 for 5 sites, and $159 for 250 sites. Every plan includes all Pro features, they differ only in the number of sites.
+Yes. The core plugin is free forever. Pro plans cost $49 a year for 1 site, $99 for 5 sites and $299 for 250 sites. Every plan includes all Pro features and the full SEO Suite. The plans differ in the number of sites, scan volume, keywords and audits.
 
 = Can I cancel my Pro subscription? =
 Yes, you can cancel anytime from your account dashboard. You keep access until the end of your billing period.
@@ -141,9 +215,27 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 
 1. Dashboard & Scan – run your first broken link scan with one click and see exactly what will be checked: posts, pages, products, images and internal & external URLs.
 2. Built-in audio tip – see how the free Text to Speech (TTSWP) for WP plugin adds audio versions of your posts to boost engagement and accessibility.
-3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and unlock automatic scans, email alerts and the AI-powered SEO toolkit with Pro.
+3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.0.7 = 25 August 2026
+* New: SEO Audit page in wp-admin. Run a full SEO and AEO audit of your site without leaving WordPress. See your score, which category is costing you the most points, and a fix queue ordered by what moves the score most. Every issue lists the pages it affects and how to fix it. The checks that passed are listed too. Available on every plan for connected sites, with your monthly allowance shown on the page.
+* New: Fix with AI for audit issues. Missing, duplicate or overlong page titles and meta descriptions get AI-written replacements. You review and edit every one before anything is saved, and fixes are written to Yoast SEO, Rank Math or SEOPress, whichever your site runs.
+* New: Audit a single page on its own, without auditing the whole site.
+* New: Share an audit with a public read-only link, or download it as a PDF.
+* New: Every affected page is listed for each issue, not just the first ten, and Copy URLs copies all of them.
+* New: Services menu in the WordPress toolbar. Jump to any tool from anywhere in wp-admin.
+* Improvement: Audits read the pages WordPress already publishes. A newly connected site can audit right away instead of waiting for a crawl to find its pages first.
+* Improvement: Broken link scans skip sites that block automated checks. Amazon on every country domain, Kobo, LinkedIn, Facebook, Instagram, X, Reddit, Pinterest and Tripadvisor answer bots with an error however the link is written, so checking them only ever produced a false positive. They are skipped before the request and no longer clutter your results.
+* Improvement: Plans page shows the price per month for both billing periods, matching brokenlinkchecker.io. Yearly plans show the monthly equivalent with the yearly total underneath.
+* Improvement: A running audit shows live progress instead of a static line.
+* Improvement: SEO / AEO Audit sits directly under Keyword Rank Tracker in the menu.
+* Improvement: Free accounts get a clear Upgrade to Pro link in the plugin sidebar.
+* Improvement: The Pro Tools preview page is gone. Every tool it previewed has either shipped or moved to your dashboard, and old links go to Dashboard & Scan.
+* Improvement: Audits cover your real content only. Page builders register internal records as public post types, so Themify global styles, Elementor library entries and reusable blocks were being audited as if they were pages. Audits now follow your Content Types to Scan setting and skip builder records.
+* Fix: The full page list for an issue rendered as unreadable slivers once it grew past a dozen URLs.
+* Fix: Running a second audit without reloading showed the previous audit's page list, including pages deleted since.
 
 = 3.0.6 = 21 August 2026
 * New: Uptime Monitor page in wp-admin. Watch your site, see incidents and response times without leaving WordPress.
@@ -258,6 +350,9 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 * Initial release
 
 == Upgrade Notice ==
+
+= 3.0.7 =
+The plugin is now a full SEO suite. Track Google and Bing rankings, watch how AI assistants mention your brand, repair internal linking, audit for SEO and AEO, and monitor uptime. All inside wp-admin.
 
 = 3.0.0 =
 Major update: brand new dashboard with live scan progress, smarter results that separate real broken links from warnings, and far fewer false alarms on WooCommerce sites. Fix links directly from the results table. Recommended for all users.

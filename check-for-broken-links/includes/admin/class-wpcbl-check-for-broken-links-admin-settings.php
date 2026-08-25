@@ -71,6 +71,90 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 					'href'  => admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ),
 				)
 			);
+
+			// Same order the plugin sidebar uses, so the two never disagree.
+			// A tool that opens on brokenlinkchecker.io is marked, rather than
+			// looking like another wp-admin page that failed to load.
+			foreach ( self::admin_bar_services() as $service ) {
+				$wp_admin_bar->add_node(
+					array(
+						'id'     => 'wpcbl-service-' . $service['id'],
+						'parent' => 'wpcbl-broken-link-checker',
+						'title'  => esc_html( $service['title'] ) . ( $service['external'] ? ' <span aria-hidden="true">&#8599;</span>' : '' ),
+						'href'   => $service['href'],
+						'meta'   => $service['external']
+							? array( 'target' => '_blank', 'rel' => 'noopener' )
+							: array(),
+					)
+				);
+			}
+		}
+
+		/**
+		 * The services listed under the admin bar node.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return array<int, array{id: string, title: string, href: string, external: bool}>
+		 */
+		private static function admin_bar_services() {
+			$page = static function ( $slug ) {
+				return admin_url( 'admin.php?page=wpcbl-check-for-broken-links' . $slug );
+			};
+
+			$services = array(
+				array(
+					'id'       => 'scan',
+					'title'    => __( 'Dashboard & Scan', 'check-for-broken-links' ),
+					'href'     => $page( '' ),
+					'external' => false,
+				),
+				array(
+					'id'       => 'rank-tracker',
+					'title'    => __( 'Keyword Rank Tracker', 'check-for-broken-links' ),
+					'href'     => $page( '-rank-tracker' ),
+					'external' => false,
+				),
+				array(
+					'id'       => 'seo-audit',
+					'title'    => __( 'SEO / AEO Audit', 'check-for-broken-links' ),
+					'href'     => $page( '-seo-audit' ),
+					'external' => false,
+				),
+				array(
+					'id'       => 'uptime',
+					'title'    => __( 'Uptime Monitor', 'check-for-broken-links' ),
+					'href'     => $page( '-uptime' ),
+					'external' => false,
+				),
+			);
+
+			// The remaining tools live on brokenlinkchecker.io. wpcbl_go()
+			// carries the connected site through, so they land on the right
+			// project instead of a generic dashboard.
+			if ( function_exists( 'wpcbl_go_url' ) ) {
+				$services[] = array(
+					'id'       => 'ai-visibility',
+					'title'    => __( 'AI Visibility Tracker', 'check-for-broken-links' ),
+					'href'     => wpcbl_go_url( 'ai-visibility' ),
+					'external' => true,
+				);
+				$services[] = array(
+					'id'       => 'internal-links',
+					'title'    => __( 'Internal Link Optimizer', 'check-for-broken-links' ),
+					'href'     => wpcbl_go_url( 'internal-links' ),
+					'external' => true,
+				);
+			}
+
+			$services[] = array(
+				'id'       => 'settings',
+				'title'    => __( 'Settings & billing', 'check-for-broken-links' ),
+				'href'     => $page( '-settings' ),
+				'external' => false,
+			);
+
+			return $services;
 		}
 
 		/**
@@ -139,6 +223,15 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 
 			add_submenu_page(
 				'wpcbl-check-for-broken-links',
+				esc_html__( 'SEO / AEO Audit', 'check-for-broken-links' ),
+				esc_html__( 'SEO / AEO Audit', 'check-for-broken-links' ),
+				'manage_options',
+				'wpcbl-check-for-broken-links-seo-audit',
+				array( $this, 'seo_audit_page' )
+			);
+
+			add_submenu_page(
+				'wpcbl-check-for-broken-links',
 				esc_html__( 'Uptime Monitor', 'check-for-broken-links' ),
 				esc_html__( 'Uptime Monitor', 'check-for-broken-links' ),
 				'manage_options',
@@ -166,20 +259,27 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 
 			add_submenu_page(
 				'wpcbl-check-for-broken-links',
-				esc_html__( 'Pro Tools', 'check-for-broken-links' ),
-				esc_html__( 'Pro Tools', 'check-for-broken-links' ),
-				'manage_options',
-				'wpcbl-check-for-broken-links-pro-tools',
-				array( $this, 'pro_tools_page' )
-			);
-
-			add_submenu_page(
-				'wpcbl-check-for-broken-links',
 				esc_html__( 'Help', 'check-for-broken-links' ),
 				esc_html__( 'Help', 'check-for-broken-links' ),
 				'manage_options',
 				'wpcbl-check-for-broken-links-help',
 				array( $this, 'help_page' )
+			);
+
+			// Retired page, kept routable so an old bookmark still lands
+			// somewhere useful. Parented to options.php rather than the plugin
+			// menu: that registers the slug without drawing a menu item.
+			// remove_submenu_page() would not work here, because it also drops
+			// the page from $_registered_pages, and WordPress then denies
+			// admin.php?page= outright. That is the same trap the upgrade page
+			// below documents.
+			add_submenu_page(
+				'options.php',
+				esc_html__( 'Pro Tools', 'check-for-broken-links' ),
+				esc_html__( 'Pro Tools', 'check-for-broken-links' ),
+				'manage_options',
+				'wpcbl-check-for-broken-links-pro-tools',
+				array( $this, 'redirect_retired_pages' )
 			);
 
 			// Paid plans manage their subscription here instead of being
@@ -269,6 +369,17 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		}
 
 		/**
+		 * Renders the SEO Audit page.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_page() {
+			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/seo-audit.php';
+		}
+
+		/**
 		 * Renders the SEO / AEO Tip page.
 		 *
 		 * @since 3.0.0
@@ -302,14 +413,24 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		}
 
 		/**
-		 * Renders the Pro Tools preview page.
+		 * Sends the retired Pro Tools slug to the dashboard.
 		 *
-		 * @since 3.0.2
+		 * Pro Tools previewed four tools. Fix with AI and the SEO / AEO Audit
+		 * have since shipped, and the rest live on brokenlinkchecker.io, so
+		 * the page had nothing left to preview.
+		 *
+		 * The slug stays registered on purpose. wp-admin/admin.php calls
+		 * wp_die() for an unregistered plugin page BEFORE admin_init fires, so
+		 * an admin_init redirect can never run. Registering the page and then
+		 * hiding it from the menu is what keeps an old bookmark working.
+		 *
+		 * @since 3.0.7
 		 *
 		 * @return void
 		 */
-		public function pro_tools_page() {
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/pro-tools.php';
+		public function redirect_retired_pages() {
+			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) );
+			exit;
 		}
 
 		/**

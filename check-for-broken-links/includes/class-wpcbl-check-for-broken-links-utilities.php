@@ -538,6 +538,72 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		 *
 		 * @return bool
 		 */
+		/**
+		 * Hosts that answer bots with 403, 429, 500 or a dropped connection
+		 * however the link is written, while opening fine in a browser.
+		 *
+		 * amzn.eu and a.co return 500, kobo.com returns 403. That is bot
+		 * protection, not a broken link, so checking them can only ever
+		 * produce a false positive. They are excluded before the request, so
+		 * they cost no scan time and never reach the results table.
+		 *
+		 * Mirrors App\Support\UnverifiableHosts on brokenlinkchecker.io, so a
+		 * scan run here and a scan run there agree on what is checkable.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param string $url The URL to test.
+		 *
+		 * @return bool
+		 */
+		public static function is_unverifiable_host( $url ) {
+			$host = strtolower( (string) wp_parse_url( (string) $url, PHP_URL_HOST ) );
+
+			if ( '' === $host ) {
+				return false;
+			}
+
+			$host = preg_replace( '/^www\./', '', $host );
+
+			$exact = array(
+				'amzn.to',
+				'amzn.eu',
+				'a.co',
+				'pin.it',
+				'linkedin.com',
+				'lnkd.in',
+				'facebook.com',
+				'fb.com',
+				'fb.me',
+				'instagram.com',
+				'x.com',
+				'twitter.com',
+				't.co',
+				'reddit.com',
+				'redd.it',
+			);
+
+			foreach ( $exact as $needle ) {
+				if ( $host === $needle || wpcbl_str_ends_with( $host, '.' . $needle ) ) {
+					return true;
+				}
+			}
+
+			// Brands walled on every country domain. The brand has to be the
+			// registrable label, so amazon.co.uk matches while a third party's
+			// amazon.example.com is still checked normally.
+			foreach ( array( 'amazon', 'pinterest', 'tripadvisor', 'kobo' ) as $brand ) {
+				$pattern = '/(^|\.)' . preg_quote( $brand, '/' )
+					. '\.(?:[a-z]{2,}|(?:co|com|net|org|ac|gov|edu)\.[a-z]{2,})$/';
+
+				if ( 1 === preg_match( $pattern, $host ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public static function is_default_excluded( $url ) {
 			$url = (string) $url;
 
@@ -551,6 +617,10 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 				if ( '' !== $rule && false !== strpos( $url, $rule ) ) {
 					return true;
 				}
+			}
+
+			if ( self::is_unverifiable_host( $url ) ) {
+				return true;
 			}
 
 			// WooCommerce account-endpoint URLs. When shortcodes render during

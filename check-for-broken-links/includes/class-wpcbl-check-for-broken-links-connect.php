@@ -30,6 +30,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		const TRANSIENT_UPTIME  = 'wpcbl_uptime_state';
 		const TRANSIENT_PLANS   = 'wpcbl_plans_cache_v2';
 		const TRANSIENT_SHAPE   = 'wpcbl_billing_shape';
+		const TRANSIENT_AUDIT   = 'wpcbl_seo_audit_state';
 		const ENT_TTL           = 12 * HOUR_IN_SECONDS;
 		const GRACE_TTL         = 14 * DAY_IN_SECONDS;
 		const NONCE_TTL         = 10 * MINUTE_IN_SECONDS;
@@ -218,6 +219,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			delete_transient( self::TRANSIENT_ENT );
 			$this->flush_rank_state();
 			$this->flush_uptime_state();
+			$this->flush_seo_audit_state();
 		}
 
 		/**
@@ -822,6 +824,169 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		public function flush_uptime_state() {
 			delete_transient( self::TRANSIENT_UPTIME );
+		}
+
+		/**
+		 * Proxy one call to the site-token SEO audit API.
+		 *
+		 * Mirrors uptime_request(): a null body still sends `{}` on a
+		 * mutating method, because the host WAF 406s a truly bodyless
+		 * POST, while GET stays bodyless.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param string     $method HTTP method.
+		 * @param string     $path   Sub-path appended to /api/v1/site/seo-audit.
+		 * @param array|null $body   Request body, or null.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function seo_audit_request( $method, $path = '', $body = null ) {
+			$args = array(
+				'method'  => $method,
+				'timeout' => 30,
+				'headers' => $this->api_headers(),
+			);
+
+			if ( null !== $body ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = wp_json_encode( $body );
+			} elseif ( 'GET' !== strtoupper( $method ) ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = '{}';
+			}
+
+			$response = wp_remote_request( $this->app_url( '/api/v1/site/seo-audit' . $path ), $args );
+
+			return $this->ai_fix_response( $response );
+		}
+
+		/**
+		 * Cached audit state; $fresh bypasses and refills the transient.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param bool $fresh Bypass the cache and re-fetch.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function seo_audit_state( $fresh = false ) {
+			if ( ! $fresh ) {
+				$cached = get_transient( self::TRANSIENT_AUDIT );
+				if ( is_array( $cached ) ) {
+					return array( 'code' => 200, 'data' => $cached );
+				}
+			}
+
+			$result = $this->seo_audit_request( 'GET' );
+			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
+				set_transient( self::TRANSIENT_AUDIT, $result['data'], 5 * MINUTE_IN_SECONDS );
+			}
+
+			return $result;
+		}
+
+		/**
+		 * Drop the cached audit state after any mutation.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		/**
+		 * Every affected URL for one issue. Kept off the cached state so
+		 * polling stays small, fetched only when a reader opens the list.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param string $audit_id Audit id.
+		 * @param string $issue_id Issue id.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function seo_audit_issue_pages( $audit_id, $issue_id ) {
+			return $this->seo_audit_request(
+				'POST',
+				'/' . rawurlencode( $audit_id ) . '/issue-pages',
+				array( 'issue' => $issue_id )
+			);
+		}
+
+		/**
+		 * Ask the SaaS to write fixes for one audit issue. Nothing is applied
+		 * here: the response is a list of suggestions for the user to review.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param string $audit_id Audit id.
+		 * @param string $issue_id Issue id.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function seo_audit_ai_fix( $audit_id, $issue_id ) {
+			return $this->seo_audit_request(
+				'POST',
+				'/' . rawurlencode( $audit_id ) . '/ai-fix',
+				array( 'issue' => $issue_id )
+			);
+		}
+
+		/**
+		 * Tell the SaaS what happened to one suggestion, so its record matches
+		 * what is actually on the site.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param string $audit_id      Audit id.
+		 * @param string $suggestion_id Suggestion id.
+		 * @param string $status        applied or dismissed.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function seo_audit_ai_fix_resolve( $audit_id, $suggestion_id, $status ) {
+			return $this->seo_audit_request(
+				'POST',
+				'/' . rawurlencode( $audit_id ) . '/ai-fix/resolve',
+				array( 'id' => $suggestion_id, 'status' => $status )
+			);
+		}
+
+		public function flush_seo_audit_state() {
+			delete_transient( self::TRANSIENT_AUDIT );
+		}
+
+		/**
+		 * The audit PDF as raw bytes. Not routed through ai_fix_response(),
+		 * which JSON-decodes the body and would destroy a binary payload.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @param string $audit_id Audit id.
+		 *
+		 * @return array|WP_Error array{code:int, body:string, type:string} or the transport error.
+		 */
+		public function seo_audit_pdf( $audit_id ) {
+			$response = wp_remote_get(
+				$this->app_url( '/api/v1/site/seo-audit/' . rawurlencode( $audit_id ) . '/pdf' ),
+				array(
+					'timeout' => 60,
+					'headers' => $this->api_headers(),
+				)
+			);
+
+			if ( is_wp_error( $response ) ) {
+				return $response;
+			}
+
+			return array(
+				'code'        => (int) wp_remote_retrieve_response_code( $response ),
+				'body'        => wp_remote_retrieve_body( $response ),
+				'type'        => wp_remote_retrieve_header( $response, 'content-type' ),
+				// SeoAuditPdf::filename() on the SaaS side already builds
+				// the real name (domain plus the audit's own date), so the
+				// admin-post handler prefers this over inventing one.
+				'disposition' => wp_remote_retrieve_header( $response, 'content-disposition' ),
+			);
 		}
 
 		/**

@@ -56,6 +56,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			add_action( 'wp_ajax_wpcbl_uptime_update', array( $this, 'uptime_update' ) );
 			add_action( 'wp_ajax_wpcbl_uptime_delete', array( $this, 'uptime_delete' ) );
 			add_action( 'wp_ajax_wpcbl_uptime_toggle', array( $this, 'uptime_toggle' ) );
+			add_action( 'wp_ajax_wpcbl_seo_audit_state', array( $this, 'seo_audit_state' ) );
+			add_action( 'wp_ajax_wpcbl_seo_audit_run', array( $this, 'seo_audit_run' ) );
+			add_action( 'wp_ajax_wpcbl_seo_audit_share', array( $this, 'seo_audit_share' ) );
+			add_action( 'wp_ajax_wpcbl_seo_audit_issue_pages', array( $this, 'seo_audit_issue_pages' ) );
+			add_action( 'wp_ajax_wpcbl_seo_audit_ai_fix', array( $this, 'seo_audit_ai_fix' ) );
+			add_action( 'wp_ajax_wpcbl_seo_audit_ai_apply', array( $this, 'seo_audit_ai_apply' ) );
+			add_action( 'admin_post_wpcbl_seo_audit_pdf', array( $this, 'seo_audit_pdf' ) );
 			add_action( 'wp_ajax_wpcbl_billing_change_plan', array( $this, 'billing_change_plan' ) );
 		}
 
@@ -756,6 +763,226 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 
 			$connect->flush_uptime_state();
 			$this->send_rank_result( $connect->uptime_request( 'POST', '/monitors/' . $id . '/toggle' ) );
+		}
+
+		/**
+		 * Shared guard for every SEO/AEO audit endpoint: nonce + capability +
+		 * connection. No Pro gate: the free plan gets its monthly audit
+		 * allowance too, enforced by the SaaS, not here.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return WPCBL_Check_Broken_Links_Connect
+		 */
+		private function verify_seo_audit_request() {
+			$this->verify_link_action_request();
+
+			$connect = wpcbl_connect();
+			if ( ! $connect || ! $connect->is_connected() ) {
+				wp_send_json_error( esc_html__( 'Connect this site to brokenlinkchecker.io first.', 'check-for-broken-links' ), 403 );
+			}
+
+			return $connect;
+		}
+
+		/**
+		 * SEO/AEO audit: return the cached (or freshly fetched) audit state.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_state() {
+			$connect = $this->verify_seo_audit_request();
+			$this->send_rank_result( $connect->seo_audit_state( ! empty( $_POST['fresh'] ) ) );
+		}
+
+		/**
+		 * SEO/AEO audit: start an audit. Site mode sends this site's
+		 * published URLs, so a freshly connected site never waits on a
+		 * crawl first. Page mode audits a single URL.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_run() {
+			$connect = $this->verify_seo_audit_request();
+
+			$mode = isset( $_POST['mode'] ) && 'page' === sanitize_text_field( wp_unslash( $_POST['mode'] ) ) ? 'page' : 'site';
+			$body = array(
+				'mode'       => $mode,
+				'skip_query' => ! empty( $_POST['skip_query'] ),
+			);
+
+			if ( 'page' === $mode ) {
+				$body['url'] = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+			} else {
+				$body['urls'] = wpcbl_collect_site_urls();
+			}
+
+			$result = $connect->seo_audit_request( 'POST', '/run', $body );
+			$connect->flush_seo_audit_state();
+
+			$this->send_rank_result( $result );
+		}
+
+		/**
+		 * SEO/AEO audit: turn the public read-only share link on or off.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_share() {
+			$connect  = $this->verify_seo_audit_request();
+			$audit_id = isset( $_POST['audit_id'] ) ? sanitize_text_field( wp_unslash( $_POST['audit_id'] ) ) : '';
+
+			if ( '' === $audit_id ) {
+				wp_send_json_error( esc_html__( 'No audit to share.', 'check-for-broken-links' ), 400 );
+			}
+
+			$result = $connect->seo_audit_request( 'POST', '/' . rawurlencode( $audit_id ) . '/share' );
+			$connect->flush_seo_audit_state();
+
+			$this->send_rank_result( $result );
+		}
+
+		/**
+		 * SEO/AEO audit: every affected URL for one issue, fetched on demand.
+		 * The polled state carries only a short preview, so the full list is
+		 * requested when a reader actually opens it.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_issue_pages() {
+			$connect  = $this->verify_seo_audit_request();
+			$audit_id = isset( $_POST['audit_id'] ) ? sanitize_text_field( wp_unslash( $_POST['audit_id'] ) ) : '';
+			$issue_id = isset( $_POST['issue_id'] ) ? sanitize_text_field( wp_unslash( $_POST['issue_id'] ) ) : '';
+
+			if ( '' === $audit_id || '' === $issue_id ) {
+				wp_send_json_error( esc_html__( 'That issue is not available.', 'check-for-broken-links' ), 400 );
+			}
+
+			$this->send_rank_result( $connect->seo_audit_issue_pages( $audit_id, $issue_id ) );
+		}
+
+		/**
+		 * SEO/AEO audit: ask for AI-written fixes for one issue. Returns
+		 * suggestions for review. Nothing touches the site here.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_ai_fix() {
+			$connect  = $this->verify_seo_audit_request();
+			$audit_id = isset( $_POST['audit_id'] ) ? sanitize_text_field( wp_unslash( $_POST['audit_id'] ) ) : '';
+			$issue_id = isset( $_POST['issue_id'] ) ? sanitize_text_field( wp_unslash( $_POST['issue_id'] ) ) : '';
+
+			if ( '' === $audit_id || '' === $issue_id ) {
+				wp_send_json_error( esc_html__( 'That issue is not available.', 'check-for-broken-links' ), 400 );
+			}
+
+			$result = $connect->seo_audit_ai_fix( $audit_id, $issue_id );
+
+			if ( ! is_wp_error( $result ) && isset( $result['data'] ) && is_array( $result['data'] ) ) {
+				$result['data']['target'] = WPCBL_Check_Broken_Links_Seo_Apply::target_label();
+			}
+
+			$this->send_rank_result( $result );
+		}
+
+		/**
+		 * SEO/AEO audit: write one approved suggestion into the post, then tell
+		 * the SaaS what happened so both sides agree.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_ai_apply() {
+			$connect = $this->verify_seo_audit_request();
+
+			$audit_id = isset( $_POST['audit_id'] ) ? sanitize_text_field( wp_unslash( $_POST['audit_id'] ) ) : '';
+			$fix_id   = isset( $_POST['fix_id'] ) ? sanitize_text_field( wp_unslash( $_POST['fix_id'] ) ) : '';
+			$url      = isset( $_POST['url'] ) ? esc_url_raw( wp_unslash( $_POST['url'] ) ) : '';
+			$field    = isset( $_POST['field'] ) ? sanitize_key( wp_unslash( $_POST['field'] ) ) : '';
+			$value    = isset( $_POST['value'] ) ? sanitize_textarea_field( wp_unslash( $_POST['value'] ) ) : '';
+			$dismiss  = ! empty( $_POST['dismiss'] );
+
+			if ( '' === $audit_id || '' === $fix_id ) {
+				wp_send_json_error( esc_html__( 'That fix is not available.', 'check-for-broken-links' ), 400 );
+			}
+
+			if ( $dismiss ) {
+				$connect->seo_audit_ai_fix_resolve( $audit_id, $fix_id, 'dismissed' );
+				wp_send_json_success( array( 'dismissed' => true ) );
+			}
+
+			$applied = WPCBL_Check_Broken_Links_Seo_Apply::apply( $url, $field, $value );
+
+			if ( empty( $applied['ok'] ) ) {
+				wp_send_json_error( $applied['message'], 422 );
+			}
+
+			// Only record it upstream once the write actually succeeded here.
+			$connect->seo_audit_ai_fix_resolve( $audit_id, $fix_id, 'applied' );
+
+			wp_send_json_success( $applied );
+		}
+
+		/**
+		 * SEO/AEO audit: stream the audit PDF. Not an ajax action -- this
+		 * returns binary, so it goes through admin-post and exits rather
+		 * than sending JSON.
+		 *
+		 * @since 3.0.7
+		 *
+		 * @return void
+		 */
+		public function seo_audit_pdf() {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_die( esc_html__( 'You are not allowed to do this.', 'check-for-broken-links' ), '', array( 'response' => 403 ) );
+			}
+
+			check_admin_referer( 'wpcbl_seo_audit_pdf' );
+
+			$audit_id = isset( $_GET['audit_id'] ) ? sanitize_text_field( wp_unslash( $_GET['audit_id'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Verified above via check_admin_referer().
+			$connect  = wpcbl_connect();
+
+			if ( '' === $audit_id || ! $connect || ! $connect->is_connected() ) {
+				wp_die( esc_html__( 'That audit is not available.', 'check-for-broken-links' ), '', array( 'response' => 404 ) );
+			}
+
+			$pdf = $connect->seo_audit_pdf( $audit_id );
+
+			if ( is_wp_error( $pdf ) || 200 !== $pdf['code'] || '' === $pdf['body'] ) {
+				wp_die(
+					esc_html__( 'The PDF could not be downloaded. Try the share link instead.', 'check-for-broken-links' ),
+					'',
+					array( 'response' => 502 )
+				);
+			}
+
+			nocache_headers();
+			header( 'Content-Type: application/pdf' );
+			header( 'Content-Length: ' . strlen( $pdf['body'] ) );
+
+			// Prefer the filename the server sent (domain plus the audit's
+			// real date, from SeoAuditPdf::filename()) over inventing one
+			// from today's date, which discards both.
+			$disposition = isset( $pdf['disposition'] ) ? (string) $pdf['disposition'] : '';
+			if ( '' === $disposition || false === stripos( $disposition, 'filename=' ) ) {
+				$disposition = 'attachment; filename="seo-audit-' . gmdate( 'Y-m-d' ) . '.pdf"';
+			}
+			header( 'Content-Disposition: ' . $disposition );
+
+			// Raw binary passthrough: escaping would corrupt the file.
+			echo $pdf['body']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			exit;
 		}
 
 		/**

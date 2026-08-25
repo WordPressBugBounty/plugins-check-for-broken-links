@@ -4630,3 +4630,961 @@ select.cbl-plan-select {
     grid-column: span 1;
   }
 }
+
+/* ==========================================================================
+   SEO / AEO Audit report ("Triage" layout). Every number here comes from
+   latest.triage / latest.passed (App\Support\SeoAuditor), proxied
+   verbatim from brokenlinkchecker.io -- this stylesheet only maps the
+   tone NAMES that data carries (good/warn/bad, urgent/muted) onto this
+   plugin's own --cbl-* tokens. It deliberately does not reuse the
+   dashboard's .pj-* class names or hex values.
+   ========================================================================== */
+
+.cbl-audit-notice {
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border-radius: var(--cbl-radius-md);
+  font-size: 13px;
+}
+
+.cbl-audit-notice-warn {
+  background: var(--cbl-amber-bg);
+  color: var(--cbl-amber);
+  border: 1px solid var(--cbl-amber-border);
+}
+
+.cbl-btn-sm {
+  font-size: 12px;
+  padding: 5px 10px;
+}
+
+/* Quota renders as topbar meta beside the page title, so it inherits
+   .cbl-topbar-meta's size and colour. No block margin here. */
+.cbl-audit-quota {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Identity bar above the report: who and when on the left, actions on the
+   right, one aligned row. Replaces a loose text line with two buttons
+   floating under it. */
+.cbl-audit-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 0 2px 14px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--cbl-border-color);
+}
+
+.cbl-audit-bar-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cbl-audit-bar-id b {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  line-height: 1.3;
+}
+
+.cbl-audit-bar-id span {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-audit-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.cbl-audit-capped {
+  color: var(--cbl-amber) !important;
+}
+
+.cbl-audit-share-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cbl-audit-share-box input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+}
+
+.cbl-audit-empty {
+  color: var(--cbl-text-secondary);
+  font-size: 13.5px;
+}
+
+/* -- Hero: score ring + biggest lever + the three figures -- */
+
+.cbl-audit-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+}
+
+.cbl-audit-ring-wrap {
+  flex: 0 0 auto;
+  margin: 0 auto;
+}
+
+/* Background is set inline as a conic-gradient scaled to the score, so the
+   ring reads the number rather than only colouring it. */
+.cbl-audit-ring {
+  width: 116px;
+  height: 116px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transform: rotate(0deg);
+}
+
+.cbl-audit-ring-in {
+  width: 94px;
+  height: 94px;
+  border-radius: 50%;
+  background: var(--cbl-bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.cbl-audit-ring-in b {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  line-height: 1;
+}
+
+.cbl-audit-ring-in span {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-hero-body {
+  flex: 1 1 380px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbl-audit-eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-lever {
+  margin: 4px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-lever-lead {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--cbl-text-secondary);
+  max-width: 640px;
+}
+
+.cbl-audit-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cbl-audit-figures > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.cbl-audit-figures b {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-figures span {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-audit-good-fg {
+  color: var(--cbl-green) !important;
+}
+
+/* -- Where the points went -- */
+
+.cbl-audit-points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cbl-audit-points-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cbl-audit-points-head b {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-points-head span {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-blocks {
+  display: flex;
+  gap: 3px;
+  height: 30px;
+}
+
+.cbl-audit-block {
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: var(--cbl-bg-tertiary);
+}
+
+.cbl-audit-block-labels {
+  display: flex;
+  gap: 3px;
+}
+
+.cbl-audit-block-label {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cbl-audit-block-label span {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--cbl-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cbl-audit-block-label em {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-style: normal;
+  font-size: 11px;
+}
+
+/* -- Fix queue -- */
+
+.cbl-audit-queue {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.cbl-audit-queue-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cbl-audit-queue-head b {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-queue-head span {
+  font-size: 12.5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-group {
+  padding: 0;
+}
+
+.cbl-audit-group-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 16px;
+  background: var(--cbl-bg-secondary);
+  border-bottom: 1px solid var(--cbl-border-color);
+  flex-wrap: wrap;
+}
+
+.cbl-audit-group-head > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cbl-audit-group-head b {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-group-head > div:first-child span {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-group-score {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.cbl-audit-group-score em {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-style: normal;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.cbl-audit-mini {
+  display: block;
+  width: 76px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--cbl-bg-tertiary);
+  overflow: hidden;
+}
+
+.cbl-audit-mini i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.cbl-audit-group-score > b {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  width: 24px;
+  text-align: right;
+}
+
+/* -- Fix queue rows -- */
+
+.cbl-audit-row-wrap {
+  border-bottom: 1px solid var(--cbl-border-color);
+}
+
+.cbl-audit-row-wrap:last-child {
+  border-bottom: none;
+}
+
+.cbl-audit-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.cbl-audit-row:hover {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-audit-caret {
+  width: 12px;
+  flex-shrink: 0;
+  font-size: 10px;
+  color: var(--cbl-text-hint);
+  display: inline-block;
+  transition: transform 0.15s;
+}
+
+.cbl-audit-caret.is-open {
+  transform: rotate(90deg);
+}
+
+.cbl-audit-sev {
+  flex-shrink: 0;
+  width: 58px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.cbl-audit-row-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-row-pages {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.cbl-audit-row-body {
+  padding: 2px 16px 16px 58px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cbl-audit-fix {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--cbl-text-secondary);
+  max-width: 720px;
+}
+
+.cbl-audit-urls {
+  background: var(--cbl-bg-secondary);
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cbl-audit-page-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--cbl-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* The parent is a column flex container with a max-height once the list
+     is long. Flex children default to flex-shrink: 1, so every row squashed
+     to a few pixels tall and the URLs became unreadable slivers. */
+  flex: 0 0 auto;
+}
+
+.cbl-audit-more {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  color: var(--cbl-text-hint);
+  padding-top: 2px;
+}
+
+.cbl-audit-row-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* -- Footer: passed checks + live-data metrics -- */
+
+.cbl-audit-footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.cbl-audit-passed,
+.cbl-audit-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cbl-audit-passed-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.cbl-audit-passed-head span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-passed-head em {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cbl-purple);
+  white-space: nowrap;
+}
+
+.cbl-audit-tick {
+  flex-shrink: 0;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: var(--cbl-green-bg);
+  color: var(--cbl-green);
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-audit-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cbl-audit-chips span {
+  font-size: 11px;
+  color: var(--cbl-green);
+  background: var(--cbl-green-bg);
+  border: 1px solid var(--cbl-green-border);
+  border-radius: 5px;
+  padding: 3px 7px;
+}
+
+.cbl-audit-metrics > b {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px 10px;
+}
+
+.cbl-audit-metric-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.cbl-audit-metric-grid b {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.cbl-audit-metric-grid span {
+  font-size: 11px;
+  color: var(--cbl-text-hint);
+}
+
+/* -- Audit history strip (mirrors the dashboard's Audit history panel) -- */
+
+.cbl-audit-history-title {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin-bottom: 8px;
+}
+
+.cbl-audit-history-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.cbl-audit-history-item {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-history-item b {
+  font-size: 15px;
+  margin-right: 3px;
+}
+
+/* -- Topbar run controls -- */
+
+/* The topbar wraps every control in one #wpcbl-audit-controls span, so
+   .cbl-topbar-actions' own gap (8px, between its own children) never
+   reaches the controls inside this wrapper. Repeat it here. */
+.cbl-audit-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* The select and the text input are real form controls, so wp-admin's own
+   forms.css sizes them (min-height 30px, line-height 2, chunky padding) and
+   they tower over the 31px .cbl-btn next to them. Size all three to one
+   shared height so the cluster reads as a single row. id + class beats
+   wp-admin's selectors without !important. */
+#wpcbl-audit-mode.cbl-audit-mode,
+#wpcbl-audit-url.cbl-audit-url {
+  height: 32px;
+  min-height: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1;
+  border: 0.5px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-md);
+  background-color: var(--cbl-bg-primary);
+  color: var(--cbl-text-primary);
+  box-shadow: none;
+}
+
+#wpcbl-audit-mode.cbl-audit-mode {
+  width: auto;
+  font-weight: 600;
+  padding: 0 28px 0 10px;
+}
+
+#wpcbl-audit-url.cbl-audit-url {
+  padding: 0 10px;
+}
+
+#wpcbl-audit-mode.cbl-audit-mode:focus,
+#wpcbl-audit-url.cbl-audit-url:focus {
+  border-color: var(--cbl-purple);
+  outline: 2px solid transparent;
+  box-shadow: 0 0 0 2px var(--cbl-purple-light, rgba(124, 58, 237, 0.18));
+}
+
+/* The scope select, this option and the run button sit side by side, so give
+   the option the same 32px height and border as the select. Three controls,
+   one shape language, instead of a naked wp-admin checkbox between two
+   finished controls. */
+.cbl-audit-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 11px;
+  border: 0.5px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-md);
+  background: var(--cbl-bg-primary);
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--cbl-text-secondary);
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s;
+}
+
+.cbl-audit-skip:hover {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-audit-skip input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  min-width: 14px;
+  margin: 0;
+  accent-color: var(--cbl-purple);
+}
+
+#wpcbl-audit-url.cbl-audit-url {
+  width: 240px;
+}
+
+@media (max-width: 780px) {
+  .cbl-audit-footer {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* -- SEO audit: running state -------------------------------------------
+   An audit runs for a minute or more and the poll backs off to 15s, so this
+   card animates on its own. Without it the page looks frozen between polls. */
+.cbl-audit-running {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbl-audit-running-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.cbl-audit-running-dot {
+  width: 9px;
+  height: 9px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: var(--cbl-purple);
+  flex-shrink: 0;
+  animation: cbl-rank-pulse 1.4s ease-in-out infinite;
+}
+
+.cbl-audit-running-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cbl-audit-running-text b {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-running-text span {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-audit-running-bar {
+  position: relative;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--cbl-bg-tertiary);
+  overflow: hidden;
+}
+
+.cbl-audit-running-bar span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 34%;
+  border-radius: 2px;
+  background: var(--cbl-purple);
+  animation: cbl-audit-running-slide 1.6s ease-in-out infinite;
+}
+
+@keyframes cbl-audit-running-slide {
+  0% { left: -34%; }
+  100% { left: 100%; }
+}
+
+/* The dot and bar are decoration. Anyone who asked for less motion gets a
+   static card, and the polled text still tells them what is happening. */
+@media (prefers-reduced-motion: reduce) {
+  .cbl-audit-running-dot,
+  .cbl-audit-running-bar span {
+    animation: none;
+  }
+}
+
+
+/* -- SEO audit: full affected-page lists ------------------------------- */
+.cbl-audit-urls.is-long {
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.cbl-audit-showall {
+  background: none;
+  border: 0;
+  padding: 0;
+  margin-left: 4px;
+  font: inherit;
+  color: var(--cbl-purple);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cbl-audit-showall:hover {
+  text-decoration: none;
+}
+
+.cbl-audit-showall[disabled] {
+  opacity: 0.6;
+  cursor: default;
+  text-decoration: none;
+}
+
+/* -- SEO audit: Fix with AI review ------------------------------------- */
+.cbl-audit-sugs {
+  margin-top: 14px;
+  border-top: 1px solid var(--cbl-border-color);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cbl-audit-sugs-head {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-audit-sugs-head em {
+  font-style: normal;
+  font-weight: 400;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-audit-sug {
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-md);
+  padding: 12px 14px;
+  background: var(--cbl-bg-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cbl-audit-sug.is-applied {
+  border-color: var(--cbl-green, #17a34a);
+  background: var(--cbl-green-bg, #f0f9f3);
+}
+
+.cbl-audit-sug-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11.5px;
+  color: var(--cbl-text-secondary);
+  word-break: break-all;
+}
+
+.cbl-audit-sug-was,
+.cbl-audit-sug-new {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-audit-sug-was {
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-audit-sug-was span,
+.cbl-audit-sug-new span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+}
+
+/* Editable: the reader can adjust wording before it is written to the site. */
+.cbl-audit-sug-text {
+  width: 100%;
+  min-height: 52px;
+  padding: 8px 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  border: 0.5px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-md);
+  background: var(--cbl-bg-primary);
+  color: var(--cbl-text-primary);
+  resize: vertical;
+}
+
+.cbl-audit-sug-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cbl-audit-sug-msg {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-audit-sug-msg.is-warn {
+  color: var(--cbl-amber);
+}
+
+/* -- Sidebar: upgrade pill, Free accounts only ------------------------- */
+.cbl-upgrade-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin: 0 12px 14px;
+  padding: 11px 13px;
+  border-radius: var(--cbl-radius-md);
+  background: linear-gradient(135deg, var(--cbl-purple) 0%, #5b21b6 100%);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(76, 29, 149, 0.28);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cbl-upgrade-pill:hover,
+.cbl-upgrade-pill:focus {
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(76, 29, 149, 0.34);
+}
+
+.cbl-upgrade-pill-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.cbl-upgrade-pill-top .dashicons {
+  font-size: 15px;
+  width: 15px;
+  height: 15px;
+}
+
+.cbl-upgrade-pill-sub {
+  font-size: 11.5px;
+  line-height: 1.45;
+  opacity: 0.88;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cbl-upgrade-pill {
+    transition: none;
+  }
+  .cbl-upgrade-pill:hover,
+  .cbl-upgrade-pill:focus {
+    transform: none;
+  }
+}

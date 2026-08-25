@@ -203,12 +203,25 @@ $wpcbl_shape_ai         = isset( $wpcbl_shape['ai_credits'] ) ? (string) absint(
 			<?php endif; ?>
 			<p class="cbl-plan-name"><?php echo esc_html( $wpcbl_plan['name'] ); ?></p>
 			<p class="cbl-plan-tagline"><?php echo esc_html( $wpcbl_plan['tagline'] ); ?></p>
+			<?php
+			// Both intervals headline a PER MONTH figure, the way
+			// brokenlinkchecker.io/pricing does it. Leading with the yearly
+			// total made the plugin look more expensive than the site for the
+			// same plan, which is the one comparison a buyer actually makes.
+			// The yearly total moves to the line underneath.
+			$wpcbl_per_month = number_format_i18n( $wpcbl_plan['yearly'] / 12, 2 );
+			$wpcbl_year_note = sprintf(
+				/* translators: %s: the full yearly price. */
+				__( 'billed yearly at $%s', 'check-for-broken-links' ),
+				number_format_i18n( $wpcbl_plan['yearly'] )
+			);
+			?>
 			<p class="cbl-plan-price">
-				<span class="wpcbl-plan-amount" data-yearly="<?php echo esc_attr( '$' . $wpcbl_plan['yearly'] ); ?>" data-monthly="<?php echo esc_attr( '$' . $wpcbl_plan['monthly'] ); ?>"><?php echo esc_html( '$' . $wpcbl_plan['yearly'] ); ?></span><span class="cbl-plan-period wpcbl-plan-period" data-yearly="<?php echo esc_attr( ' ' . __( '/year', 'check-for-broken-links' ) ); ?>" data-monthly="<?php echo esc_attr( ' ' . __( '/month', 'check-for-broken-links' ) ); ?>"><?php echo esc_html( ' ' . __( '/year', 'check-for-broken-links' ) ); ?></span>
+				<span class="wpcbl-plan-amount" data-yearly="<?php echo esc_attr( '$' . $wpcbl_per_month ); ?>" data-monthly="<?php echo esc_attr( '$' . $wpcbl_plan['monthly'] ); ?>"><?php echo esc_html( '$' . $wpcbl_per_month ); ?></span><span class="cbl-plan-period wpcbl-plan-period" data-yearly="<?php echo esc_attr( ' ' . __( '/month', 'check-for-broken-links' ) ); ?>" data-monthly="<?php echo esc_attr( ' ' . __( '/month', 'check-for-broken-links' ) ); ?>"><?php echo esc_html( ' ' . __( '/month', 'check-for-broken-links' ) ); ?></span>
 			</p>
 			<p class="cbl-plan-permonth"
-				data-yearly="<?php echo esc_attr( sprintf( /* translators: %s: price. */ __( 'about $%s a month', 'check-for-broken-links' ), number_format_i18n( $wpcbl_plan['yearly'] / 12, 2 ) ) ); ?>"
-				data-monthly="<?php echo esc_attr( __( 'billed month to month', 'check-for-broken-links' ) ); ?>"><?php printf( /* translators: %s: price. */ esc_html__( 'about $%s a month', 'check-for-broken-links' ), esc_html( number_format_i18n( $wpcbl_plan['yearly'] / 12, 2 ) ) ); ?></p>
+				data-yearly="<?php echo esc_attr( $wpcbl_year_note ); ?>"
+				data-monthly="<?php echo esc_attr( __( 'billed month to month', 'check-for-broken-links' ) ); ?>"><?php echo esc_html( $wpcbl_year_note ); ?></p>
 
 			<?php
 			// Selects are real form fields in checkout mode and read by JS in
