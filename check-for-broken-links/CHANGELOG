@@ -1,0 +1,99 @@
+== Changelog ==
+
+= 3.0.6 - 21 August 2026 =
+* New: Uptime Monitor page in wp-admin. Watch your site, see incidents and response times without leaving WordPress.
+* New: One click adds a monitor for your connected site.
+* New: Heartbeat monitor for WP-cron with a paste-ready snippet.
+* New: Change uptime alert emails and sensitivity from the plugin.
+
+= 3.0.5 - 20 August 2026 =
+* New: Plans and upgrades page in wp-admin. Yearly and monthly billing, live prices from brokenlinkchecker.io, and per-plan options for rank-tracked keywords, daily ranking updates and AI Visibility credits. Subscribers see their current setup preselected and can update it with the same prorating as the dashboard; the Update button only activates when something changed. Sites that are not connected yet connect automatically right after payment.
+* Improvement: The Rank Tracker shows the date of the next scheduled ranking update, its upgrade buttons open the in-plugin plans page, and each keyword shows a country flag and device icon in front of it.
+* New: Rank Tracker page. Track your Google and Bing positions for the keywords you choose, right inside wp-admin. Add or remove keywords, see position, change, best position, search volume, CPC and intent, refresh on demand and export to CSV. Available on every plan for connected sites.
+* New: Rank Tracker settings in wp-admin. Default device and search engine, email reports and the public share link are all managed without leaving your site. The market is picked when you add each keyword.
+
+= 3.0.4 - 17 August 2026 =
+* New: AI Visibility Tracker in the sidebar. Opens your project's prompt tracking on brokenlinkchecker.io in a new tab.
+* New: Scan reports page. The last 20 scans with date, source, links checked, broken count and duration. Available on every plan.
+* Improvement: New sidebar menu with SEO Tools and Account groups. Scan reports, the SEO tools and White label open your project on brokenlinkchecker.io in a new tab.
+* Improvement: Fix with AI corrects scheme typos like htp://google.com by suggesting the https:// form. Malformed and relative URLs no longer fail with a generic error.
+* Fix: Email notifications could not be enabled. Paid plans can now turn on email alerts and enter recipient addresses.
+* Fix: The Automatic scans card showed Enable with Pro on paid plans, linking to a page paid plans cannot open. It now shows the schedule and links to Settings.
+* Fix: Fix with AI failed on relative link URLs like /old-page. They are now sent in full form. Malformed URLs get a clear message, and Fix all with AI skips them instead of failing the whole batch.
+* Improvement: Settings page redesign. Account bar with Manage, Refresh and Disconnect actions, automatic saving, content types as selectable pills, toggles for every on/off option.
+* New: Apply fixes from the dashboard. Fix with AI on brokenlinkchecker.io sends verified fixes to your site, the plugin applies them and reports back. Fixes only run when you click Apply in the dashboard.
+* New: Refresh connection button on the Settings page. Re-checks your plan and features right away.
+
+= 3.0.3 - 16 August 2026 =
+* New: Fix with AI. Click Fix with AI on a broken link and get live-checked replacement suggestions, then apply the fix or remove the link in one click. Pro feature, uses your plan's monthly AI fix allowance.
+* New: Fix all with AI. One click analyzes every broken link and opens a review list with verified fixes you can apply one by one or all at once.
+
+= 3.0.2 - 12 August 2026 =
+* Fix: The plan buttons on the Upgrade page stopped at an "Unknown plan." message instead of opening the checkout. Upgrading works again - sorry about that one.
+* New: The Upgrade page now has an "Already purchased a plan? Connect this site" link, so activating Pro on additional sites no longer goes through checkout.
+* New: Pro Tools page previewing what is coming to your plan: Fix with AI, Internal Link Optimizer, SEO / AEO Audit, Rank Tracker, Uptime Monitor and White Label - each shown with clearly-labeled sample data.
+* Improvement: Paid plans no longer see Upgrade buttons anywhere in the plugin - the sidebar and admin menu show them only on the free plan.
+* Fix: Links with an anchor, like /a-page/#section, are now checked exactly the way a browser opens them, so working links are no longer reported as broken on some hosting setups. Anchor links that just scroll the homepage are skipped.
+* Fix: On sites installed in a subdirectory, links written as an absolute path (like /blog/a-page/) were checked against a doubled address and could be wrongly reported as broken.
+
+= 3.0.0 - 5 July 2026 =
+* New: Upgrade page plan buttons go to the brokenlinkchecker.io checkout for the chosen plan (Freemius retired).
+* New: Plan cards list Internal Link Optimizer, Uptime Monitor and White Labeled Reports (Business and Agency), with matching feature cards marked Coming soon.
+* New: Results table detects file types from the URL: PDF, Word, Excel, CSV, PowerPoint, JavaScript, CSS, archives, audio, video and images get their own type icon instead of the generic link icon.
+* Fix: Links with an invalid scheme (like htp://) showed a blank URL cell; they now display as plain text with the Invalid status badge.
+* New: WordPress Playground live preview enabled via assets/blueprints/blueprint.json.
+* New: Redesigned admin interface with a modern sidebar layout, top bar, and card-based pages.
+* New: Dedicated Dashboard & Scan, Settings, Help, and Upgrade pages replace the old tab navigation. Old tab links redirect automatically.
+* New: Dashboard & Scan page shows live stat cards for links checked, broken links found, and scan duration.
+* New: First-run welcome screen shows what a scan will cover and a Run Your First Scan button.
+* New: Live progress bar with item and link counts while a scan runs.
+* New: Clear Results button removes stored scan results without touching settings.
+* New: SEO / AEO Tip page explains how audio content supports SEO and answer engines.
+* New: Broken Link Checker shortcut in the WordPress admin bar.
+* New: One-time dismissible tip about our Text to Speech plugin, shown after the first completed scan.
+* New: Choose which content types to scan, with all public post types listed dynamically.
+* New: Choose link types to scan: HTML links and images. Broken images show as type Image in the results.
+* New: Configurable request timeout (5-120 seconds). Slow links are marked as warnings, not broken.
+* New: Warnings and broken links are classified separately: 404/410 count as broken, while timeouts, bot blocks (403/429), SSL problems and server errors count as warnings, each with its own badge and a status filter.
+* New: Row actions in the results table: Edit URL and Unlink update the post without changing its modified date, Not broken whitelists a URL permanently, Dismiss hides it until the next scan.
+* New: Re-check all links button in Settings clears cached statuses and starts a fresh scan.
+* New: Export the report as CSV. XLSX, TXT, prompt-ready Markdown for AI assistants, and PDF are Pro formats.
+* New: Pro settings preview: nofollow for broken links, comment and custom field scanning, automatic redirect fixing, Wayback Machine replacement suggestions, AI-powered link fixing, and post author notifications.
+* Improved: Exclusion rules now match as substrings, so one rule can skip whole paths or domains.
+* Improved: Cart, login, admin and other dynamic URLs are excluded automatically, so WooCommerce add-to-cart and account-menu links no longer show up as broken. Existing results are cleaned up on update.
+* Improved: Status and Details merged into one badge showing the HTTP code and classification; the Type column is now an icon and long URLs are clamped to two lines for compact rows.
+* New: Upgrade page with a full Pro feature overview.
+* New: Plugin icon shown in the admin sidebar and as favicon on plugin pages.
+* Improved: Shorter Broken Links label in the WordPress admin menu.
+* Improved: Stored scan results are cleared on upgrade so everyone starts on the new dashboard.
+* Improved: The review request only appears after the plugin has completed two scans.
+* Improved: Removed the Screen Options tab and reduced upgrade links for a calmer interface.
+* Improved: Settings page groups options in cards and marks Pro-only fields with a PRO badge.
+* Improved: Help page FAQ uses native accordions for better accessibility.
+* Improved: Stylesheet cache busting now works correctly after plugin updates.
+* Improved: Plugin website moved to brokenlinkchecker.io and readme links updated.
+* Security: Manual scans now require administrator capability in addition to the existing nonce check.
+* Fixed: Uninstall now removes all plugin options, including the last-scan summary and notice flags.
+* Developer: All database queries for slider scanning are escaped and documented, and placeholder files block direct access.
+* New: First-run Dashboard & Scan hero with a "What a scan checks" overview and a shortcut to adjust scan settings.
+* New: Stat cards show colored icons; the broken links count renders green at zero and red when links are broken.
+* Improved: The "ready to scan" count skips builder and system post types and names at most three content types.
+* Improved: Scan buttons show a spinner and Scanning label while a scan runs.
+* Improved: SEO / AEO Tip hero shows the audio demo and install card side by side, with a denser waveform.
+* Improved: Settings menu item moved below SEO / AEO Tip.
+* Improved: Content Types to Scan lists only real content types; builder and system post types are filtered out via the shared wpcbl_scannable_post_types helper (filterable).
+* Improved: Timezone selects default to the site timezone.
+* Improved: The set-number-of-links input sits inline next to its radio and only shows when Set number is selected.
+* Improved: Free version shows a one-line "Automatic scans: Off" row instead of three disabled scheduling inputs.
+* New: Free version groups the four Pro SEO features into one SEO Toolkit card with a single upgrade button.
+* New: The Settings Scan section has a #scan anchor; the dashboard "Adjust in Settings" link deep-links to it.
+* Improved: Upgrade page plan cards show per-plan taglines and license counts instead of identical bullet lists; Agency shows a per-site value line; small print covers what applies to every plan.
+* Improved: Fix with AI is the first feature card on the Upgrade page, with a New badge; Support & License no longer names a license count.
+* New: Upgrade page FAQ (license expiry, plan upgrades, refund policy, theme/builder compatibility).
+* New: Optional "Trusted by N+ WordPress sites" line on the Upgrade page, driven by the wpcbl_trusted_sites_count option/filter and hidden until set.
+* Improved: Upgrade page redesigned to match the Dashboard/Tip visual language: purple hero, Business plan emphasized (wider card, border, shadow, filled button vs outlined side cards), feature cards compressed to icon square + one sentence, Support & License card replaced by a slim strip.
+* Changed: Business plan price is $49/year (was $59) across the Upgrade page, Help FAQ and readme.
+* New: "See full Pro details" link to brokenlinkchecker.io/wordpress-plugin in the Upgrade page small print.
+
+= 1.0.0 - 21 June 2024 =
+* Initial release.

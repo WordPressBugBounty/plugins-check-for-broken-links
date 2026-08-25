@@ -1,0 +1,1976 @@
+# Copyright (C) 2026 Norse Digital Group LLC
+# This file is distributed under the GNU General Public License v3.0.
+msgid ""
+msgstr ""
+"Project-Id-Version: Check for Broken Links - Broken Link Checker & 404 Monitor 3.0.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/trunk\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-08-16T16:35:51+02:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: check-for-broken-links\n"
+
+#. Plugin Name of the plugin
+#: check-for-broken-links.php
+msgid "Check for Broken Links - Broken Link Checker & 404 Monitor"
+msgstr ""
+
+#. Description of the plugin
+#: check-for-broken-links.php
+msgid "Scan your site for broken links and 404 errors to improve SEO and user experience."
+msgstr ""
+
+#. Author of the plugin
+#: check-for-broken-links.php
+msgid "Norse Digital Group LLC"
+msgstr ""
+
+#. Author URI of the plugin
+#: check-for-broken-links.php
+msgid "https://brokenlinkchecker.io/"
+msgstr ""
+
+#: check-for-broken-links.php:187
+msgid "Leave a review"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:59
+msgid "Fixing redirects is a Pro feature."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:66
+msgid "Missing data for the redirect fix."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:85
+msgid "No permanent redirect found for this URL."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:90
+msgid "The URL was not found in the post content."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:94
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:590
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:631
+msgid "Could not update the post."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:115
+msgid "Wayback suggestions are a Pro feature."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:120
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:652
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:679
+msgid "Missing URL."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:126
+msgid "The Wayback Machine did not respond. Try again later."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:133
+msgid "No archived version found for this URL."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:150
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:224
+msgid "Fix with AI is a Pro feature."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:158
+msgid "Missing data for the AI fix."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:163
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:542
+msgid "The URL was not found in the post content. It may live in a builder or slider field."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:168
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:229
+msgid "Connect this site to brokenlinkchecker.io first, from Settings."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:185
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:274
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:337
+msgid "Could not reach brokenlinkchecker.io. Check the connection and try again."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:189
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:278
+msgid "The site connection expired. Reconnect from Settings."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:193
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:282
+msgid "Fix with AI is not included in this plan."
+msgstr ""
+
+#. translators: 1: AI fixes used this month, 2: monthly limit.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:201
+#, php-format
+msgid "You reached this month's AI fix limit, %1$d of %2$d used. The counter resets on the first of the month."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:209
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:286
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:358
+msgid "The AI service did not answer. Try again in a moment."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:262
+msgid "No broken links to fix. Run a scan first."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:268
+msgid "None of these links can be fixed automatically. They live in builder, slider or comment content."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:397
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:718
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:740
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:761
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:785
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-export.php:281
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:57
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:602
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:401
+msgid "You do not have permission to manage links."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:537
+msgid "Missing data for the URL update."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:610
+msgid "Missing data for the unlink action."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:615
+msgid "Post not found."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:620
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:627
+msgid "The link was not found in the post content. It may live in a builder or slider field."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:765
+msgid "You do not have permission to clear scan results."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:790
+msgid "You do not have permission to run a scan."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:87
+msgid "Clear the current scan results? Settings are kept. Run a new scan anytime to check your links again."
+msgstr ""
+
+#. translators: 1: items scanned so far, 2: total items, 3: links checked so far.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:89
+#, php-format
+msgid "Checking item %1$s of %2$s. %3$s links checked so far."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:90
+msgid "Every occurrence of the old URL in this post is replaced."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:91
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:438
+msgid "Edit URL"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:92
+msgid "Fix all similar: replace this URL in every post where it appears"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:93
+msgid "The link is removed but its text stays in the post."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:94
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:445
+msgid "Unlink"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:95
+msgid "Clear all cached link statuses and run a fresh scan now? Links you marked as Not broken stay skipped."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:96
+#: templates/admin/views/sections/fields/recheck-all.php:14
+msgid "Re-check all links"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:97
+#: templates/admin/scan.php:94
+msgid "Clear Results"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:98
+msgid "Something went wrong. Please try again."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:99
+msgid "Action failed"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:100
+msgid "Confirm"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:101
+msgid "Cancel"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:102
+msgid "Save URL"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:103
+msgid "OK"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:104
+msgid "Scanning…"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:105
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:456
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:468
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:504
+#: includes/pro-tools.php:29
+#: templates/admin/scan.php:218
+#: templates/admin/upgrade.php:146
+#: templates/admin/views/sections/fields/seo-toolkit.php:19
+#: templates/admin/views/sections/fields/unlock-pro.php:20
+msgid "Fix with AI"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:106
+msgid "Analyzing…"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:107
+msgid "Pick the replacement to apply. Every option was checked live before it reached you."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:108
+msgid "No working replacement was found. You can remove the link and keep its text."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:109
+msgid "Apply fix"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:110
+msgid "Remove link"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:111
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:484
+msgid "View archived version"
+msgstr ""
+
+#. translators: 1: AI fixes used this month, 2: monthly limit.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:113
+#, php-format
+msgid "%1$s of %2$s AI fixes used this month."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:114
+#: templates/admin/scan.php:222
+#: templates/admin/scan.php:226
+msgid "Fix all with AI"
+msgstr ""
+
+#. translators: %1$s: number of broken links.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:116
+#, php-format
+msgid "Analyze up to %1$s broken links with AI? Dismissed links are left out. This uses your monthly AI fix allowance, one per link."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:117
+msgid "Start analysis"
+msgstr ""
+
+#. translators: 1: analyzed links so far, 2: total queued links.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:119
+#, php-format
+msgid "Analyzing %1$s of %2$s links…"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:120
+msgid "Review AI fixes"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:121
+msgid "Apply"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:122
+msgid "Apply all suggestions"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:123
+msgid "Skip"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:124
+msgid "Applied"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:125
+msgid "Skipped"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:126
+msgid "Remove link, keep its text"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:127
+msgid "Could not analyze this link. Try the row action instead."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:128
+msgid "Cannot fix automatically. Edit the post directly."
+msgstr ""
+
+#. translators: %1$s: number of links beyond one batch.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:130
+#, php-format
+msgid "One batch covers 500 links. Run Fix all with AI again for the other %1$s."
+msgstr ""
+
+#. translators: %1$s: number of links past the monthly limit.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:132
+#, php-format
+msgid "Monthly AI fix limit reached for %1$s links. The counter resets on the first of the month."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:133
+msgid "Get a bigger plan"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:134
+msgid "Close review"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:135
+msgid "All done. Reloading the results…"
+msgstr ""
+
+#. translators: %1$s: number of fixes that failed.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:137
+#, php-format
+msgid "%1$s fixes did not apply. The rows stay in the list so you can retry them."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-export.php:286
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-notices.php:139
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-export.php:296
+msgid "XLSX, TXT, Markdown and PDF reports are Pro features."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-export.php:318
+msgid "XLSX export needs the PHP zip extension, which is not available on this server. Use CSV instead."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:240
+#: includes/pro-tools.php:32
+msgid "Broken URL"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:241
+#: includes/pro-tools.php:33
+msgid "Status"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:242
+msgid "Type"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:243
+msgid "Found in"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:244
+msgid "Content Type"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:245
+#: includes/pro-tools.php:95
+msgid "Date"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:264
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:303
+msgid "Image"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:277
+msgid "PDF document"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:278
+msgid "Word document (DOC)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:279
+msgid "Word document (DOCX)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:280
+msgid "Excel spreadsheet (XLS)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:281
+msgid "Excel spreadsheet (XLSX)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:282
+msgid "CSV file"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:283
+msgid "PowerPoint presentation (PPT)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:284
+msgid "PowerPoint presentation (PPTX)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:285
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:286
+msgid "JavaScript file"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:287
+msgid "Stylesheet"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:288
+msgid "Archive (ZIP)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:289
+msgid "Archive (RAR)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:290
+msgid "Audio file"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:291
+msgid "Video file"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:311
+msgid "Link"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:363
+msgid "Data not available."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:390
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:395
+msgid "View"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:430
+msgid "Find"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:457
+#: templates/admin/scan.php:226
+#: templates/admin/views/export-csv.php:35
+#: templates/admin/views/sections/fields/email-addresses.php:18
+#: templates/admin/views/sections/fields/email-notifications.php:18
+#: templates/admin/views/sections/fields/pro-toggle.php:24
+#: templates/admin/views/sections/fields/scan-frequency.php:20
+#: templates/admin/views/sections/fields/seo-toolkit.php:44
+#: templates/admin/views/sections/fields/unlock-pro.php:55
+msgid "PRO"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:476
+msgid "Fix redirect"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:492
+msgid "Not broken"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:498
+#: templates/admin/partials/ttswp-banner.php:41
+msgid "Dismiss"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:530
+msgid "Invalid"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:532
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:539
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:394
+msgid "Timeout"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:534
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:537
+msgid "SSL"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:541
+msgid "Error"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:549
+msgid "Redirect"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:552
+msgid "Warning"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:555
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:614
+msgid "Broken"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:569
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:621
+msgid "Internal"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:569
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:622
+msgid "External"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:613
+msgid "All Statuses"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:615
+msgid "Warnings"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:616
+msgid "Redirects"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:620
+msgid "All Types"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:626
+msgid "All Content Types"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:627
+msgid "Posts"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:628
+msgid "Pages"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:629
+msgid "Custom Content"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:630
+msgid "Comments"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:631
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:435
+msgid "Slider Content"
+msgstr ""
+
+#. translators: 1) int version 2) int version
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-notices.php:104
+#, php-format
+msgid "Check for Broken Links - The minimum PHP version required for this plugin is %1$s. You are running %2$s."
+msgstr ""
+
+#. translators: 1) int version 2) int version
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-notices.php:114
+#, php-format
+msgid "Check for Broken Links - The minimum WordPress version required for this plugin is %1$s. You are running %2$s."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-notices.php:134
+msgid "Action failed. Please refresh the page and retry."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:69
+msgid "Broken Link Checker"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:103
+#: templates/admin/partials/sidebar.php:39
+#: templates/admin/partials/sidebar.php:42
+msgid "Check for Broken Links"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:104
+msgid "Broken Links"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:115
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:116
+#: templates/admin/partials/sidebar.php:77
+#: templates/admin/scan.php:81
+msgid "Dashboard & Scan"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:123
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:124
+#: templates/admin/partials/sidebar.php:83
+#: templates/admin/seo-tip.php:12
+msgid "SEO / AEO Tip"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:132
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:133
+#: templates/admin/partials/sidebar.php:89
+#: templates/admin/settings.php:12
+msgid "Settings"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:141
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:142
+#: templates/admin/partials/sidebar.php:95
+#: templates/admin/pro-tools.php:14
+msgid "Pro Tools"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:150
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:151
+#: templates/admin/help.php:39
+#: templates/admin/partials/sidebar.php:101
+msgid "Help"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:159
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:160
+#: templates/admin/partials/sidebar.php:110
+#: templates/admin/partials/sidebar.php:116
+#: templates/admin/pro-tools.php:87
+#: templates/admin/upgrade.php:12
+#: templates/admin/views/sections/fields/pro-toggle.php:31
+#: templates/admin/views/sections/fields/seo-toolkit.php:62
+#: templates/admin/views/sections/fields/unlock-pro.php:73
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:195
+msgid "Site connected. Pro is now active."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:197
+msgid "Site disconnected."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:199
+msgid "Could not complete the connection. Please try again."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:312
+msgid "Settings for the Check for Broken Links plugin."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:325
+msgid "General"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:336
+msgid "Scan"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:352
+msgid "Notifications"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:366
+msgid "SEO"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:378
+msgid "Scan Frequency"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:386
+msgid "Number of Links to Scan"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:402
+msgid "Re-check"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:411
+msgid "Content Types to Scan"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:419
+msgid "Link Types"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:427
+msgid "Exclusions"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:445
+msgid "Comments & Custom Fields"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:455
+msgid "Email Notifications"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:463
+msgid "Email Address(es)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:473
+msgid "Notify Post Authors"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:479
+msgid "Also email the post author when broken links are found in their posts"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:480
+msgid "Authors only get alerts for their own content."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:510
+msgid "Fix broken links with AI"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:511
+msgid "AI finds the working replacement for each broken link and fixes it with one click. Every suggestion is verified live before it reaches you."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:517
+#: templates/admin/views/sections/fields/seo-toolkit.php:24
+msgid "Nofollow Broken Links"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:523
+msgid "Add rel=nofollow to broken links until fixed"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:524
+msgid "Stops search engines from following broken links, protecting your crawl budget and rankings."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:530
+#: templates/admin/views/sections/fields/seo-toolkit.php:29
+msgid "Auto-fix Redirects"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:536
+msgid "Detect permanent redirects (301/308)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:537
+msgid "Redirected links get a Fix redirect action that replaces the URL with the final destination."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:543
+#: templates/admin/views/sections/fields/seo-toolkit.php:34
+msgid "Replacement Suggestions"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:549
+msgid "Suggest replacements from the Wayback Machine"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:550
+msgid "Broken external links get a View archived version action."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:721
+msgid "Email alerts are available on Pro"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:818
+msgid "Scan comments"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:824
+msgid "Scan custom fields (incl. ACF)"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:825
+msgid "Checks links stored in post meta, including ACF fields."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-connect.php:308
+#: includes/class-wpcbl-check-for-broken-links-connect.php:385
+msgid "You are not allowed to do this."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-connect.php:357
+msgid "Unknown plan."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-schedule.php:61
+msgid "Every 5 minutes"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-schedule.php:66
+#: templates/admin/views/sections/fields/scan-frequency.php:33
+msgid "Monthly"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:163
+msgid "Email disabled for this scan."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1451
+msgid "Email notifications are disabled."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1460
+msgid "No email address is saved."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1472
+msgid "No valid email address is saved."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1477
+msgid "No broken links were found."
+msgstr ""
+
+#. translators: 1: site name, 2: scan time.
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1493
+#, php-format
+msgid "Broken Links Found on %1$s - %2$s"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1499
+msgid "The following broken links were found on"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1499
+msgid "during the scan at"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1504
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1531
+msgid "URL:"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1504
+msgid "Status Code:"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1508
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1534
+msgid "Plugin"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1531
+msgid "Found in:"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1534
+msgid "Broken links were found in your posts on"
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1542
+msgid "Email sent successfully."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1547
+msgid "wp_mail() returned false."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1550
+msgid "email could not be sent. Please check for issues with WP Mailer."
+msgstr ""
+
+#: includes/class-wpcbl-check-for-broken-links-utilities.php:1638
+msgid "Check for broken links loader"
+msgstr ""
+
+#: includes/functions.php:117
+msgid "Author: "
+msgstr ""
+
+#: includes/functions.php:183
+msgid "Slider"
+msgstr ""
+
+#: includes/functions.php:187
+msgid "Comment"
+msgstr ""
+
+#: includes/functions.php:191
+#: includes/functions.php:210
+msgid "Custom"
+msgstr ""
+
+#: includes/functions.php:197
+msgid "Post"
+msgstr ""
+
+#: includes/functions.php:201
+#: includes/pro-tools.php:48
+msgid "Page"
+msgstr ""
+
+#: includes/pro-tools.php:30
+msgid "AI finds the best replacement for every broken link and fixes it in your post with one click."
+msgstr ""
+
+#: includes/pro-tools.php:34
+msgid "Suggested fix"
+msgstr ""
+
+#: includes/pro-tools.php:35
+msgid "Confidence"
+msgstr ""
+
+#: includes/pro-tools.php:45
+msgid "Internal Link Optimizer"
+msgstr ""
+
+#: includes/pro-tools.php:46
+msgid "Scans your content and suggests the internal links and anchors that lift rankings most."
+msgstr ""
+
+#: includes/pro-tools.php:49
+msgid "Link to"
+msgstr ""
+
+#: includes/pro-tools.php:50
+msgid "Suggested anchor"
+msgstr ""
+
+#: includes/pro-tools.php:51
+msgid "Impact"
+msgstr ""
+
+#: includes/pro-tools.php:61
+msgid "SEO / AEO Audit"
+msgstr ""
+
+#: includes/pro-tools.php:62
+msgid "Classic SEO checks plus AEO: how well AI assistants can read and cite your site."
+msgstr ""
+
+#: includes/pro-tools.php:64
+msgid "Severity"
+msgstr ""
+
+#: includes/pro-tools.php:65
+msgid "Finding"
+msgstr ""
+
+#: includes/pro-tools.php:66
+msgid "Where"
+msgstr ""
+
+#: includes/pro-tools.php:69
+msgid "3 pages missing meta description"
+msgstr ""
+
+#: includes/pro-tools.php:70
+msgid "12 images missing alt text"
+msgstr ""
+
+#: includes/pro-tools.php:70
+msgid "across 8 pages"
+msgstr ""
+
+#: includes/pro-tools.php:71
+msgid "llms.txt file for AI assistants"
+msgstr ""
+
+#: includes/pro-tools.php:72
+msgid "HTTPS, sitemap.xml and robots.txt configured"
+msgstr ""
+
+#: includes/pro-tools.php:72
+msgid "site-wide"
+msgstr ""
+
+#: includes/pro-tools.php:76
+msgid "Rank Tracker"
+msgstr ""
+
+#: includes/pro-tools.php:77
+msgid "Track your most important keywords and see how link health affects rankings."
+msgstr ""
+
+#: includes/pro-tools.php:79
+msgid "Keyword"
+msgstr ""
+
+#: includes/pro-tools.php:80
+msgid "Position"
+msgstr ""
+
+#: includes/pro-tools.php:81
+msgid "Change"
+msgstr ""
+
+#: includes/pro-tools.php:82
+msgid "Volume"
+msgstr ""
+
+#: includes/pro-tools.php:92
+#: templates/admin/upgrade.php:52
+#: templates/admin/upgrade.php:67
+#: templates/admin/upgrade.php:83
+#: templates/admin/upgrade.php:199
+msgid "Uptime Monitor"
+msgstr ""
+
+#: includes/pro-tools.php:93
+msgid "Know the moment your site goes down, from multiple regions, with incident history."
+msgstr ""
+
+#: includes/pro-tools.php:96
+msgid "Incident"
+msgstr ""
+
+#: includes/pro-tools.php:97
+msgid "Duration"
+msgstr ""
+
+#: includes/pro-tools.php:100
+msgid "HTTP 500 on homepage — resolved automatically"
+msgstr ""
+
+#: includes/pro-tools.php:101
+msgid "Response timeout from EU region"
+msgstr ""
+
+#: includes/pro-tools.php:105
+msgid "White Label"
+msgstr ""
+
+#: includes/pro-tools.php:106
+msgid "Put your own logo, colors and domain on every report you share with clients. Business and Agency plans."
+msgstr ""
+
+#: includes/pro-tools.php:108
+msgid "Your logo"
+msgstr ""
+
+#: includes/pro-tools.php:108
+msgid "On every shared report"
+msgstr ""
+
+#: includes/pro-tools.php:109
+msgid "Accent color"
+msgstr ""
+
+#: includes/pro-tools.php:109
+msgid "Match your brand palette"
+msgstr ""
+
+#: includes/pro-tools.php:110
+msgid "Custom domain"
+msgstr ""
+
+#: includes/pro-tools.php:111
+msgid "Hide our branding"
+msgstr ""
+
+#: includes/pro-tools.php:111
+msgid "100% your name on the report"
+msgstr ""
+
+#: includes/pro-tools.php:135
+msgid "Included in your plan — these tools unlock here automatically at launch."
+msgstr ""
+
+#: includes/pro-tools.php:141
+msgid "Upgrade to Pro — get every tool on this page at launch, at no extra cost."
+msgstr ""
+
+#: templates/admin/help.php:14
+msgid "What does the Check for Broken Links plugin do?"
+msgstr ""
+
+#: templates/admin/help.php:15
+msgid "The plugin scans your website for broken URLs, dead links, and 404 errors across your content."
+msgstr ""
+
+#: templates/admin/help.php:18
+msgid "How do I check for broken links on my site?"
+msgstr ""
+
+#: templates/admin/help.php:19
+msgid "Go to the Dashboard & Scan page and click Start Manual Scan. The plugin will scan supported content and display the results in a table."
+msgstr ""
+
+#: templates/admin/help.php:22
+msgid "Will fixing broken links improve SEO?"
+msgstr ""
+
+#: templates/admin/help.php:23
+msgid "Yes. Removing broken links improves user experience and helps search engines crawl your website more efficiently."
+msgstr ""
+
+#: templates/admin/help.php:26
+msgid "What content can the plugin scan?"
+msgstr ""
+
+#: templates/admin/help.php:27
+msgid "The plugin scans posts, pages, custom content, comments, and slider content."
+msgstr ""
+
+#: templates/admin/help.php:30
+msgid "Does the plugin fix broken links automatically?"
+msgstr ""
+
+#: templates/admin/help.php:31
+msgid "No. The plugin only detects broken links and shows where they appear. You can then manually update or remove them."
+msgstr ""
+
+#: templates/admin/help.php:34
+msgid "Is the plugin free?"
+msgstr ""
+
+#: templates/admin/help.php:35
+msgid "Yes. The core plugin is free forever. Pro plans start at $29 per year for 1 site, $49 for 5 sites, and $159 for 250 sites."
+msgstr ""
+
+#: templates/admin/help.php:45
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: templates/admin/help.php:60
+msgid "Need more help?"
+msgstr ""
+
+#. translators: 1: support URL, 2: forum URL.
+#: templates/admin/help.php:66
+#, php-format
+msgid "Reach out to us at <a href=\"%1$s\" target=\"_blank\" rel=\"noopener noreferrer\">brokenlinkchecker.io/support</a> or post in the <a href=\"%2$s\" target=\"_blank\" rel=\"noopener noreferrer\">WordPress.org support forum</a>."
+msgstr ""
+
+#. translators: 1: review URL, 2: plugin site URL.
+#: templates/admin/partials/layout-close.php:21
+#, php-format
+msgid "If Check for Broken Links helps you, please <a href=\"%1$s\" target=\"_blank\" rel=\"noopener noreferrer\">leave us a &#9733;&#9733;&#9733;&#9733;&#9733; rating</a>. Built with <span class=\"cbl-footer-heart\">&#9829;</span> by <a href=\"%2$s\" target=\"_blank\" rel=\"noopener noreferrer\">brokenlinkchecker.io</a>"
+msgstr ""
+
+#. translators: %s: plugin site URL.
+#: templates/admin/partials/layout-close.php:30
+#, php-format
+msgid "Built with <span class=\"cbl-footer-heart\">&#9829;</span> by <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">brokenlinkchecker.io</a>"
+msgstr ""
+
+#: templates/admin/partials/sidebar.php:48
+msgid "Free"
+msgstr ""
+
+#. translators: 1: plugin version (e.g. v3.0.1), 2: plan name.
+#: templates/admin/partials/sidebar.php:54
+#, php-format
+msgid "%1$s · %2$s"
+msgstr ""
+
+#. translators: %s: plugin version (e.g. v3.0.1).
+#: templates/admin/partials/sidebar.php:63
+#, php-format
+msgid "%s · Connect site"
+msgstr ""
+
+#: templates/admin/partials/ttswp-banner.php:37
+msgid "Boost engagement and AI visibility:"
+msgstr ""
+
+#: templates/admin/partials/ttswp-banner.php:38
+msgid "Add audio versions of your posts with Text to Speech for WP. Listeners stay longer, and accessible audio content strengthens your SEO signals."
+msgstr ""
+
+#: templates/admin/partials/ttswp-banner.php:40
+msgid "Try it free"
+msgstr ""
+
+#: templates/admin/pro-tools.php:27
+msgid "Six new tools are on the way"
+msgstr ""
+
+#: templates/admin/pro-tools.php:28
+msgid "Everything below is a preview with sample data — each tool fills with your site's real data the day it launches."
+msgstr ""
+
+#: templates/admin/pro-tools.php:46
+msgid "COMING SOON"
+msgstr ""
+
+#: templates/admin/pro-tools.php:79
+msgid "Sample data"
+msgstr ""
+
+#: templates/admin/pro-tools.php:86
+msgid "One plan unlocks every tool on this page the day it ships."
+msgstr ""
+
+#: templates/admin/scan.php:65
+msgid "comments"
+msgstr ""
+
+#: templates/admin/scan.php:86
+msgid "Last scan:"
+msgstr ""
+
+#: templates/admin/scan.php:96
+msgid "Start Manual Scan"
+msgstr ""
+
+#: templates/admin/scan.php:99
+msgid "After your next scan"
+msgstr ""
+
+#: templates/admin/scan.php:99
+msgid "After your first scan"
+msgstr ""
+
+#: templates/admin/scan.php:119
+msgid "No scan results"
+msgstr ""
+
+#: templates/admin/scan.php:121
+msgid "Find broken links before Google does"
+msgstr ""
+
+#. translators: 1: number of items, 2: list of content type labels, e.g. "posts, pages and products".
+#: templates/admin/scan.php:128
+#, php-format
+msgid "Ready to scan %1$s items across your %2$s."
+msgstr ""
+
+#: templates/admin/scan.php:135
+msgid "Run a new scan"
+msgstr ""
+
+#: templates/admin/scan.php:135
+msgid "Run your first scan"
+msgstr ""
+
+#: templates/admin/scan.php:136
+msgid "Typically takes a few minutes. Keep this tab open while it runs."
+msgstr ""
+
+#: templates/admin/scan.php:149
+msgid "Links checked"
+msgstr ""
+
+#: templates/admin/scan.php:161
+msgid "Broken links"
+msgstr ""
+
+#: templates/admin/scan.php:173
+msgid "Automatic scans"
+msgstr ""
+
+#: templates/admin/scan.php:174
+msgid "Off"
+msgstr ""
+
+#: templates/admin/scan.php:174
+msgid "Enable with Pro"
+msgstr ""
+
+#: templates/admin/scan.php:183
+msgid "Scan duration"
+msgstr ""
+
+#: templates/admin/scan.php:194
+msgid "What a scan checks"
+msgstr ""
+
+#: templates/admin/scan.php:195
+msgid "Adjust in Settings"
+msgstr ""
+
+#: templates/admin/scan.php:198
+msgid "Links in posts & pages"
+msgstr ""
+
+#: templates/admin/scan.php:199
+msgid "Product descriptions"
+msgstr ""
+
+#: templates/admin/scan.php:199
+msgid "Custom content"
+msgstr ""
+
+#: templates/admin/scan.php:200
+msgid "Images"
+msgstr ""
+
+#: templates/admin/scan.php:201
+msgid "Internal & external URLs"
+msgstr ""
+
+#: templates/admin/scan.php:219
+msgid "Analyze every broken link and apply verified fixes in one pass."
+msgstr ""
+
+#: templates/admin/scan.php:224
+msgid "Turn on Fix with AI in Settings"
+msgstr ""
+
+#: templates/admin/seo-tip.php:62
+msgid "Your links are healthy. Now let visitors listen."
+msgstr ""
+
+#: templates/admin/seo-tip.php:63
+msgid "Add audio versions of your posts in two minutes. No account needed."
+msgstr ""
+
+#: templates/admin/seo-tip.php:67
+msgid "Play audio demo"
+msgstr ""
+
+#: templates/admin/seo-tip.php:67
+msgid "Pause audio demo"
+msgstr ""
+
+#: templates/admin/seo-tip.php:71
+msgid "Liam, the demo voice"
+msgstr ""
+
+#: templates/admin/seo-tip.php:74
+msgid "\"How to fix broken links in WordPress\""
+msgstr ""
+
+#. translators: %s: TTSWP link.
+#: templates/admin/seo-tip.php:79
+#, php-format
+msgid "· read by Liam using %s"
+msgstr ""
+
+#: templates/admin/seo-tip.php:97
+#: templates/admin/seo-tip.php:178
+msgid "Open TTSWP settings"
+msgstr ""
+
+#: templates/admin/seo-tip.php:99
+#: templates/admin/seo-tip.php:183
+msgid "Activate TTSWP"
+msgstr ""
+
+#: templates/admin/seo-tip.php:101
+#: templates/admin/seo-tip.php:103
+msgid "Install TTSWP"
+msgstr ""
+
+#: templates/admin/seo-tip.php:107
+msgid "5.0 · Free Plugin"
+msgstr ""
+
+#: templates/admin/seo-tip.php:120
+msgid "Longer visits"
+msgstr ""
+
+#: templates/admin/seo-tip.php:121
+msgid "Listeners stay on the page. Google notices."
+msgstr ""
+
+#: templates/admin/seo-tip.php:128
+msgid "More readers reached"
+msgstr ""
+
+#: templates/admin/seo-tip.php:129
+msgid "Audio opens your content to everyone."
+msgstr ""
+
+#: templates/admin/seo-tip.php:136
+msgid "600+ voices, 70+ languages"
+msgstr ""
+
+#: templates/admin/seo-tip.php:137
+msgid "Works with any theme or page builder."
+msgstr ""
+
+#: templates/admin/seo-tip.php:143
+msgid "How it looks on your posts"
+msgstr ""
+
+#: templates/admin/seo-tip.php:145
+msgid "10 Tips for Better Site Speed"
+msgstr ""
+
+#: templates/admin/seo-tip.php:146
+msgid "Published March 3 · 6 min read"
+msgstr ""
+
+#: templates/admin/seo-tip.php:149
+msgid "Listen to this article"
+msgstr ""
+
+#. translators: %s: star rating, e.g. 5.0.
+#: templates/admin/seo-tip.php:165
+#, php-format
+msgid "%s on WordPress.org"
+msgstr ""
+
+#: templates/admin/seo-tip.php:171
+msgid "From the team behind Broken Links"
+msgstr ""
+
+#: templates/admin/seo-tip.php:172
+msgid "Free plan, no account needed"
+msgstr ""
+
+#: templates/admin/seo-tip.php:179
+msgid "Text to Speech - TTSWP is installed and active on this site."
+msgstr ""
+
+#: templates/admin/seo-tip.php:184
+msgid "Text to Speech - TTSWP is installed but not active."
+msgstr ""
+
+#: templates/admin/seo-tip.php:188
+msgid "Install TTSWP free"
+msgstr ""
+
+#: templates/admin/seo-tip.php:192
+msgid "View TTSWP on WordPress.org"
+msgstr ""
+
+#: templates/admin/seo-tip.php:197
+msgid "One click from WordPress.org. AI answer engines favor accessible, multi-format content."
+msgstr ""
+
+#: templates/admin/seo-tip.php:198
+msgid "Learn how audio helps AEO"
+msgstr ""
+
+#: templates/admin/settings.php:22
+msgid "Settings saved."
+msgstr ""
+
+#: templates/admin/settings.php:36
+msgid "You have unsaved changes."
+msgstr ""
+
+#: templates/admin/settings.php:37
+msgid "Save Settings"
+msgstr ""
+
+#: templates/admin/upgrade.php:20
+msgid "Set it once, forget it, we alert you when something breaks"
+msgstr ""
+
+#: templates/admin/upgrade.php:21
+msgid "Pro runs automatic scheduled scans and emails you the moment broken links are found. A silent background monitor for your site."
+msgstr ""
+
+#. translators: %s: number of sites, e.g. 1,000.
+#: templates/admin/upgrade.php:34
+#, php-format
+msgid "Trusted by %s+ WordPress sites"
+msgstr ""
+
+#: templates/admin/upgrade.php:44
+msgid "Personal"
+msgstr ""
+
+#: templates/admin/upgrade.php:45
+msgid "For your website"
+msgstr ""
+
+#: templates/admin/upgrade.php:47
+msgid "1 site license"
+msgstr ""
+
+#: templates/admin/upgrade.php:50
+#: templates/admin/upgrade.php:65
+#: templates/admin/upgrade.php:81
+msgid "All Pro features"
+msgstr ""
+
+#: templates/admin/upgrade.php:51
+#: templates/admin/upgrade.php:66
+#: templates/admin/upgrade.php:82
+#: templates/admin/upgrade.php:177
+msgid "Internal Link Optimizer (AI)"
+msgstr ""
+
+#: templates/admin/upgrade.php:54
+msgid "Choose Personal"
+msgstr ""
+
+#: templates/admin/upgrade.php:59
+msgid "Business"
+msgstr ""
+
+#: templates/admin/upgrade.php:60
+msgid "For growing businesses"
+msgstr ""
+
+#: templates/admin/upgrade.php:62
+msgid "5 site licenses"
+msgstr ""
+
+#: templates/admin/upgrade.php:68
+#: templates/admin/upgrade.php:84
+#: templates/admin/upgrade.php:210
+msgid "White Labeled Reports"
+msgstr ""
+
+#: templates/admin/upgrade.php:70
+msgid "Choose Business"
+msgstr ""
+
+#: templates/admin/upgrade.php:75
+msgid "Agency"
+msgstr ""
+
+#: templates/admin/upgrade.php:76
+msgid "For agencies and freelancers"
+msgstr ""
+
+#: templates/admin/upgrade.php:78
+msgid "250 site licenses"
+msgstr ""
+
+#: templates/admin/upgrade.php:79
+msgid "Less than $1 per site"
+msgstr ""
+
+#: templates/admin/upgrade.php:86
+msgid "Choose Agency"
+msgstr ""
+
+#: templates/admin/upgrade.php:97
+msgid "Most popular"
+msgstr ""
+
+#: templates/admin/upgrade.php:101
+msgid " /year"
+msgstr ""
+
+#: templates/admin/upgrade.php:124
+msgid "Prices in USD. Renews yearly, cancel anytime. All Pro features and priority support in every plan."
+msgstr ""
+
+#: templates/admin/upgrade.php:125
+msgid "See full Pro details"
+msgstr ""
+
+#: templates/admin/upgrade.php:133
+msgid "Already purchased a plan?"
+msgstr ""
+
+#: templates/admin/upgrade.php:134
+msgid "Connect this site to your account"
+msgstr ""
+
+#: templates/admin/upgrade.php:135
+msgid "— Pro activates instantly, no license key needed."
+msgstr ""
+
+#: templates/admin/upgrade.php:147
+msgid "New"
+msgstr ""
+
+#: templates/admin/upgrade.php:149
+msgid "AI finds where dead pages moved, verifies every suggestion live, and applies the fix with one click."
+msgstr ""
+
+#: templates/admin/upgrade.php:157
+msgid "Email Reports"
+msgstr ""
+
+#: templates/admin/upgrade.php:159
+msgid "Alerts the moment broken links are found, with full reports to multiple recipients."
+msgstr ""
+
+#: templates/admin/upgrade.php:167
+msgid "Scheduled Scans"
+msgstr ""
+
+#: templates/admin/upgrade.php:169
+msgid "Daily, weekly or monthly scans, timezone aware, running at night when traffic is low."
+msgstr ""
+
+#: templates/admin/upgrade.php:178
+#: templates/admin/upgrade.php:189
+#: templates/admin/upgrade.php:200
+#: templates/admin/upgrade.php:211
+msgid "Coming soon"
+msgstr ""
+
+#: templates/admin/upgrade.php:180
+msgid "Scans your sitemap and page content, then suggests the best internal links and anchors to add."
+msgstr ""
+
+#: templates/admin/upgrade.php:188
+msgid "SEO Report Page"
+msgstr ""
+
+#: templates/admin/upgrade.php:191
+msgid "A dedicated SEO report page that links back to your site. Featured on our homepage and Pro Sites directory."
+msgstr ""
+
+#: templates/admin/upgrade.php:202
+msgid "Know when your site goes down, not just when links break."
+msgstr ""
+
+#: templates/admin/upgrade.php:213
+msgid "Reports under your own brand for clients. Business and Agency plans."
+msgstr ""
+
+#: templates/admin/upgrade.php:221
+msgid "Priority support"
+msgstr ""
+
+#: templates/admin/upgrade.php:225
+msgid "All future Pro features"
+msgstr ""
+
+#: templates/admin/upgrade.php:229
+msgid "Everything in Free, always"
+msgstr ""
+
+#: templates/admin/upgrade.php:236
+msgid "What happens if my license expires?"
+msgstr ""
+
+#: templates/admin/upgrade.php:237
+msgid "The plugin keeps working with all free features. Pro features (automatic scans, email alerts, AI fixes) pause until you renew."
+msgstr ""
+
+#: templates/admin/upgrade.php:240
+msgid "Can I upgrade my plan later?"
+msgstr ""
+
+#: templates/admin/upgrade.php:241
+msgid "Yes. You only pay the difference, and your license upgrades instantly."
+msgstr ""
+
+#: templates/admin/upgrade.php:244
+msgid "Do you offer refunds?"
+msgstr ""
+
+#: templates/admin/upgrade.php:245
+msgid "Refunds apply when the plugin has a defect. Report the issue via our support with enough detail for us to reproduce it, and give us a fair chance to fix it. If we can't resolve a confirmed defect within 14 days of a complete report, you get a full refund. Renewals can be cancelled anytime before the renewal date."
+msgstr ""
+
+#: templates/admin/upgrade.php:248
+msgid "Does Pro work with my theme and page builder?"
+msgstr ""
+
+#: templates/admin/upgrade.php:249
+msgid "Yes. The scanner works at the content level and supports any theme, Elementor, Themify and other builders."
+msgstr ""
+
+#: templates/admin/upgrade.php:255
+msgid "Frequently asked questions"
+msgstr ""
+
+#: templates/admin/views/export-csv.php:20
+msgid "MD for AI"
+msgstr ""
+
+#: templates/admin/views/export-csv.php:29
+msgid "Export report:"
+msgstr ""
+
+#: templates/admin/views/export-csv.php:30
+msgid "CSV"
+msgstr ""
+
+#: templates/admin/views/loader.php:18
+msgid "Scanning your site for dead links... Please hold on, this might take a few moments."
+msgstr ""
+
+#: templates/admin/views/loader.php:20
+msgid "Please do not close this page."
+msgstr ""
+
+#: templates/admin/views/no-broken-links.php:18
+msgid "Congratulations, no dead links found!"
+msgstr ""
+
+#. translators: %s: total number of links
+#: templates/admin/views/no-broken-links.php:22
+#, php-format
+msgid "We scanned a total of %s links on your site. All clear!"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:33
+msgid "Connected"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:36
+msgid "Your site is linked to brokenlinkchecker.io"
+msgstr ""
+
+#. translators: 1: account email, 2: plan name, 3: sites used, 4: site limit.
+#: templates/admin/views/sections/connect.php:44
+#, php-format
+msgid "%1$s · %2$s plan · %3$d of %4$d sites used"
+msgstr ""
+
+#. translators: 1: account email, 2: plan name.
+#: templates/admin/views/sections/connect.php:53
+#, php-format
+msgid "%1$s · %2$s plan"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:62
+msgid "Manage in dashboard"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:66
+msgid "Disconnect this site"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:74
+msgid "Not connected"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:77
+msgid "Connect your site to unlock more"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:78
+msgid "Link this site to a free brokenlinkchecker.io account. No license keys, ever."
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:86
+msgid "Instant Pro activation"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:87
+msgid "Upgrade once and every Pro feature unlocks here automatically."
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:94
+msgid "All your sites in one place"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:95
+msgid "Manage every connected site from a single dashboard."
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:102
+msgid "Early access & member perks"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:103
+msgid "New features and the occasional bonus."
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:110
+msgid "Scan history & health"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:111
+msgid "Your broken-link trends saved to your account over time."
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:120
+msgid "Connect this site"
+msgstr ""
+
+#: templates/admin/views/sections/connect.php:122
+msgid "Optional but recommended. It is free and takes a few seconds. Required to unlock Pro features on this site."
+msgstr ""
+
+#: templates/admin/views/sections/fields/email-addresses.php:20
+msgid "Enter email addresses, separated by commas."
+msgstr ""
+
+#: templates/admin/views/sections/fields/email-notifications.php:16
+msgid "Enable email notifications"
+msgstr ""
+
+#: templates/admin/views/sections/fields/email-notifications.php:22
+msgid "Email alerts are a Pro feature."
+msgstr ""
+
+#: templates/admin/views/sections/fields/email-notifications.php:23
+#: templates/admin/views/sections/fields/scan-frequency.php:21
+msgid "See Pro features"
+msgstr ""
+
+#: templates/admin/views/sections/fields/exclusion-urls.php:16
+msgid "One rule per line. Any link whose URL contains the text is skipped."
+msgstr ""
+
+#: templates/admin/views/sections/fields/exclusion-urls.php:17
+msgid "Common dynamic URLs (cart, admin, login) are excluded automatically."
+msgstr ""
+
+#: templates/admin/views/sections/fields/link-types.php:17
+msgid "HTML links (a href)"
+msgstr ""
+
+#: templates/admin/views/sections/fields/link-types.php:21
+msgid "Images (img src)"
+msgstr ""
+
+#: templates/admin/views/sections/fields/link-types.php:24
+msgid "Broken images are reported with the type Image in the results table."
+msgstr ""
+
+#: templates/admin/views/sections/fields/number-of-links.php:16
+msgid "All"
+msgstr ""
+
+#: templates/admin/views/sections/fields/number-of-links.php:18
+msgid "Set number"
+msgstr ""
+
+#: templates/admin/views/sections/fields/number-of-links.php:20
+msgid "Number of links to scan"
+msgstr ""
+
+#: templates/admin/views/sections/fields/recheck-all.php:15
+msgid "Clears cached link statuses and starts a fresh scan. Links you marked as Not broken stay skipped."
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:19
+msgid "Automatic scans: Off"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:28
+msgid "Frequency"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:30
+msgid "Never"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:31
+msgid "Daily"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:32
+msgid "Weekly"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:37
+msgid "Scan Time"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:41
+msgid "Timezone"
+msgstr ""
+
+#. translators: %s: Next scheduled scan date/time.
+#: templates/admin/views/sections/fields/scan-frequency.php:64
+#, php-format
+msgid "Next automatic scan: %s."
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-frequency.php:70
+msgid "Choose a time and timezone for automatic scans."
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-post-types.php:28
+msgid "Choose which content types are scanned for broken links."
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-slider-content.php:16
+msgid "Scan Smart Slider and Revolution Slider content"
+msgstr ""
+
+#: templates/admin/views/sections/fields/scan-slider-content.php:17
+msgid "Turn this off if a slider plugin keeps old URLs in its internal cache after you remove them."
+msgstr ""
+
+#: templates/admin/views/sections/fields/seo-toolkit.php:20
+#: templates/admin/views/sections/fields/unlock-pro.php:21
+msgid "AI finds a verified working replacement for each broken link."
+msgstr ""
+
+#: templates/admin/views/sections/fields/seo-toolkit.php:25
+msgid "Adds rel=nofollow to broken links until they are fixed."
+msgstr ""
+
+#: templates/admin/views/sections/fields/seo-toolkit.php:30
+#: templates/admin/views/sections/fields/unlock-pro.php:31
+msgid "Replaces permanently redirected URLs with their final destination."
+msgstr ""
+
+#: templates/admin/views/sections/fields/seo-toolkit.php:35
+#: templates/admin/views/sections/fields/unlock-pro.php:36
+msgid "Suggests archived versions from the Wayback Machine."
+msgstr ""
+
+#: templates/admin/views/sections/fields/seo-toolkit.php:43
+msgid "SEO Toolkit"
+msgstr ""
+
+#: templates/admin/views/sections/fields/timeout.php:15
+msgid "seconds"
+msgstr ""
+
+#: templates/admin/views/sections/fields/timeout.php:16
+msgid "Links that take longer than this are marked as a warning, not broken."
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:25
+msgid "Nofollow broken links"
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:26
+msgid "Adds rel=nofollow to broken links until you fix them."
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:30
+msgid "Auto-fix redirects"
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:35
+msgid "Replacement suggestions"
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:40
+msgid "Notify post authors"
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:41
+msgid "Emails the author when their post has a broken link."
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:45
+msgid "Scan comments and custom fields"
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:46
+msgid "Checks links in comments and post meta, including ACF."
+msgstr ""
+
+#: templates/admin/views/sections/fields/unlock-pro.php:54
+msgid "Unlock with Pro"
+msgstr ""

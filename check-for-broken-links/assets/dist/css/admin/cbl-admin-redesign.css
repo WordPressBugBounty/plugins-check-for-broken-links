@@ -1,0 +1,4632 @@
+/**
+ * CBL Admin Redesign (ported from TTS) - Complete Stylesheet
+ *
+ * Organised in 14 sections matching the TTS-REDESIGN.md specification.
+ *
+ * @package WPCBL_Check_Broken_Links
+ * @since   2.2.0
+ */
+
+/* ==========================================================================
+   1. Design Tokens (spec section 4)
+   ========================================================================== */
+
+:root {
+  --cbl-sidebar-width: 220px;
+  --cbl-topbar-height: 52px;
+  --cbl-content-padding: 24px;
+  --cbl-radius-sm: 6px;
+  --cbl-radius-md: 8px;
+  --cbl-radius-lg: 12px;
+  --cbl-border-color: #e2e2e2;
+  --cbl-border: 0.5px solid #e2e2e2;
+  --cbl-font: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cbl-text-primary: #1a1a1a;
+  --cbl-text-secondary: #555;
+  --cbl-text-hint: #999;
+  --cbl-bg-primary: #fff;
+  --cbl-bg-secondary: #f7f7f6;
+  --cbl-bg-tertiary: #f0f0ee;
+  /* Accent - lilla fra QR-Kode / ttswp.com merkevare */
+  --cbl-purple: #6B45D4;
+  --cbl-purple-dark: #5435B0;
+  --cbl-purple-bg: #F0EBFD;
+  --cbl-purple-border: #C9B8F5;
+  --cbl-purple-text: #4A2FA0;
+
+  /* Semantiske farger */
+  --cbl-green: #1D9E75;
+  --cbl-green-bg: #E1F5EE;
+  --cbl-green-border: #9FE1CB;
+  --cbl-red: #E24B4A;
+  --cbl-red-bg: #FCEBEB;
+  --cbl-red-border: #F09595;
+  --cbl-amber: #BA7517;
+  --cbl-amber-bg: #FAEEDA;
+  --cbl-amber-border: #FAC775;
+  --cbl-blue: #185FA5;
+  --cbl-blue-bg: #E6F1FB;
+}
+
+/* ==========================================================================
+   2. Outer Layout (spec section 2)
+   ========================================================================== */
+
+.cbl-admin-wrap {
+  display: flex;
+  min-height: calc(100vh - 32px);
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  overflow: clip;
+  margin: 16px 20px 16px 0;
+}
+
+.cbl-sidebar {
+  width: 220px;
+  min-width: 220px;
+  background: var(--cbl-bg-secondary);
+  border-right: var(--cbl-border);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.cbl-main {
+  flex: 1;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.cbl-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 24px;
+  border-bottom: var(--cbl-border);
+  height: 45px;
+  background: #f9f8ff;
+}
+
+.cbl-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  flex: 1;
+}
+
+.cbl-topbar-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-topbar-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  flex-wrap: wrap;
+}
+
+.cbl-topbar-meta-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-topbar-meta-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cbl-green);
+  flex-shrink: 0;
+}
+
+.cbl-topbar-meta-plan {
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-topbar-meta-sep {
+  color: var(--cbl-text-hint);
+}
+
+.cbl-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Save changes button at the bottom of the quick-settings form (moved out of
+   the topbar to make room for the contextual Upgrade/Manage plan CTA). */
+.cbl-quick-settings-save {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+.cbl-main-content {
+  padding: 24px;
+  flex: 1;
+  font-size: 14px;
+  background: #f9f8ff;
+}
+
+/* ==========================================================================
+   3. Sidebar Elements (spec section 3)
+   ========================================================================== */
+
+.cbl-sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px 18px;
+  border-bottom: var(--cbl-border);
+  margin-bottom: 12px;
+}
+
+.cbl-logo-icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cbl-logo-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 7px;
+}
+
+.cbl-plugin-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+  line-height: 1.3;
+}
+
+.cbl-plugin-version {
+  font-size: 11px;
+  color: #261750;
+}
+
+/* Connection status badge (sidebar) + Connect-section benefits (settings). */
+.cbl-conn-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  border: 0.5px solid transparent;
+  white-space: nowrap;
+}
+
+.cbl-conn-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cbl-conn-badge-connected {
+  background: var(--cbl-green-bg);
+  color: var(--cbl-green);
+  border-color: var(--cbl-green-border);
+}
+
+.cbl-conn-badge-connected .cbl-conn-badge-dot {
+  background: var(--cbl-green);
+}
+
+.cbl-conn-badge-disconnected {
+  background: var(--cbl-amber-bg);
+  color: var(--cbl-amber);
+  border-color: var(--cbl-amber-border);
+}
+
+.cbl-conn-badge-disconnected:hover {
+  color: var(--cbl-amber);
+  border-color: var(--cbl-amber);
+}
+
+.cbl-conn-badge-disconnected .cbl-conn-badge-dot {
+  background: var(--cbl-amber);
+}
+
+/* Connect "Account" hero card — mirrors the SEO Tip hero + benefit cards. */
+.cbl-connect-hero {
+  position: relative;
+  background: var(--cbl-purple-bg);
+  border-radius: var(--cbl-radius-md);
+  padding: 26px 30px 28px;
+  margin-bottom: 20px;
+}
+
+.cbl-connect-status {
+  position: absolute;
+  top: 22px;
+  right: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+  background: #fff;
+  border: 0.5px solid var(--cbl-purple-border);
+}
+
+.cbl-connect-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cbl-connect-status-off {
+  background: var(--cbl-amber-bg);
+  color: var(--cbl-amber);
+  border-color: var(--cbl-amber-border);
+}
+
+.cbl-connect-status-off .cbl-connect-status-dot {
+  background: var(--cbl-amber);
+}
+
+.cbl-connect-status-on {
+  background: var(--cbl-green-bg);
+  color: var(--cbl-green);
+  border-color: var(--cbl-green-border);
+}
+
+.cbl-connect-status-on .cbl-connect-status-dot {
+  background: var(--cbl-green);
+}
+
+.cbl-connect-hero-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cbl-text-primary);
+  margin: 0 0 6px;
+  padding-right: 130px;
+}
+
+.cbl-connect-hero-sub {
+  font-size: 14px;
+  color: var(--cbl-purple);
+  margin: 0 0 22px;
+}
+
+.cbl-connect-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.cbl-benefit-icon-blue {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.cbl-benefit-soon {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  vertical-align: middle;
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.cbl-connect-cta {
+  text-align: center;
+}
+
+.cbl-connect-cta form {
+  margin: 0;
+}
+
+.cbl-connect-disconnect-form {
+  display: inline;
+  margin-left: 10px;
+}
+
+.cbl-connect-disconnect {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--cbl-text-hint);
+  font-size: 12.5px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cbl-connect-disconnect:hover {
+  color: var(--cbl-red);
+}
+
+@media (max-width: 640px) {
+  .cbl-connect-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cbl-upgrade-link {
+  color: var(--cbl-purple);
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+}
+
+.cbl-upgrade-link:hover {
+  text-decoration: underline;
+  color: var(--cbl-purple-dark);
+}
+
+.cbl-update-link {
+  color: #e25555;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 4px;
+  font-size: 11px;
+}
+
+.cbl-update-link:hover {
+  text-decoration: underline;
+}
+
+.cbl-nav {
+  flex: 1;
+  padding: 0 8px;
+  overflow-y: auto;
+}
+
+.cbl-nav-group {
+  margin-bottom: 2px;
+}
+
+/* Top-level nav item (no group) */
+.cbl-nav-item-top {
+  margin-bottom: 2px;
+}
+
+.cbl-nav-item-top .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Collapsible group toggle */
+.cbl-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+  padding: 7px 10px;
+  border-radius: var(--cbl-radius-md);
+  cursor: pointer;
+  text-transform: none;
+  letter-spacing: normal;
+  transition: background 0.1s;
+}
+
+.cbl-nav-label:hover {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-nav-label .dashicons {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-nav-chevron {
+  margin-left: auto;
+  color: var(--cbl-text-hint);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+
+.cbl-nav-group.open .cbl-nav-chevron {
+  transform: rotate(180deg);
+}
+
+/* Collapsible items container */
+.cbl-nav-items {
+  display: none;
+  padding-left: 24px;
+}
+
+.cbl-nav-group.open .cbl-nav-items {
+  display: block;
+}
+
+.cbl-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--cbl-radius-md);
+  font-size: 14px;
+  color: var(--cbl-text-secondary);
+  text-decoration: none;
+  transition: background 0.1s, color 0.1s;
+}
+
+.cbl-nav-item:hover {
+  background: var(--cbl-bg-primary);
+  color: var(--cbl-text-primary);
+}
+
+.cbl-nav-item:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.cbl-nav-item.active {
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple);
+  font-weight: 500;
+  border: 0.5px solid var(--cbl-purple-border);
+}
+
+.cbl-nav-badge {
+  margin-left: auto;
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.cbl-badge-error {
+  background: #FCEBEB;
+  color: #A32D2D;
+}
+
+.cbl-badge-pro {
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple-text);
+}
+
+.cbl-sidebar-cta {
+  padding: 12px 16px 0;
+  margin-top: 40px;
+}
+
+.cbl-sidebar-cta .cbl-sidebar-cta-btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  box-sizing: border-box;
+  justify-content: center;
+}
+
+.cbl-sidebar-footer {
+  padding: 10px 16px 0;
+}
+
+.cbl-footer-link {
+  font-size: 11px;
+  color: var(--cbl-text-hint);
+  text-decoration: none;
+}
+
+.cbl-footer-link:hover {
+  color: var(--cbl-text-secondary);
+}
+
+/* ==========================================================================
+   4. Cards (spec section 5)
+   ========================================================================== */
+
+.cbl-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.cbl-card-inset {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dddddd;
+}
+
+.cbl-card-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+  margin: 0;
+}
+
+.cbl-card-desc {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin: -3px 0 0;
+}
+
+.cbl-card-header-inline {
+  align-items: center;
+}
+
+.cbl-card-header-inline .cbl-card-title {
+  margin: 0;
+}
+
+.cbl-card-header-inline .cbl-card-desc {
+  margin-top: 0;
+}
+
+.cbl-tip-card {
+  background: var(--cbl-bg-subtle, #f0f0f1);
+}
+
+.cbl-tip-body {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin: 0;
+}
+
+.cbl-tip-card code {
+  background: var(--cbl-bg, #fff);
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+/* ==========================================================================
+   5. Setting Rows (spec section 5)
+   ========================================================================== */
+
+.cbl-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: var(--cbl-border);
+}
+
+.cbl-setting-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.cbl-setting-row:first-child {
+  padding-top: 0;
+}
+
+.cbl-setting-label {
+  font-size: 14px;
+  color: var(--cbl-text-primary);
+  margin: 0;
+  white-space: nowrap;
+}
+
+.cbl-setting-hint {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin: 2px 0 0;
+}
+
+.cbl-setting-row-locked .cbl-setting-label,
+.cbl-setting-row-locked .cbl-setting-hint {
+  color: #514567;
+}
+
+.cbl-lock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--cbl-text-hint);
+}
+
+/* Shown when an integration IS available on the plan but its companion plugin
+   isn't detected yet - a "install to enable" cue, distinct from the padlock
+   which signals a genuinely PRO-gated (upgrade-required) feature. */
+.cbl-integration-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 20px;
+  flex-shrink: 0;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-pro-badge {
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple-text);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+}
+
+.cbl-fields-disabled,
+#cbl-label-settings.cbl-fields-disabled {
+  opacity: 0.45 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  position: relative;
+}
+
+.cbl-fields-disabled::after,
+#cbl-label-settings.cbl-fields-disabled::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  cursor: not-allowed;
+}
+
+/* Opacity is a Sticky-Footer-only setting. When the player position is not
+   Sticky Footer the field is locked, but keep its label and tooltip fully
+   visible and hoverable so users can read why it is locked; dim and disable
+   only the slider control (not the whole field). */
+#cbl-opacity-field.cbl-fields-disabled {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  user-select: auto !important;
+}
+
+#cbl-opacity-field.cbl-fields-disabled::after {
+  content: none !important;
+}
+
+#cbl-opacity-field.cbl-fields-disabled .cbl-opacity-input-row {
+  opacity: 0.45 !important;
+  pointer-events: none !important;
+  user-select: none !important;
+}
+
+/* Sticky footer admin preview */
+.mementor-cbl-sticky-preview-bar {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99999 !important;
+}
+
+.mementor-cbl-sticky-preview-bar .cbl-sticky-preview-label {
+  position: absolute;
+  top: -24px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #fff;
+  background: #312e39;
+  padding: 3px 10px;
+  border-radius: 4px 4px 0 0;
+  border: none;
+}
+
+/* ==========================================================================
+   6. Status Banners (spec section 5)
+   ========================================================================== */
+
+.cbl-status-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--cbl-radius-md);
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.cbl-banner-warning {
+  background: var(--cbl-amber-bg);
+  border: 0.5px solid var(--cbl-amber-border);
+  color: var(--cbl-amber);
+}
+
+.cbl-banner-error {
+  background: var(--cbl-red-bg);
+  border: 0.5px solid var(--cbl-red-border);
+  color: #A32D2D;
+}
+
+.cbl-banner-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+.cbl-banner-text {
+  flex: 1;
+}
+
+.cbl-banner-action {
+  font-weight: 500;
+  color: inherit;
+  text-decoration: underline;
+  white-space: nowrap;
+}
+
+.cbl-banner-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: inherit;
+  cursor: pointer;
+  padding: 0 0 0 8px;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.cbl-banner-close:hover {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   7. Buttons (spec section 5)
+   ========================================================================== */
+
+.cbl-btn {
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--cbl-radius-md);
+  border: 0.5px solid var(--cbl-border-color);
+  background: var(--cbl-bg-primary);
+  color: var(--cbl-text-primary);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.1s;
+}
+
+.cbl-btn:hover {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-btn-primary {
+  background: var(--cbl-purple);
+  color: #fff;
+  border-color: var(--cbl-purple-dark);
+}
+
+.cbl-btn-primary:hover {
+  background: var(--cbl-purple-dark);
+  color: #fff;
+}
+
+.cbl-btn-danger {
+  background: var(--cbl-red-bg);
+  color: var(--cbl-red);
+  border-color: var(--cbl-red-border);
+}
+
+/* Global input styles */
+.cbl-admin-wrap input[type="text"],
+.cbl-admin-wrap input[type="email"],
+.cbl-admin-wrap input[type="password"],
+.cbl-admin-wrap input[type="number"],
+.cbl-admin-wrap input[type="url"],
+.cbl-admin-wrap textarea,
+.cbl-admin-wrap select {
+  background: var(--cbl-bg-secondary);
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-md);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* Re-add the dropdown chevron that the background shorthand above wipes from
+   core's .wp-core-ui select rule. Longhands only: core's select:disabled rule
+   still injects its own background-image, and without an explicit no-repeat +
+   position here the two combine into a tiled arrow pattern. */
+.cbl-admin-wrap select {
+  -webkit-appearance: none;
+  appearance: none;
+  padding-right: 32px;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%231e1e1e%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 8px top 55%;
+  background-size: 16px 16px;
+}
+
+.cbl-admin-wrap select.disabled,
+.cbl-admin-wrap select:disabled {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2220%22%20height%3D%2220%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M5%206l5%205%205-5%202%201-7%207-7-7%202-1z%22%20fill%3D%22%23a0a5aa%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 8px top 55%;
+  background-size: 16px 16px;
+}
+
+.cbl-admin-wrap input[type="text"]:hover,
+.cbl-admin-wrap input[type="email"]:hover,
+.cbl-admin-wrap input[type="password"]:hover,
+.cbl-admin-wrap input[type="number"]:hover,
+.cbl-admin-wrap input[type="url"]:hover,
+.cbl-admin-wrap textarea:hover,
+.cbl-admin-wrap select:hover {
+  border-color: var(--cbl-text-secondary);
+}
+
+.cbl-admin-wrap input[type="text"]:focus,
+.cbl-admin-wrap input[type="email"]:focus,
+.cbl-admin-wrap input[type="password"]:focus,
+.cbl-admin-wrap input[type="number"]:focus,
+.cbl-admin-wrap input[type="url"]:focus,
+.cbl-admin-wrap textarea:focus,
+.cbl-admin-wrap select:focus {
+  border-color: var(--cbl-purple);
+  background: var(--cbl-bg-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--cbl-purple-bg);
+}
+
+/* Toggle checked state - purple tick on white background. Core forms.css
+   paints the checked box with the admin theme color (blue); background: none
+   keeps it white so the purple tick reads. */
+.cbl-admin-wrap input[type="checkbox"]:checked {
+  border-color: var(--cbl-purple);
+  background: none;
+}
+
+.cbl-admin-wrap input[type="checkbox"]:checked::before {
+  content: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M14.83%204.89l1.34.94-5.81%208.38H9.02L5.78%209.67l1.34-1.25%202.57%202.4z%27%20fill%3D%27%237c3aed%27%2F%3E%3C%2Fsvg%3E");
+}
+
+/* Progress bars */
+.cbl-progress-bar {
+  background: var(--cbl-purple);
+}
+
+/* First-run empty state */
+/* First-run hero: purple block that owns the primary scan action. */
+.cbl-scan-hero {
+  background: #eeedfe;
+  border-radius: var(--cbl-radius-md);
+  padding: 36px 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.cbl-scan-hero-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(83, 74, 183, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #534ab7;
+}
+
+.cbl-scan-hero h2 {
+  font-size: 19px;
+  font-weight: 500;
+  color: #26215c;
+  margin: 0 0 6px;
+}
+
+.cbl-scan-hero-sub {
+  font-size: 13px;
+  color: #534ab7;
+  margin: 0 0 18px;
+}
+
+/* #534ab7 per the dashboard spec (the global --cbl-purple is lighter). */
+.cbl-scan-hero-btn {
+  background: #534ab7;
+  border-color: #3c3489;
+}
+
+.cbl-scan-hero-btn:hover {
+  background: #3c3489;
+}
+
+.cbl-scan-hero-hint {
+  font-size: 12px;
+  color: #7f77dd;
+  margin: 14px 0 0;
+}
+
+/* "What a scan checks" strip (first-run only). */
+.cbl-checks-strip {
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.cbl-checks-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.cbl-checks-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--cbl-text-hint);
+  margin: 0;
+}
+
+.cbl-checks-settings-link {
+  font-size: 12px;
+  color: var(--cbl-purple);
+  text-decoration: none;
+}
+
+.cbl-checks-settings-link:hover {
+  text-decoration: underline;
+}
+
+/* Settings: one-line automatic scans row (free version). */
+.cbl-frequency-off {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* Settings: "set number of links" input, inline next to its radio. */
+.cbl-set-links-number {
+  width: 90px;
+  margin-left: 8px;
+}
+
+/* Settings: free-version SEO Toolkit card (replaces four Pro rows). */
+.cbl-seo-toolkit-row th {
+  display: none;
+}
+
+.cbl-seo-toolkit-row td {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.cbl-seo-toolkit {
+  background: #f7f6fe;
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.cbl-seo-toolkit-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.cbl-seo-toolkit-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #26215c;
+  margin: 0;
+}
+
+.cbl-seo-toolkit-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 22px;
+  margin: 0 0 16px;
+  list-style: none;
+  padding: 0;
+}
+
+@media (max-width: 640px) {
+  .cbl-seo-toolkit-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cbl-seo-toolkit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+}
+
+.cbl-seo-toolkit-icon {
+  flex: 0 0 auto;
+  color: #534ab7;
+  margin-top: 1px;
+}
+
+.cbl-seo-toolkit-text {
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-seo-toolkit-desc {
+  display: block;
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-seo-toolkit-cta {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cbl-checks-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.cbl-checks-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-checks-item svg {
+  flex: 0 0 auto;
+  color: #0f6e56;
+}
+
+/* Scan buttons while a scan runs (JS toggles .is-scanning + disabled). */
+.cbl-btn.is-scanning {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  opacity: 0.85;
+  cursor: default;
+}
+
+.cbl-btn.is-scanning::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  animation: cbl-btn-spin 0.7s linear infinite;
+}
+
+@keyframes cbl-btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.cbl-empty-state {
+  text-align: center;
+  padding: 56px 24px;
+}
+
+.cbl-empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: var(--cbl-purple-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-empty-icon .dashicons {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: var(--cbl-purple);
+}
+
+.cbl-empty-state h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin: 0 0 8px;
+}
+
+.cbl-empty-ready {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 24px;
+}
+
+.cbl-btn-lg {
+  padding: 12px 28px;
+  font-size: 14px;
+}
+
+.cbl-empty-hint {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  margin: 16px 0 0;
+}
+
+.cbl-stat-pending {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+/* Scan progress bar (fills live while a scan runs) */
+.cbl-scan-progress-track {
+  width: 100%;
+  max-width: 420px;
+  height: 8px;
+  margin: 12px auto 4px;
+  border-radius: 4px;
+  background: var(--cbl-bg-secondary);
+  border: 1px solid var(--cbl-border-color);
+  overflow: hidden;
+}
+
+.cbl-scan-progress-fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  background: var(--cbl-purple);
+  transition: width 0.6s ease;
+}
+
+.cbl-scan-progress-text {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+/* SEO / AEO Tip page */
+.cbl-seo-tip-cta {
+  text-align: center;
+  padding: 28px 24px 8px;
+  margin-top: 4px;
+}
+
+.cbl-seo-tip-note {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  margin: 14px 0 0;
+}
+
+.cbl-seo-tip-note a {
+  color: var(--cbl-purple);
+}
+
+/* SEO tip hero: purple field holding headline + audio demo */
+.cbl-seo-hero {
+  background: var(--cbl-purple-bg);
+  border-radius: var(--cbl-radius-md);
+  padding: 32px 32px 28px;
+  margin-bottom: 20px;
+  text-align: center;
+  container-type: inline-size;
+}
+
+/* Hero grid: player 2/3, install CTA 1/3. Collapses to one column below
+   700px container width; the 782px media query covers browsers without
+   container-query support at the WP admin breakpoint. */
+.cbl-hero-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+
+@container (max-width: 700px) {
+  .cbl-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 782px) {
+  .cbl-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cbl-hero-cta-card {
+  background: var(--cbl-bg-primary);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* #534ab7 matches the player controls, not the global --cbl-purple. */
+.cbl-hero-cta-btn {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  background: #534ab7;
+  border-color: #3c3489;
+  color: #fff;
+  font-weight: 500;
+}
+
+.cbl-hero-cta-btn:hover {
+  background: #3c3489;
+  color: #fff;
+}
+
+.cbl-hero-cta-note {
+  font-size: 11px;
+  color: var(--cbl-text-hint);
+  text-align: center;
+}
+
+.cbl-hero-cta-stars {
+  color: #ef9f27;
+}
+
+.cbl-seo-hero h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--cbl-text-primary);
+  margin: 0 0 6px;
+}
+
+.cbl-seo-hero-sub {
+  font-size: 14px;
+  color: var(--cbl-purple);
+  margin: 0 0 20px;
+}
+
+.cbl-audio-player {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--cbl-bg-primary);
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: left;
+}
+
+.cbl-audio-play {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: #534ab7;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-audio-play:hover {
+  background: #3c3489;
+}
+
+.cbl-audio-avatar {
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px var(--cbl-purple-bg);
+}
+
+.cbl-audio-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cbl-audio-title {
+  font-size: 13px;
+  color: #26215c;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cbl-audio-title-main {
+  font-weight: 500;
+}
+
+.cbl-audio-title-sub {
+  font-weight: 400;
+}
+
+.cbl-audio-title a {
+  color: #534ab7;
+  text-decoration: none;
+}
+
+.cbl-audio-title a:hover {
+  text-decoration: underline;
+}
+
+/* Two stacked waveform layers: gray base, clipped purple overlay on top. */
+.cbl-audio-wave {
+  position: relative;
+  height: 28px;
+  overflow: hidden;
+}
+
+/* Fixed-width bars, flexible gaps: space-between spreads the fixed bar
+   count across the container, the 3px gap is the floor. */
+.cbl-audio-wave-layer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3px;
+  height: 100%;
+}
+
+.cbl-audio-wave-base .cbl-audio-bar {
+  background: #d9d6f6;
+}
+
+.cbl-audio-wave-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  overflow: hidden;
+  transition: width 0.2s linear;
+}
+
+.cbl-audio-wave-played .cbl-audio-bar {
+  background: #534ab7;
+}
+
+.cbl-audio-bar {
+  flex: 0 0 5px;
+  min-width: 5px;
+  max-width: 5px;
+  border-radius: 3px;
+}
+
+.cbl-audio-time {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: #534ab7;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* Benefit cards: tinted icon left, heading + copy to its right */
+.cbl-benefit-card {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  column-gap: 14px;
+  align-items: start;
+}
+
+.cbl-benefit-card .cbl-pro-feature-desc {
+  grid-column: 2;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+
+.cbl-benefit-heading {
+  grid-column: 2;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin: 0 0 4px;
+}
+
+.cbl-benefit-icon {
+  grid-row: 1 / span 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-benefit-icon-green {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.cbl-benefit-icon-orange {
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+.cbl-benefit-icon-purple {
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple);
+}
+
+/* "How it looks on your posts" preview */
+.cbl-post-preview {
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.cbl-post-preview-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+  margin: 0 0 12px;
+}
+
+.cbl-post-preview-inner {
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  padding: 20px;
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-post-preview-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--cbl-text-primary);
+  margin: 0 0 2px;
+}
+
+.cbl-post-preview-meta {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  margin: 0 0 14px;
+}
+
+.cbl-post-preview-player {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin-bottom: 18px;
+}
+
+.cbl-post-preview-play {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--cbl-purple);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-post-preview-duration {
+  color: var(--cbl-text-hint);
+  font-weight: 400;
+}
+
+.cbl-post-preview-line {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--cbl-border-color);
+  margin-bottom: 8px;
+  opacity: 0.6;
+}
+
+/* Social proof strip */
+.cbl-proof-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 28px;
+  padding: 18px 20px 4px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-stars {
+  color: #f59e0b;
+  letter-spacing: 2px;
+  margin-right: 6px;
+}
+
+/* Universal modal */
+.cbl-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100100;
+  background: rgba(15, 12, 41, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.cbl-modal {
+  background: var(--cbl-bg-primary);
+  border-radius: var(--cbl-radius-md);
+  box-shadow: 0 20px 50px rgba(15, 12, 41, 0.3);
+  width: 100%;
+  max-width: 440px;
+  padding: 24px;
+}
+
+.cbl-modal-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin: 0 0 8px;
+}
+
+.cbl-modal-message {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 16px;
+}
+
+.cbl-modal .cbl-modal-input {
+  width: 100%;
+  margin-bottom: 16px;
+  background: var(--cbl-bg-secondary);
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-sm);
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-modal .cbl-modal-input:focus {
+  border-color: var(--cbl-purple);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--cbl-purple-bg);
+}
+
+.cbl-modal-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 16px;
+}
+
+.cbl-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cbl-modal-confirm.cbl-btn-danger {
+  background: var(--cbl-red);
+  color: #fff;
+  border-color: var(--cbl-red);
+}
+
+/* Fix with AI suggestions modal */
+.cbl-modal-ai {
+  max-width: 560px;
+}
+
+.cbl-ai-fix-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 16px;
+}
+
+.cbl-ai-fix-option {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  column-gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-sm);
+  cursor: pointer;
+}
+
+.cbl-ai-fix-option:has(input:checked) {
+  border-color: var(--cbl-purple);
+  background: var(--cbl-purple-bg);
+}
+
+.cbl-ai-fix-url {
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+  word-break: break-all;
+}
+
+.cbl-ai-fix-conf {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+
+.cbl-ai-conf-high {
+  background: var(--cbl-green-bg);
+  color: var(--cbl-green);
+}
+
+.cbl-ai-conf-medium {
+  background: var(--cbl-amber-bg);
+  color: var(--cbl-amber);
+}
+
+.cbl-ai-conf-low {
+  background: var(--cbl-bg-secondary);
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-ai-fix-reason {
+  grid-column: 2 / 4;
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-ai-fix-wayback {
+  font-size: 12px;
+}
+
+.cbl-ai-fix-quota {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 16px;
+}
+
+/* Bulk Fix with AI */
+.cbl-ai-batch-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.cbl-ai-batch-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cbl-ai-batch-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-ai-batch-sub {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-ai-review-card {
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+.cbl-ai-review-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.cbl-ai-review-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-ai-review-head-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.cbl-ai-review-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cbl-ai-review-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  column-gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-sm);
+}
+
+.cbl-ai-row-urls {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cbl-ai-row-old {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+  text-decoration: line-through;
+  word-break: break-all;
+}
+
+.cbl-ai-row-new {
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+  word-break: break-all;
+}
+
+.cbl-ai-row-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cbl-ai-row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.cbl-ai-row-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.cbl-ai-row-applied,
+.cbl-ai-row-skipped {
+  opacity: 0.55;
+}
+
+.cbl-ai-row-failed {
+  border-color: var(--cbl-red, #b91c1c);
+}
+
+.cbl-ai-row-state {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-ai-batch-progress,
+.cbl-ai-batch-quota-note,
+.cbl-ai-batch-manual-note,
+.cbl-ai-batch-done {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+  margin: 10px 0 0;
+}
+
+.cbl-btn-small {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* Upgrade page pricing plans */
+/* Plan grid: Business (center) is slightly wider and visually dominant. */
+.cbl-plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+  margin-bottom: 24px;
+}
+
+/* Step down 3 -> 2 -> 1 instead of collapsing straight to one column.
+   In the 2-column tier Business spans the full width on top, so the three
+   cards never leave an awkward orphan. The media queries mirror the
+   container queries for browsers without container-query support. */
+@container (max-width: 760px) {
+  .cbl-upgrade-page .cbl-plan-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cbl-upgrade-page .cbl-plan-featured {
+    order: -1;
+    grid-column: 1 / -1;
+  }
+}
+
+@container (max-width: 480px) {
+  .cbl-upgrade-page .cbl-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cbl-upgrade-page .cbl-plan-featured {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .cbl-plan-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cbl-plan-featured {
+    order: -1;
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .cbl-plan-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cbl-plan-featured {
+    grid-column: auto;
+  }
+}
+
+.cbl-plan-card {
+  position: relative;
+  text-align: center;
+  border-radius: 12px;
+  padding: 28px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cbl-plan-featured {
+  border: 2px solid #534ab7;
+  box-shadow: 0 6px 20px rgba(83, 74, 183, 0.16);
+}
+
+.cbl-plan-flag {
+  position: absolute;
+  top: -11px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #534ab7;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 12px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.cbl-plan-name {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 6px;
+}
+
+.cbl-plan-featured .cbl-plan-name {
+  color: #534ab7;
+}
+
+.cbl-plan-price {
+  font-size: 30px;
+  font-weight: 600;
+  color: #26215c;
+  margin: 0 0 4px;
+}
+
+.cbl-plan-featured .cbl-plan-price {
+  font-size: 34px;
+}
+
+.cbl-plan-period {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-plan-sites {
+  font-size: 13px;
+  color: #534ab7;
+  font-weight: 500;
+  margin: 0 0 14px;
+}
+
+.cbl-plan-tagline {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin: -2px 0 10px;
+}
+
+.cbl-plan-extra {
+  font-size: 11.5px;
+  color: #0f6e56;
+  margin: -8px 0 14px;
+}
+
+/* Plan buttons: outlined on side cards, filled on Business. */
+.cbl-plan-cta-outline {
+  border: 1.5px solid #534ab7;
+  background: transparent;
+  color: #534ab7;
+}
+
+.cbl-plan-cta-outline:hover {
+  background: #eeedfe;
+  color: #534ab7;
+}
+
+.cbl-plan-cta-featured {
+  background: #534ab7;
+  border-color: #3c3489;
+  color: #fff;
+}
+
+.cbl-plan-cta-featured:hover {
+  background: #3c3489;
+  color: #fff;
+}
+
+/* Small print under the plan grid. */
+.cbl-plan-smallprint {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--cbl-text-hint);
+  line-height: 1.6;
+  margin: 14px 0 24px;
+}
+
+.cbl-plan-smallprint a {
+  color: #534ab7;
+  text-decoration: none;
+}
+
+.cbl-plan-smallprint a:hover {
+  text-decoration: underline;
+}
+
+/* Social proof line above the plan grid; hidden unless a count is set. */
+.cbl-social-proof {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 12px;
+}
+
+/* "New" badge on a feature card title. */
+.cbl-new-badge {
+  margin-left: auto;
+  background: #534ab7;
+  color: #fff;
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+/* Upgrade feature cards: icon square + title header, one-sentence body. */
+.cbl-feature-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.cbl-feature-icon {
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-feature-icon-purple {
+  background: #eeedfe;
+  color: #534ab7;
+}
+
+.cbl-feature-icon-red {
+  background: #faece7;
+  color: #993c1d;
+}
+
+.cbl-feature-icon-green {
+  background: #e1f5ee;
+  color: #0f6e56;
+}
+
+.cbl-feature-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+  margin: 0;
+}
+
+.cbl-feature-sentence {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--cbl-text-secondary);
+  margin: 0;
+}
+
+/* Feature cards stack below 700px container width (782px media fallback). */
+@container (max-width: 700px) {
+  .cbl-upgrade-page .cbl-pro-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Support strip: replaces the Support & License card. */
+.cbl-support-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 28px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+}
+
+.cbl-support-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-support-item svg {
+  flex: 0 0 auto;
+  color: #534ab7;
+}
+
+.cbl-upgrade-faq-heading {
+  font-size: 16px;
+  margin: 0 0 12px;
+}
+
+.cbl-plan-features {
+  list-style: none;
+  margin: 6px 0 18px;
+  padding: 0;
+  font-size: 12.5px;
+  color: #2271b1;
+  font-weight: 600;
+  text-align: center;
+}
+
+.cbl-plan-features li {
+  margin: 2px 0;
+}
+
+.cbl-plan-cta {
+  margin-top: auto;
+  min-width: 160px;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Export row + locked Pro buttons */
+.wpcbl_export_csv_form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cbl-export-label {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin-right: 4px;
+}
+
+.cbl-btn-locked {
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+/* PRO chip inside row actions */
+.cbl-pro-chip {
+  display: inline-block;
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 1px 5px;
+  border-radius: 999px;
+  vertical-align: 1px;
+}
+
+/* Result status badges */
+.cbl-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.cbl-badge-broken {
+  background: var(--cbl-red-bg);
+  color: var(--cbl-red);
+  border: 1px solid var(--cbl-red-border);
+}
+
+.cbl-badge-warning {
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.cbl-badge-redirect {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #bfdbfe;
+}
+
+.cbl-badge-source {
+  background: var(--cbl-bg-secondary);
+  color: var(--cbl-text-secondary);
+  border: 1px solid var(--cbl-border-color);
+}
+
+/* Filters submit on change; the button stays for no-JS fallback only. */
+.cbl-admin-wrap #filter_action {
+  display: none;
+}
+
+/* Results table: compact rows */
+.cbl-admin-wrap .wp-list-table .column-element {
+  width: 40px;
+}
+
+/* Every column centers except the Broken URL column. */
+.cbl-admin-wrap .wp-list-table thead th:not(.column-link),
+.cbl-admin-wrap .wp-list-table tbody td:not(.column-link) {
+  text-align: center;
+}
+
+.cbl-element-icon {
+  display: inline-flex;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-url-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-all;
+}
+
+/* Settings: 3-column field grid (frequency / time / timezone) */
+.cbl-field-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 200px));
+  gap: 16px;
+  align-items: start;
+}
+
+.cbl-field-grid-3 label {
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+/* Settings: checkbox groups (content types, link types) */
+.wpcbl-checkbox-group label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 18px 8px 0;
+}
+
+/* Settings: Pro-gated toggles */
+.wpcbl-pro-toggle {
+  margin: 0 0 8px;
+}
+
+/* TTSWP cross-promotion banner */
+.cbl-ttswp-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 16px;
+  background: var(--cbl-purple-bg);
+  border-bottom: 1px solid var(--cbl-border-color);
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-ttswp-banner-text {
+  flex: 1;
+  margin: 0;
+}
+
+.cbl-ttswp-banner .cbl-btn {
+  white-space: nowrap;
+}
+
+.cbl-ttswp-banner-dismiss {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--cbl-text-secondary);
+  font-size: 16px;
+  line-height: 1;
+}
+
+.cbl-ttswp-banner-dismiss:hover {
+  color: var(--cbl-text-primary);
+}
+
+/* ==========================================================================
+   8. Pills (spec section 5)
+   ========================================================================== */
+
+.cbl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.cbl-pill::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.cbl-pill-success { background: var(--cbl-green-bg); color: #0F6E56; }
+.cbl-pill-error   { background: var(--cbl-red-bg);   color: #A32D2D; }
+.cbl-pill-neutral { background: var(--cbl-bg-secondary); color: var(--cbl-text-secondary); }
+
+/* ==========================================================================
+   9. Metrics (spec section 5)
+   ========================================================================== */
+
+.cbl-metric {
+  background: var(--cbl-bg-secondary);
+  border-radius: var(--cbl-radius-md);
+  padding: 10px 12px;
+}
+
+.cbl-metric-value {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+  line-height: 1.2;
+}
+
+.cbl-metric-label {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   10. Grids (spec section 5)
+   ========================================================================== */
+
+.cbl-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.cbl-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.cbl-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+/* ==========================================================================
+   11. Inner Tabs (spec section 11)
+   ========================================================================== */
+
+.cbl-inner-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: var(--cbl-border);
+  padding-bottom: 0;
+}
+
+.cbl-inner-tab {
+  font-size: 14px;
+  padding: 8px 14px;
+  color: var(--cbl-text-secondary);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -0.5px;
+}
+
+.cbl-inner-tab.active {
+  color: var(--cbl-purple);
+  font-weight: 500;
+  border-bottom-color: var(--cbl-purple);
+}
+
+/* ==========================================================================
+   12. Tips Panel (spec section 16)
+   ========================================================================== */
+
+.cbl-tips-panel {
+  background: var(--cbl-bg-secondary);
+  border-radius: var(--cbl-radius-lg);
+  padding: 16px;
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  line-height: 1.7;
+  align-self: flex-start;
+  position: sticky;
+  top: 20px;
+}
+
+/* ==========================================================================
+   15. Toast Notifications
+   ========================================================================== */
+
+
+
+/* ==========================================================================
+   16. Legacy Overrides
+   ========================================================================== */
+
+/* Hide top-level WP admin notices inside our layout (we render our own
+   banners) - but NOT notices nested in content, e.g. the scan JS injects
+   a .notice inside the links-table container. */
+.cbl-main-content > .notice,
+.cbl-main-content > .updated,
+.cbl-main-content > .error,
+.cbl-admin-wrap > .notice,
+.cbl-admin-wrap > .updated {
+  display: none !important;
+}
+
+/* ==========================================================================
+   17. CBL-specific components
+   ========================================================================== */
+
+/* --- Utility carried over from the legacy stylesheet (scan JS toggles it) */
+.wpcbl_none {
+  display: none;
+}
+
+/* --- Stat cards (Scan Results header row) --- */
+.cbl-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cbl-stat-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.cbl-stat-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cbl-stat-icon {
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cbl-stat-icon-green {
+  background: #e1f5ee;
+  color: #0f6e56;
+}
+
+.cbl-stat-icon-red {
+  background: #faece7;
+  color: #993c1d;
+}
+
+.cbl-stat-icon-purple {
+  background: #eeedfe;
+  color: #534ab7;
+}
+
+.cbl-stat-icon-amber {
+  background: #fdf3e1;
+  color: #b45309;
+}
+
+.cbl-stat-text {
+  min-width: 0;
+}
+
+.cbl-stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--cbl-text-hint);
+  margin: 0 0 6px;
+}
+
+.cbl-stat-value {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  line-height: 1.2;
+}
+
+.cbl-stat-value.is-ok {
+  color: #0f6e56;
+}
+
+.cbl-stat-value.is-broken {
+  color: #b91c1c;
+}
+
+.cbl-stat-sub {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin-top: 4px;
+}
+
+@media screen and (max-width: 1024px) {
+  .cbl-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* --- Success banner (settings saved) --- */
+.cbl-banner-success {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background: var(--cbl-green-bg);
+  border: 1px solid var(--cbl-green-border);
+  border-radius: var(--cbl-radius-md);
+  color: var(--cbl-green);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* --- PRO badge on gated settings fields --- */
+.cbl-pro-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  margin-left: 8px;
+  background: var(--cbl-purple-bg);
+  border: 1px solid var(--cbl-purple-border);
+  border-radius: 999px;
+  color: var(--cbl-purple-text);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  vertical-align: middle;
+}
+
+/* --- Settings API output restyle (scoped, registration untouched) --- */
+/* Each section now renders inside its own .cbl-settings-card (see below),
+   so the h2 no longer needs the old stacked-section spacing (top border,
+   large top margin). Kept as a fallback for any h2 outside a card. */
+.cbl-admin-wrap .cbl-settings-form h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin: 0 0 12px;
+}
+
+/* Settings: each section (General/Scan/Notifications/Pro) is its own card. */
+.cbl-settings-card > h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+/* A card whose fields are inert until the account is Pro (e.g. Notifications
+   before Pro is active): the body is dimmed and non-interactive, the title
+   stays legible. */
+.cbl-settings-card-locked .form-table {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cbl-settings-card-locked .cbl-settings-card-lock-note {
+  display: inline-block;
+  margin: 0 0 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cbl-amber);
+}
+
+/* Sticky save bar: hidden until a field changes, then slides up. Replaces the
+   old pair of Save buttons. */
+.cbl-save-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  padding: 12px 24px;
+  background: #fff;
+  border-top: 1px solid var(--cbl-border-color);
+  box-shadow: 0 -2px 14px rgba(0, 0, 0, 0.07);
+  transform: translateY(130%);
+  transition: transform 0.22s ease;
+}
+
+.cbl-save-bar.is-visible {
+  transform: translateY(0);
+}
+
+.cbl-save-bar-text {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table th {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  padding: 14px 10px 14px 0;
+  width: 220px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table td {
+  padding: 12px 10px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="text"],
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="email"],
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="number"],
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="time"],
+.cbl-admin-wrap .cbl-settings-form .form-table select,
+.cbl-admin-wrap .cbl-settings-form .form-table textarea {
+  border: 1px solid var(--cbl-border-color);
+  border-radius: var(--cbl-radius-sm);
+  font-size: 13px;
+  padding: 6px 10px;
+  max-width: 420px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table select {
+  padding-right: 32px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table textarea {
+  width: 420px;
+  min-height: 110px;
+}
+
+.cbl-admin-wrap .cbl-settings-form #email_addresses {
+  width: 420px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .description {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  margin-top: 6px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .description a {
+  color: var(--cbl-purple);
+}
+
+.cbl-admin-wrap .cbl-settings-form .submit {
+  padding: 0;
+  margin: 20px 0 0;
+}
+
+/* --- WP_List_Table restyle (class untouched, CSS only) --- */
+.cbl-admin-wrap .wp-list-table {
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  border-spacing: 0;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.cbl-admin-wrap .wp-list-table thead th,
+.cbl-admin-wrap .wp-list-table thead td {
+  background: var(--cbl-bg-secondary);
+  border-bottom: var(--cbl-border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 10px 12px;
+}
+
+.cbl-admin-wrap .wp-list-table tbody td {
+  border-bottom: var(--cbl-border);
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.cbl-admin-wrap .wp-list-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cbl-admin-wrap .wp-list-table tbody tr:hover td {
+  background: var(--cbl-bg-secondary);
+}
+
+/* Column widths carried over from the legacy stylesheet */
+.cbl-admin-wrap .wp-list-table .column-type { width: 13%; }
+.cbl-admin-wrap .wp-list-table .column-code { width: 13%; }
+.cbl-admin-wrap .wp-list-table .column-source { width: 13%; }
+.cbl-admin-wrap .wp-list-table .column-post_type { width: 10%; }
+.cbl-admin-wrap .wp-list-table .column-detected_at { width: 12%; }
+
+/* Status pill in the results table (markup from the list-table class) */
+.cbl-admin-wrap .wp-list-table .status-type {
+  display: inline-block;
+  color: #fff;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+}
+
+.cbl-admin-wrap .wp-list-table .status-type.not-fixed {
+  background: var(--cbl-red);
+}
+
+.cbl-admin-wrap .wp-list-table .message {
+  display: block;
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  padding: 4px 0 0;
+}
+
+/* Pagination + tablenav */
+.cbl-admin-wrap .tablenav {
+  height: auto;
+  margin: 12px 0;
+}
+
+.cbl-admin-wrap .tablenav .tablenav-pages .pagination-links a,
+.cbl-admin-wrap .tablenav .tablenav-pages .pagination-links span.current {
+  border-radius: var(--cbl-radius-sm);
+  border: var(--cbl-border);
+  background: var(--cbl-bg-primary);
+  font-size: 12px;
+}
+
+.cbl-admin-wrap .tablenav .tablenav-pages .pagination-links span.current {
+  background: var(--cbl-purple);
+  border-color: var(--cbl-purple);
+  color: #fff;
+}
+
+/* --- Scan loader banner (ids/classes are the scan JS contract) --- */
+.cbl-admin-wrap .wpcbl-is-scanning .wpcbl_success_div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  margin: 0 0 16px;
+  background: var(--cbl-blue-bg);
+  border: 1px solid var(--cbl-blue);
+  border-radius: var(--cbl-radius-md);
+  color: var(--cbl-blue);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.cbl-admin-wrap .wpcbl-is-scanning img {
+  width: 22px;
+  height: 22px;
+}
+
+/* --- Empty state (no broken links) --- */
+.cbl-admin-wrap .wpcbl_no_broken_links_container {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.cbl-admin-wrap .wpcbl_no_broken_links {
+  padding: 32px 40px;
+  text-align: center;
+  background: var(--cbl-green-bg);
+  border: 1px solid var(--cbl-green-border);
+  border-radius: var(--cbl-radius-lg);
+  color: var(--cbl-green);
+  max-width: 560px;
+}
+
+.cbl-admin-wrap .wpcbl_no_broken_links h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cbl-green);
+  margin: 0 0 8px;
+}
+
+.cbl-admin-wrap .wpcbl_no_broken_links p {
+  font-size: 13px;
+  margin: 0;
+}
+
+.cbl-admin-wrap .wpcbl_no_broken_links .total-links {
+  font-weight: 700;
+}
+
+/* --- Export CSV row --- */
+.cbl-admin-wrap .wpcbl_export_csv_wrap {
+  margin-top: 16px;
+}
+
+.cbl-admin-wrap .wpcbl_export_csv_wrap #wpcbl_export_csv_form {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --- Help / FAQ (native <details>) --- */
+.cbl-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cbl-faq-item {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  overflow: hidden;
+}
+
+.cbl-faq-item summary {
+  padding: 14px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  padding-right: 40px;
+}
+
+.cbl-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.cbl-faq-item summary::after {
+  content: "+";
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-faq-item[open] summary::after {
+  content: "\2212"; /* minus sign */
+}
+
+.cbl-faq-item .cbl-faq-answer {
+  padding: 0 18px 14px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  line-height: 1.6;
+}
+
+/* --- Upgrade page --- */
+/* Purple hero, same block as the Dashboard/Tip pages. The page div is a
+   size container for the plan/feature grid breakpoints below. */
+.cbl-upgrade-page {
+  container-type: inline-size;
+}
+
+.cbl-upgrade-hero {
+  text-align: center;
+  background: #eeedfe;
+  border-radius: 10px;
+  padding: 28px 24px;
+  margin: 0 0 20px;
+}
+
+.cbl-upgrade-hero h2 {
+  font-size: 20px;
+  font-weight: 500;
+  color: #26215c;
+  margin: 0 0 8px;
+}
+
+.cbl-upgrade-hero p {
+  font-size: 13px;
+  color: #534ab7;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.cbl-upgrade-price {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cbl-purple);
+  margin-bottom: 18px;
+}
+
+.cbl-pro-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media screen and (max-width: 1024px) {
+  .cbl-pro-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cbl-pro-feature-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  margin: 0 0 6px;
+}
+
+.cbl-pro-feature-heading svg {
+  color: var(--cbl-purple);
+  flex-shrink: 0;
+}
+
+.cbl-pro-feature-desc {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  margin: 0 0 12px;
+}
+
+.cbl-feature-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cbl-feature-list li {
+  position: relative;
+  padding: 4px 0 4px 22px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-feature-list li::before {
+  content: "\2713";
+  position: absolute;
+  left: 0;
+  color: var(--cbl-green);
+  font-weight: 700;
+}
+
+/* --- Footer text (layout-close) --- */
+.cbl-footer-text {
+  margin-top: 28px;
+  padding-top: 14px;
+  border-top: var(--cbl-border);
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  text-align: center;
+}
+
+.cbl-footer-text a {
+  color: var(--cbl-purple);
+  text-decoration: none;
+}
+
+.cbl-footer-heart {
+  color: var(--cbl-red);
+}
+
+/* "Already purchased?" connect path under the plan cards — subscribers must
+   never loop back through checkout to activate a plan they already own. */
+.cbl-plan-already {
+  text-align: center;
+  font-size: 13px;
+  color: var(--cbl-text-hint);
+  margin: -8px 0 28px;
+}
+
+.cbl-plan-already form {
+  display: inline;
+}
+
+.cbl-link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #534ab7;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.cbl-link-button:hover {
+  text-decoration: none;
+}
+
+/* Pro Tools preview page: dimmed sample data behind COMING SOON badges. */
+.cbl-pro-tools-page { display: flex; flex-direction: column; gap: 20px; }
+
+.cbl-pt-intro { display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+.cbl-pt-intro-text h2 { margin: 0 0 4px; }
+.cbl-pt-intro-text p { margin: 0; color: var(--cbl-text-hint); }
+.cbl-pt-included { font-weight: 600; font-size: 13.5px; color: #15803d; background: #dcfce7; padding: 8px 16px; border-radius: 999px; }
+
+.cbl-pt-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.cbl-pt-title { margin: 0 0 3px; }
+.cbl-pt-tagline { margin: 0; color: var(--cbl-text-hint); font-size: 13px; }
+.cbl-pt-soon-badge { flex-shrink: 0; background: #ede9fe; color: #6d28d9; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; padding: 4px 12px; border-radius: 999px; }
+
+.cbl-pt-demo { position: relative; margin-top: 14px; opacity: .55; pointer-events: none; user-select: none; }
+.cbl-pt-demo-label { position: absolute; top: 8px; right: 10px; background: #f1f5f9; color: #94a3b8; font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+
+.cbl-pt-table { width: 100%; border-collapse: collapse; }
+.cbl-pt-table th { text-align: left; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #94a3b8; padding: 8px 12px; border-bottom: 1px solid #eef2f7; }
+.cbl-pt-table td { font-size: 13px; padding: 9px 12px; border-bottom: 1px solid #f1f5f9; }
+.cbl-pt-table tr:last-child td { border-bottom: none; }
+
+.cbl-pt-feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.cbl-pt-feature { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 3px; }
+.cbl-pt-feature-name { font-weight: 700; font-size: 13.5px; }
+.cbl-pt-feature-desc { font-size: 12.5px; color: var(--cbl-text-hint); }
+
+.cbl-pt-footer-cta { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-weight: 600; }
+
+/* ==========================================================================
+   3.0.4 Settings redesign: slim connect bar, two-column setting rows,
+   toggle switches, content-type chips, autosave hint.
+   ========================================================================== */
+
+/* --- Connected state: the lavender hero collapses to a slim dark bar. --- */
+.cbl-connect-slim {
+  margin-bottom: 20px;
+}
+
+.cbl-connect-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: linear-gradient(100deg, #2c1a6b 0%, #45289c 100%);
+  border-radius: var(--cbl-radius-lg);
+  padding: 18px 24px;
+  color: #fff;
+}
+
+.cbl-connect-bar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.cbl-connect-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  flex-wrap: wrap;
+}
+
+.cbl-connect-bar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgba(29, 158, 117, 0.28);
+  border: 1px solid rgba(159, 225, 203, 0.45);
+  color: #b6f0dc;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.cbl-connect-bar-status .cbl-connect-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+
+.cbl-connect-bar-meta {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.cbl-connect-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cbl-connect-bar-actions form {
+  margin: 0;
+}
+
+.cbl-connect-bar-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 18px;
+  border-radius: var(--cbl-radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.cbl-connect-bar-btn-solid {
+  background: #fff;
+  border: 1px solid #fff;
+  color: #33207a;
+}
+
+.cbl-connect-bar-btn-solid:hover,
+.cbl-connect-bar-btn-solid:focus {
+  background: #efeafd;
+  color: #33207a;
+}
+
+.cbl-connect-bar-btn-ghost {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+}
+
+.cbl-connect-bar-btn-ghost:hover,
+.cbl-connect-bar-btn-ghost:focus {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+}
+
+.cbl-connect-bar-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cbl-connect-bar-link:hover,
+.cbl-connect-bar-link:focus {
+  color: #fff;
+}
+
+/* --- Settings cards: roomier, title row with the autosave hint. --- */
+.cbl-settings-card {
+  position: relative;
+  padding: 24px;
+}
+
+.cbl-autosave-hint {
+  position: absolute;
+  top: 26px;
+  right: 24px;
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-autosave-hint.is-saved {
+  color: var(--cbl-green);
+}
+
+/* --- Rows: label + description left, control right, hairline between. --- */
+.cbl-admin-wrap .cbl-settings-form .form-table th {
+  font-size: 14px;
+  vertical-align: top;
+  padding: 18px 24px 18px 0;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table td {
+  padding: 16px 10px;
+  vertical-align: top;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table tr + tr th,
+.cbl-admin-wrap .cbl-settings-form .form-table tr + tr td {
+  border-top: 1px solid var(--cbl-bg-tertiary);
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table th .description {
+  font-weight: 400;
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+/* --- Checkboxes render as switches (except the content-type chips). --- */
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"]) {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 22px;
+  margin: 0 10px 0 0;
+  border: none;
+  border-radius: 999px;
+  background: #d9d7e3;
+  position: relative;
+  flex-shrink: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  box-shadow: none;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"])::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s ease;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"]):checked {
+  background: var(--cbl-purple);
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"]):checked::before {
+  content: "";
+  transform: translateX(18px);
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"]):disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:focus-visible {
+  outline: 2px solid var(--cbl-purple-border);
+  outline-offset: 2px;
+}
+
+/* Switch labels line up with their text. */
+.cbl-admin-wrap .cbl-settings-form .wpcbl-checkbox-group,
+.cbl-admin-wrap .cbl-settings-form .wpcbl-pro-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+}
+
+.cbl-admin-wrap .cbl-settings-form .wpcbl-checkbox-group label,
+.cbl-admin-wrap .cbl-settings-form .wpcbl-pro-toggle label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+}
+
+/* --- Content types: pill chips instead of bare checkboxes. --- */
+.cbl-admin-wrap .cbl-settings-form .wpcbl-checkbox-group:has(input[id^="wpcbl-scan-type-"]) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[id^="wpcbl-scan-type-"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.cbl-admin-wrap .cbl-settings-form .wpcbl-checkbox-group label:has(> input[id^="wpcbl-scan-type-"]) {
+  padding: 7px 16px;
+  border: 1px solid var(--cbl-border-color);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--cbl-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
+}
+
+.cbl-admin-wrap .cbl-settings-form .wpcbl-checkbox-group label:has(> input[id^="wpcbl-scan-type-"]:checked) {
+  border-color: var(--cbl-purple-border);
+  color: var(--cbl-purple);
+  background: #fff;
+}
+
+.cbl-admin-wrap .cbl-settings-form .wpcbl-checkbox-group label:has(> input[id^="wpcbl-scan-type-"]:focus-visible) {
+  outline: 2px solid var(--cbl-purple-border);
+  outline-offset: 2px;
+}
+
+/* --- 3.0.4 revision: toggle hardening, uniform control heights, segment. --- */
+
+/* Neutralize every wp-admin forms.css checkbox style that leaked into the
+   switch knob (dashicon content, negative margins, float, sizing). */
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"]) {
+  min-width: 40px;
+  line-height: 0;
+  overflow: hidden;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"])::before,
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="checkbox"]:not([id^="wpcbl-scan-type-"]):checked::before {
+  content: "";
+  margin: 0;
+  float: none;
+  display: block;
+  background-image: none;
+  width: 18px;
+  height: 18px;
+  speak: never;
+}
+
+/* One control height everywhere, per the design (40px, soft radius). */
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="text"],
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="email"],
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="number"],
+.cbl-admin-wrap .cbl-settings-form .form-table input[type="time"],
+.cbl-admin-wrap .cbl-settings-form .form-table select {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: var(--cbl-radius-md);
+  font-size: 13px;
+  line-height: 38px;
+  box-sizing: border-box;
+  vertical-align: middle;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table select {
+  padding-right: 32px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table input.small-text {
+  width: 96px;
+}
+
+/* Scan frequency: three equal-height controls on one row, no mini labels. */
+.cbl-admin-wrap .cbl-settings-form .cbl-field-grid-3 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.cbl-admin-wrap .cbl-settings-form .cbl-field-grid-3 > div {
+  display: flex;
+  align-items: center;
+}
+
+/* Number of links: segmented All / Set number control. */
+.cbl-segment-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cbl-segment {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  gap: 2px;
+  background: var(--cbl-bg-tertiary);
+  border-radius: 10px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table .cbl-segment input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+}
+
+.cbl-segment label {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cbl-segment input[type="radio"]:checked + label {
+  background: #fff;
+  color: var(--cbl-text-primary);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+}
+
+.cbl-segment input[type="radio"]:focus-visible + label {
+  outline: 2px solid var(--cbl-purple-border);
+  outline-offset: 2px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table .cbl-set-links-number {
+  width: 110px;
+}
+
+/* Two stacked toggles in one row (comments + custom fields) get breathing room. */
+.cbl-admin-wrap .cbl-settings-form .wpcbl-pro-toggle + .wpcbl-pro-toggle {
+  margin-top: 14px;
+}
+
+.cbl-admin-wrap .cbl-settings-form .form-table textarea::placeholder {
+  color: var(--cbl-text-hint);
+}
+
+/* --- Fix all with AI: progress bar while the batch analyzes. --- */
+.cbl-ai-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px 20px;
+}
+
+.cbl-ai-progress-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+}
+
+.cbl-ai-progress-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-ai-progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cbl-purple);
+}
+
+.cbl-ai-progress-count {
+  color: var(--cbl-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.cbl-ai-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--cbl-bg-tertiary);
+  overflow: hidden;
+}
+
+.cbl-ai-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cbl-purple), #9b78ea);
+  transition: width 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cbl-ai-progress-dot {
+    animation: cblAiPulse 1.4s ease-in-out infinite;
+  }
+
+  .cbl-ai-progress-fill::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.35) 50%, transparent 70%);
+    animation: cblAiSheen 1.6s linear infinite;
+  }
+
+  @keyframes cblAiPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes cblAiSheen {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+}
+
+/* --- Sidebar 3.0.4: grouped nav with SaaS deep links. --- */
+.cbl-nav-group {
+  display: block;
+  padding: 18px 14px 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-nav-ext {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-nav-item:hover .cbl-nav-ext {
+  color: inherit;
+}
+
+.cbl-soon-chip {
+  margin-left: 6px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--cbl-bg-tertiary);
+  color: var(--cbl-text-secondary);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+/* --- Scan reports page. --- */
+.cbl-reports-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 4px 14px;
+}
+
+.cbl-reports-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-reports-hint {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-reports-row {
+  display: grid;
+  grid-template-columns: 2fr 110px 130px 90px 90px;
+  gap: 12px;
+  align-items: center;
+  padding: 11px 4px;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  border-top: 1px solid var(--cbl-bg-tertiary);
+}
+
+.cbl-reports-row-head {
+  border-top: none;
+  padding-top: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-reports-date {
+  color: var(--cbl-text-primary);
+  font-weight: 500;
+}
+
+.cbl-reports-source {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple-text);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.cbl-reports-broken {
+  color: #b91c1c;
+  font-weight: 700;
+}
+
+.cbl-reports-clean {
+  color: var(--cbl-green);
+  font-weight: 700;
+}
+
+.cbl-reports-empty {
+  margin: 0;
+  padding: 20px 4px 10px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-reports-footnote {
+  margin: 14px 4px 0;
+  font-size: 12.5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-reports-footnote a {
+  color: var(--cbl-purple);
+}
+
+/* ===== Rank Tracker ===== */
+
+/* -- Loading skeleton -- */
+
+.cbl-rank-skeleton-pulse {
+  height: 64px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, var(--cbl-bg-secondary) 25%, var(--cbl-bg-tertiary) 37%, var(--cbl-bg-secondary) 63%);
+  background-size: 400% 100%;
+  animation: cbl-rank-skeleton-pulse 1.4s ease infinite;
+}
+
+@keyframes cbl-rank-skeleton-pulse {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@keyframes cbl-rank-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* -- Header: quota badge + actions -- */
+
+.cbl-rank-head-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cbl-rank-head-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cbl-rank-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--cbl-radius-sm);
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple-text);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.cbl-rank-status {
+  margin: 10px 0 0;
+  color: var(--cbl-text-secondary);
+  font-size: 13px;
+}
+
+.cbl-rank-status:empty {
+  display: none;
+}
+
+.cbl-rank-status-warning {
+  color: var(--cbl-amber);
+}
+
+.cbl-rank-next-check {
+  color: var(--cbl-text-hint);
+  font-size: 12.5px;
+  align-self: center;
+}
+
+/* -- Plans & upgrades: billing toggle, daily add-on card -- */
+.cbl-plan-toggle {
+  display: inline-flex;
+  margin: 0 0 18px;
+  border: 1px solid var(--cbl-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.cbl-plan-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 0;
+  padding: 8px 16px;
+  background: #fff;
+  color: var(--cbl-text-secondary);
+  font-weight: 700;
+  font-size: 12.5px;
+  cursor: pointer;
+}
+
+.cbl-plan-toggle-btn.is-active {
+  background: var(--cbl-text-primary);
+  color: #fff;
+}
+
+.cbl-plan-toggle-save {
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 800;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.cbl-plan-daily-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+  cursor: pointer;
+}
+
+.cbl-plan-status {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-plan-status:empty {
+  display: none;
+}
+
+.cbl-plan-current {
+  border-color: var(--cbl-purple);
+}
+
+.cbl-plan-daily-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.cbl-plan-daily-cta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* -- Engine tabs (underline style, matches .cbl-inner-tabs) -- */
+
+.cbl-rank-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 16px;
+  border-bottom: var(--cbl-border);
+}
+
+.cbl-rank-tab {
+  font-size: 13px;
+  padding: 8px 14px;
+  color: var(--cbl-text-secondary);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -0.5px;
+  text-transform: capitalize;
+}
+
+.cbl-rank-tab:hover {
+  color: var(--cbl-text-primary);
+}
+
+.cbl-rank-tab.is-active {
+  color: var(--cbl-purple);
+  font-weight: 500;
+  border-bottom-color: var(--cbl-purple);
+}
+
+/* -- Bulk selection bar -- */
+
+.cbl-rank-bulkbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  background: var(--cbl-purple-bg);
+  border-radius: var(--cbl-radius-sm);
+}
+
+.cbl-rank-bulk-count {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cbl-purple-text);
+}
+
+/* -- Keyword table (borrows the wp-list-table / links-table look) -- */
+
+.cbl-rank-table-wrap {
+  overflow-x: auto;
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  margin-bottom: 4px;
+}
+
+.cbl-rank-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+
+.cbl-rank-table thead th {
+  background: var(--cbl-bg-secondary);
+  border-bottom: var(--cbl-border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 10px 12px;
+  text-align: left;
+}
+
+.cbl-rank-table tbody td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: var(--cbl-border);
+  font-size: 13px;
+  color: var(--cbl-text-primary);
+  vertical-align: middle;
+}
+
+.cbl-rank-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.cbl-rank-table tbody tr:hover td {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-rank-col-check {
+  width: 42px;
+  text-align: center !important;
+}
+
+.cbl-rank-table thead .cbl-rank-col-check {
+  text-align: center !important;
+}
+
+.cbl-rank-col-position,
+.cbl-rank-col-change,
+.cbl-rank-col-best,
+.cbl-rank-col-volume,
+.cbl-rank-col-cpc,
+.cbl-rank-col-intent,
+.cbl-rank-col-competition,
+.cbl-rank-col-checked {
+  text-align: center !important;
+}
+
+.cbl-rank-col-keyword {
+  min-width: 180px;
+  white-space: nowrap;
+}
+
+.cbl-rank-col-page a {
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  color: var(--cbl-purple);
+}
+
+.cbl-rank-keyword-text {
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  white-space: normal;
+  vertical-align: middle;
+}
+
+.cbl-rank-flag {
+  margin-right: 6px;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.08);
+  vertical-align: middle;
+}
+
+.cbl-rank-device-ico {
+  display: inline-flex;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.cbl-rank-device-ico-desktop {
+  color: #1d4ed8;
+}
+
+.cbl-rank-device-ico-mobile {
+  color: #6d28d9;
+}
+
+.cbl-rank-row-check {
+  display: block;
+  margin: 0 auto;
+}
+
+.cbl-rank-row-delete {
+  display: block;
+  margin: 4px auto 0;
+  border: 0;
+  background: none;
+  color: var(--cbl-text-hint);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.cbl-rank-row-delete:hover {
+  color: var(--cbl-red);
+}
+
+/* -- Position pill (fixed traffic-light hexes, matches SaaS) -- */
+
+.cbl-rank-pos {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 2px 8px;
+  border-radius: var(--cbl-radius-sm);
+  font-weight: 700;
+  text-align: center;
+}
+
+.cbl-rank-pos-good {
+  background: #DCFCE7;
+  color: #15803D;
+}
+
+.cbl-rank-pos-mid {
+  background: #FEF9C3;
+  color: #A16207;
+}
+
+.cbl-rank-pos-low {
+  background: #FFEDD5;
+  color: #C2410C;
+}
+
+.cbl-rank-pos-bad {
+  background: #FEE2E2;
+  color: #B91C1C;
+}
+
+.cbl-rank-pending {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 2px 8px;
+  border-radius: var(--cbl-radius-sm);
+  background: var(--cbl-bg-tertiary);
+  color: var(--cbl-text-hint);
+  text-align: center;
+  animation: cbl-rank-pulse 1.4s ease-in-out infinite;
+}
+
+/* -- Position change indicator -- */
+
+.cbl-rank-change-up {
+  color: var(--cbl-green);
+  font-weight: 600;
+}
+
+.cbl-rank-change-down {
+  color: var(--cbl-red);
+  font-weight: 600;
+}
+
+.cbl-rank-change-flat {
+  color: var(--cbl-text-hint);
+}
+
+/* -- Intent + competition chips -- */
+
+.cbl-rank-intent-chip {
+  display: inline-block;
+  width: 1.6em;
+  height: 1.6em;
+  line-height: 1.6em;
+  text-align: center;
+  margin-right: 3px;
+  border-radius: 50%;
+  background: var(--cbl-bg-tertiary);
+  color: var(--cbl-text-secondary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cbl-rank-competition-pill {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: var(--cbl-radius-sm);
+  background: var(--cbl-bg-tertiary);
+  font-size: 11px;
+  text-transform: capitalize;
+}
+
+.cbl-rank-pending-note {
+  margin: 10px 2px 0;
+  color: var(--cbl-text-hint);
+  font-size: 12.5px;
+}
+
+/* -- Empty state -- */
+
+.cbl-rank-empty {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.cbl-rank-empty h2 {
+  margin: 0 0 6px;
+}
+
+.cbl-rank-empty p {
+  color: var(--cbl-text-secondary);
+  margin: 0 0 16px;
+}
+
+/* -- Trend charts: 3-column grid, collapses under 960px -- */
+
+.cbl-rank-charts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+
+@media (max-width: 960px) {
+  .cbl-rank-charts {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cbl-rank-chart-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  padding: 14px;
+}
+
+.cbl-rank-chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cbl-rank-chart-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cbl-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.cbl-rank-chart-current {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-rank-chart-svg {
+  display: block;
+  width: 100%;
+  height: 80px;
+}
+
+.cbl-rank-chart-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--cbl-text-hint);
+}
+
+/* -- Daily-refresh upsell card -- */
+
+.cbl-rank-upsell {
+  margin-top: 16px;
+  background: var(--cbl-purple-bg);
+  border: 0.5px solid var(--cbl-purple-border);
+}
+
+.cbl-rank-upsell h2 {
+  margin: 0 0 6px;
+  color: var(--cbl-purple-text);
+}
+
+.cbl-rank-upsell p {
+  margin: 0 0 14px;
+  color: var(--cbl-text-primary);
+}
+
+/* -- Settings view -- */
+
+.cbl-rank-settings-card {
+  max-width: 680px;
+}
+
+.cbl-rank-settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin: 16px 0;
+}
+
+.cbl-rank-settings-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.cbl-rank-settings-field select,
+.cbl-rank-settings-field input[type="text"],
+.cbl-rank-settings-field input[type="password"] {
+  width: 100%;
+}
+
+.cbl-rank-settings-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.cbl-rank-settings-share-url {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.cbl-rank-settings-share-url input {
+  flex: 1;
+}
+
+.cbl-rank-settings-error {
+  margin: 6px 0 0;
+  color: var(--cbl-red);
+  font-size: 12.5px;
+}
+
+/* -- Add-keywords modal -- */
+
+.cbl-modal-rank-add .cbl-rank-add-textarea {
+  width: 100%;
+  min-height: 100px;
+  margin: 10px 0;
+  font-family: inherit;
+}
+
+.cbl-modal-rank-add .cbl-rank-add-market {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.cbl-modal-rank-add .cbl-rank-add-devices {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.cbl-rank-add-device {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* -- Responsive: keep everything inside the viewport at narrow widths -- */
+
+@media (max-width: 480px) {
+  .cbl-rank-head-actions {
+    width: 100%;
+  }
+
+  .cbl-rank-head-actions .cbl-btn {
+    flex: 1;
+  }
+
+  .cbl-modal-rank-add .cbl-rank-add-devices {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+/* -- Plans & upgrades redesign (Plugin Plans & Upgrades canvas) -- */
+.cbl-plansx-hero {
+  background: linear-gradient(135deg, #eeecfb 0%, #f5f4fd 100%);
+  border-radius: 14px;
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.cbl-plansx-hero h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 800;
+  color: #2b2467;
+  letter-spacing: -0.3px;
+}
+
+.cbl-plansx-hero p {
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #5a5486;
+  max-width: 560px;
+  line-height: 1.5;
+}
+
+.cbl-plansx-hero .cbl-plan-toggle {
+  margin: 0;
+  background: #fff;
+  border-color: #ddd9f2;
+  flex: none;
+}
+
+.cbl-plan-permonth {
+  margin: 2px 0 0;
+  font-size: 12.5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-plan-selects {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  text-align: left;
+}
+
+.cbl-plan-select-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-plan-select {
+  width: 100%;
+  padding: 8px 11px;
+  border-radius: 8px;
+  border: 1px solid #d5d2ec;
+  font-size: 12.5px;
+  color: var(--cbl-text-primary);
+  background: #fff;
+  cursor: pointer;
+}
+
+.cbl-plan-feats {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #efeef6;
+}
+
+.cbl-plan-current {
+  border: 1.5px solid #d5d2ec;
+  background: #fbfbfe;
+}
+
+.cbl-plan-flag-current {
+  background: #eeecfb;
+  color: var(--cbl-purple);
+}
+
+.cbl-plan-cta:disabled {
+  color: var(--cbl-text-hint);
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+.cbl-plan-daily-banner {
+  margin-top: 20px;
+  background: #2b2467;
+  border-radius: 14px;
+  padding: 22px 28px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.cbl-plan-daily-banner-copy {
+  flex: 1;
+  min-width: 280px;
+}
+
+.cbl-plan-daily-kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.9px;
+  color: #a79fe8;
+}
+
+.cbl-plan-daily-banner-copy p {
+  margin: 5px 0 0;
+  font-size: 14px;
+  color: #d9d5f5;
+  line-height: 1.5;
+}
+
+.cbl-plan-daily-banner-cta {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: none;
+}
+
+.cbl-plan-daily-price {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.cbl-plan-daily-price .wpcbl-plan-amount {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+
+.cbl-plan-daily-price .wpcbl-plan-period {
+  font-size: 13.5px;
+  color: #a79fe8;
+}
+
+.cbl-plan-daily-btn {
+  padding: 11px 20px;
+  border-radius: 10px;
+  border: none;
+  background: #fff;
+  color: #2b2467;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.cbl-plan-daily-btn:hover {
+  background: #eeecfb;
+  color: #2b2467;
+}
+
+.cbl-plan-feats {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1;
+  text-align: left;
+}
+
+.cbl-plan-feat {
+  display: flex;
+  gap: 9px;
+  font-size: 13.5px;
+  color: var(--cbl-text-secondary);
+  align-items: flex-start;
+}
+
+.cbl-plan-feat svg {
+  flex: none;
+  margin-top: 2px;
+  color: var(--cbl-purple);
+}
+
+/* WP admin and the settings form styles inflate selects (min-height +
+   line-height); pin the plan-card selects to the canvas proportions. The
+   compound selector outranks .cbl-admin-wrap select. */
+.cbl-admin-wrap select.cbl-plan-select,
+select.cbl-plan-select {
+  min-height: 0;
+  height: auto;
+  line-height: 1.4;
+  padding: 8px 32px 8px 11px;
+  font-size: 12.5px;
+  max-width: 100%;
+  border: 1px solid #d5d2ec;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.cbl-plan-card .cbl-plan-cta {
+  margin-top: 18px;
+  width: 100%;
+}
+
+.cbl-plan-card .cbl-plan-cta-form {
+  margin-top: auto;
+  width: 100%;
+}
+
+.cbl-plan-card .cbl-plan-cta-form .cbl-plan-cta {
+  margin-top: 18px;
+}
+
+.cbl-plan-card .cbl-plan-feats + .cbl-plan-cta {
+  margin-top: 18px;
+}
+
+/* ===== Uptime Monitor ===== */
+
+/* -- Status dot (up/down/pending/paused), matches the rank position palette -- */
+
+.cbl-uptime-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.cbl-uptime-dot-up {
+  background: var(--cbl-green);
+}
+
+.cbl-uptime-dot-down {
+  background: var(--cbl-red);
+}
+
+.cbl-uptime-dot-pending {
+  background: var(--cbl-text-hint);
+}
+
+.cbl-uptime-dot-paused {
+  background: var(--cbl-amber);
+}
+
+/* -- Monitors table -- */
+
+.cbl-uptime-name-wrap {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+}
+
+.cbl-uptime-name {
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-uptime-type {
+  font-size: 11.5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-uptime-col-name {
+  min-width: 200px;
+  white-space: nowrap;
+}
+
+.cbl-uptime-col-uptime-day,
+.cbl-uptime-col-uptime-month,
+.cbl-uptime-col-avg-ms,
+.cbl-uptime-col-last-checked {
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+/* ssl/domain rows: expiry date spans the uptime %/avg response columns. */
+.cbl-uptime-col-expiry {
+  text-align: center !important;
+  white-space: nowrap;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-uptime-col-actions {
+  text-align: right !important;
+  white-space: nowrap;
+}
+
+.cbl-uptime-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* -- Inline edit row -- */
+
+.cbl-uptime-edit-row td {
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-uptime-edit-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  padding: 10px 4px;
+  align-items: end;
+  text-align: left;
+  white-space: normal;
+}
+
+.cbl-uptime-edit-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 12.5px;
+}
+
+.cbl-uptime-edit-field input,
+.cbl-uptime-edit-field select {
+  width: 100%;
+}
+
+.cbl-uptime-edit-field-wide {
+  grid-column: span 2;
+}
+
+.cbl-uptime-edit-after-suffix {
+  margin-left: 8px;
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-uptime-edit-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* -- Heartbeat card: ping URL + copy button reuse the rank share-link row -- */
+
+.cbl-uptime-snippet {
+  margin: 10px 0 0;
+  padding: 14px;
+  background: var(--cbl-bg-secondary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--cbl-text-primary);
+}
+
+/* -- Incidents card -- */
+
+.cbl-uptime-incidents-empty {
+  margin: 0;
+  color: var(--cbl-text-secondary);
+}
+
+/* -- Responsive -- */
+
+@media (max-width: 480px) {
+  .cbl-uptime-actions {
+    justify-content: flex-start;
+  }
+
+  .cbl-uptime-edit-field-wide {
+    grid-column: span 1;
+  }
+}
