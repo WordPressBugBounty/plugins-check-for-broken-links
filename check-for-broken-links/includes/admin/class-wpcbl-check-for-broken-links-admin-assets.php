@@ -83,7 +83,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 				array(
 					'ajaxUrl'      => esc_url( admin_url( 'admin-ajax.php' ) ),
 					'nonce'        => wp_create_nonce( 'wpcbl_check_for_broken_links' ),
+					// The Dashboard: where the scan trigger buttons live and
+					// progress shows while a scan runs.
 					'scanPageUrl'  => esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) ),
+					// Broken link scan: where the results table lives. A scan
+					// started from the Dashboard (no table on that page) lands
+					// here once it finishes.
+					'scanResultsUrl' => esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-scan' ) ),
 					'clearConfirm' => esc_html__( 'Clear the current scan results? Settings are kept. Run a new scan anytime to check your links again.', 'check-for-broken-links' ),
 					/* translators: 1: items scanned so far, 2: total items, 3: links checked so far. */
 					'progressText'   => esc_html__( 'Checking item %1$s of %2$s. %3$s links checked so far.', 'check-for-broken-links' ),
@@ -343,6 +349,214 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 				)
 			);
 
+			// Internal Link Optimizer: its own small self-contained script,
+			// loaded only on its own screen, not folded into the shared
+			// admin bundle above.
+			if ( 'wpcbl-check-for-broken-links-internal-links' === $current_page ) {
+				$ilo_rel  = 'assets/dist/js/admin/cbl-internal-links.js';
+				$ilo_path = WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $ilo_rel;
+				$ilo_ver  = file_exists( $ilo_path ) ? filemtime( $ilo_path ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+
+				wp_enqueue_script(
+					'cbl-internal-links',
+					WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $ilo_rel,
+					array(),
+					$ilo_ver,
+					true
+				);
+
+				wp_localize_script(
+					'cbl-internal-links',
+					'wpcblIlo',
+					array(
+						'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
+						// Same nonce action verify_link_action_request() checks
+						// for every other link-action endpoint.
+						'nonce'      => wp_create_nonce( 'wpcbl_check_for_broken_links' ),
+						'upgradeUrl' => esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' ) ),
+						// Which post types the optimizer can read, and which
+						// of them are currently selected. Purely local WP
+						// data, so it ships in the page bootstrap rather than
+						// riding the SaaS-proxied ilo_state response. Empty
+						// 'selected' means every type is ticked -- that is
+						// what an unset ilo_post_types option means.
+						'postTypes'  => array(
+							'available' => wpcbl_ilo_post_type_options(),
+							'selected'  => (array) wpcbl_get_option( 'ilo_post_types', array() ),
+						),
+						'i18n'       => array(
+							'generic'          => esc_html__( 'Something went wrong. Please try again.', 'check-for-broken-links' ),
+							'loadError'        => esc_html__( 'Could not load your analysis. brokenlinkchecker.io might be briefly unavailable.', 'check-for-broken-links' ),
+							'runLabel'         => esc_html__( 'Run analysis', 'check-for-broken-links' ),
+							'runningLabel'     => esc_html__( 'Running', 'check-for-broken-links' ),
+							/* translators: %1$s: number of pages uploaded so far. */
+							'uploading'        => esc_html__( 'Uploading pages, %1$s so far', 'check-for-broken-links' ),
+							/* translators: 1: pages analysed, 2: the plan's page cap. Shown only when the two differ. */
+							'capLimited'       => esc_html__( 'This analysis covers %1$s pages of your site. Your plan reads up to %2$s pages in one analysis.', 'check-for-broken-links' ),
+							/* translators: %1$s: pages analysed, equal to the plan's page cap. */
+							'capLimitedSame'   => esc_html__( 'This analysis covers %1$s pages of your site, the most your plan reads in one analysis.', 'check-for-broken-links' ),
+							'postTypesTitle'   => esc_html__( 'Post types to read', 'check-for-broken-links' ),
+							'postTypesHint'    => esc_html__( 'These are the post types the optimizer reads when it maps your links.', 'check-for-broken-links' ),
+							'postTypesSave'    => esc_html__( 'Save selection', 'check-for-broken-links' ),
+							'postTypesSaved'   => esc_html__( 'Saved. This applies to your next analysis.', 'check-for-broken-links' ),
+							'none'             => esc_html__( 'No analysis yet. Run one to see the internal links your pages are missing.', 'check-for-broken-links' ),
+							'failed'           => esc_html__( 'The last analysis could not read any pages. Try again in a minute.', 'check-for-broken-links' ),
+							'runningTitle'     => esc_html__( 'Analysis running', 'check-for-broken-links' ),
+							'runningHint'      => esc_html__( 'Checking your pages now. Results appear here automatically when it finishes.', 'check-for-broken-links' ),
+							/* translators: 1: suggestions used this month, 2: monthly limit. */
+							'quotaUsed'        => esc_html__( '%1$s of %2$s suggestions used this month', 'check-for-broken-links' ),
+							/* translators: %1$s: suggestions used this month. */
+							'quotaUnlimited'   => esc_html__( '%1$s suggestions used this month', 'check-for-broken-links' ),
+							'upgrade'          => esc_html__( 'See plans', 'check-for-broken-links' ),
+							'tabSuggested'     => esc_html__( 'Suggested links', 'check-for-broken-links' ),
+							'tabOrphan'        => esc_html__( 'Orphan pages', 'check-for-broken-links' ),
+							'tabDead'          => esc_html__( 'Dead ends', 'check-for-broken-links' ),
+							'tabBuried'        => esc_html__( 'Buried pages', 'check-for-broken-links' ),
+							'tabWeak'          => esc_html__( 'Weak anchors', 'check-for-broken-links' ),
+							'tileAnalyzed'     => esc_html__( 'pages analyzed', 'check-for-broken-links' ),
+							'tileLinksPerPage' => esc_html__( 'links per page', 'check-for-broken-links' ),
+							'tileOrphan'       => esc_html__( 'orphan pages', 'check-for-broken-links' ),
+							'tileDead'         => esc_html__( 'dead ends', 'check-for-broken-links' ),
+							'tileBuried'       => esc_html__( 'buried pages', 'check-for-broken-links' ),
+							'tileWeak'         => esc_html__( 'weak anchors', 'check-for-broken-links' ),
+							'emptySuggested'   => esc_html__( 'No new links to suggest. The internal linking on this site is already strong.', 'check-for-broken-links' ),
+							'emptyOrphan'      => esc_html__( 'Every page has at least one link pointing at it.', 'check-for-broken-links' ),
+							'emptyDead'        => esc_html__( 'Every page sends the reader somewhere next.', 'check-for-broken-links' ),
+							'emptyBuried'      => esc_html__( 'Every page sits within three clicks of the homepage.', 'check-for-broken-links' ),
+							'emptyWeak'        => esc_html__( 'Every internal link describes where it goes.', 'check-for-broken-links' ),
+							'colAnchor'        => esc_html__( 'Anchor text', 'check-for-broken-links' ),
+							'colOnPage'        => esc_html__( 'On page', 'check-for-broken-links' ),
+							'colLinksTo'       => esc_html__( 'Links to', 'check-for-broken-links' ),
+							'anchorLabel'      => esc_html__( 'Anchor', 'check-for-broken-links' ),
+							'nowLabel'         => esc_html__( 'Now', 'check-for-broken-links' ),
+							'afterLabel'       => esc_html__( 'After', 'check-for-broken-links' ),
+							'approve'          => esc_html__( 'Approve', 'check-for-broken-links' ),
+							'skip'             => esc_html__( 'Skip', 'check-for-broken-links' ),
+							'apply'            => esc_html__( 'Apply', 'check-for-broken-links' ),
+							'undo'             => esc_html__( 'Undo', 'check-for-broken-links' ),
+							'applyAll'         => esc_html__( 'Apply all approved', 'check-for-broken-links' ),
+							'dashboardLink'    => esc_html__( 'Open on dashboard', 'check-for-broken-links' ),
+							'statusPending'    => esc_html__( 'Pending', 'check-for-broken-links' ),
+							'statusApproved'   => esc_html__( 'Approved', 'check-for-broken-links' ),
+							'statusSkipped'    => esc_html__( 'Skipped', 'check-for-broken-links' ),
+							'statusApplied'    => esc_html__( 'Applied', 'check-for-broken-links' ),
+						),
+					)
+				);
+			}
+
+			// AI Visibility Tracker: its own small self-contained script,
+			// same pattern as the Internal Link Optimizer above.
+			if ( 'wpcbl-check-for-broken-links-ai-visibility' === $current_page ) {
+				$aiv_rel  = 'assets/dist/js/admin/cbl-ai-visibility.js';
+				$aiv_path = WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $aiv_rel;
+				$aiv_ver  = file_exists( $aiv_path ) ? filemtime( $aiv_path ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+
+				wp_enqueue_script(
+					'cbl-ai-visibility',
+					WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $aiv_rel,
+					array(),
+					$aiv_ver,
+					true
+				);
+
+				wp_localize_script(
+					'cbl-ai-visibility',
+					'wpcblAiv',
+					array(
+						'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
+						// Same nonce action verify_link_action_request() checks
+						// for every other link-action endpoint.
+						'nonce'       => wp_create_nonce( 'wpcbl_check_for_broken_links' ),
+						'upgradeUrl'  => esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' ) ),
+						// "Try:" example prompts under the add-prompt box. Static
+						// copy, not API data, so plain esc_html__() strings.
+						'suggestions' => array(
+							esc_html__( 'best broken link checker for WordPress', 'check-for-broken-links' ),
+							esc_html__( 'how to fix 404 errors in WordPress', 'check-for-broken-links' ),
+							esc_html__( 'free WordPress SEO audit tool', 'check-for-broken-links' ),
+						),
+						'i18n'        => array(
+							'generic'            => esc_html__( 'Something went wrong. Please try again.', 'check-for-broken-links' ),
+							'loadError'          => esc_html__( 'Could not load your AI visibility data. brokenlinkchecker.io might be briefly unavailable.', 'check-for-broken-links' ),
+							/* translators: 1: AI Visibility credits used this month, 2: monthly credit allowance. */
+							'quotaUsed'          => esc_html__( '%1$s of %2$s prompt credits used', 'check-for-broken-links' ),
+							'upgrade'            => esc_html__( 'See plans', 'check-for-broken-links' ),
+							'runLabel'           => esc_html__( 'Run check now', 'check-for-broken-links' ),
+							'runChecking'        => esc_html__( 'Checking now', 'check-for-broken-links' ),
+							'overviewTitle'      => esc_html__( 'Brand mentions overview', 'check-for-broken-links' ),
+							'overviewSubPending' => esc_html__( 'Not measured yet. The first reading arrives within the window below.', 'check-for-broken-links' ),
+							'overviewSubResults' => esc_html__( 'Your most recent weekly check across ChatGPT, Perplexity and Google AI.', 'check-for-broken-links' ),
+							/* translators: %1$s: number of days until the first reading, from the account's cadence. */
+							'none'               => esc_html__( 'Not measured yet. The first reading arrives within %1$s days.', 'check-for-broken-links' ),
+							'mentionsLabel'      => esc_html__( 'Mentions', 'check-for-broken-links' ),
+							'noPrevious'         => esc_html__( 'No earlier reading to compare yet.', 'check-for-broken-links' ),
+							/* translators: %1$s: increase in AI mentions since the previous reading. */
+							'up'                 => esc_html__( 'Up %1$s since the last reading.', 'check-for-broken-links' ),
+							/* translators: %1$s: decrease in AI mentions since the previous reading. */
+							'down'               => esc_html__( 'Down %1$s since the last reading.', 'check-for-broken-links' ),
+							'noChange'           => esc_html__( 'No change since the last reading.', 'check-for-broken-links' ),
+							'sourcesTitle'       => esc_html__( 'Cited alongside you', 'check-for-broken-links' ),
+							'sourcesPaidOnly'    => esc_html__( 'The competitor list comes with a paid plan.', 'check-for-broken-links' ),
+							'sourcesEmpty'       => esc_html__( 'No other domains cited in this reading.', 'check-for-broken-links' ),
+							/* translators: 1: competitor domain, 2: mentions for that domain. */
+							'sourceItem'         => esc_html__( '%1$s, %2$s mentions', 'check-for-broken-links' ),
+							// Stat cards.
+							'scoreTitle'         => esc_html__( 'Visibility score', 'check-for-broken-links' ),
+							'scoreNote'          => esc_html__( 'Share of tracked prompts that cite you', 'check-for-broken-links' ),
+							'scoreNoneNote'      => esc_html__( 'Available once a prompt has an answer', 'check-for-broken-links' ),
+							'mentionsTitle'      => esc_html__( 'Brand mentions', 'check-for-broken-links' ),
+							'mentionsNoneNote'   => esc_html__( 'Not measured yet', 'check-for-broken-links' ),
+							'nextCheckTitle'     => esc_html__( 'Next check', 'check-for-broken-links' ),
+							'nextDaysUnit'       => esc_html__( 'days', 'check-for-broken-links' ),
+							'nextDueNow'         => esc_html__( 'Due', 'check-for-broken-links' ),
+							'nextDueNote'        => esc_html__( 'Expected any time now', 'check-for-broken-links' ),
+							/* translators: %1$s: number of days between checks (the account's cadence). */
+							'nextRunsNote'       => esc_html__( 'Checked every %1$s days', 'check-for-broken-links' ),
+							// Onboarding steps (awaiting first check).
+							'stepPromptTitle'    => esc_html__( 'Prompt added', 'check-for-broken-links' ),
+							/* translators: 1: prompts currently tracked, 2: the account's prompt credit limit. */
+							'stepPromptDesc'     => esc_html__( 'You are tracking %1$s of %2$s prompts.', 'check-for-broken-links' ),
+							'stepQueuedTitle'    => esc_html__( 'First check queued', 'check-for-broken-links' ),
+							'stepQueuedDesc'     => esc_html__( 'Each prompt is asked on all three assistants.', 'check-for-broken-links' ),
+							/* translators: %1$s: number of days until the first reading, from the account's cadence. */
+							'stepResultsTitle'   => esc_html__( 'Results within %1$s days', 'check-for-broken-links' ),
+							'stepResultsDesc'    => esc_html__( 'Results appear on this page when they land.', 'check-for-broken-links' ),
+							// Charts.
+							'weeklyChartTitle'   => esc_html__( 'Mentions per weekly check', 'check-for-broken-links' ),
+							'weeklyChartEmpty'   => esc_html__( 'No readings yet. Your first weekly check will appear here.', 'check-for-broken-links' ),
+							'weeklyChartOnePoint' => esc_html__( 'One reading so far. A trend line appears after the next weekly check.', 'check-for-broken-links' ),
+							'engineChartTitle'   => esc_html__( 'Mention rate by assistant', 'check-for-broken-links' ),
+							'engineRateNone'     => esc_html__( 'Not measured yet', 'check-for-broken-links' ),
+							// Tracked prompts.
+							'promptsTitle'       => esc_html__( 'Tracked prompts', 'check-for-broken-links' ),
+							'promptsHint'        => esc_html__( 'The questions your customers ask AI. One prompt per line, each line uses one credit.', 'check-for-broken-links' ),
+							'promptsEmpty'       => esc_html__( 'No prompts yet. Add the questions your customers ask AI to see if you come up.', 'check-for-broken-links' ),
+							'promptsFooter'      => esc_html__( 'Data refreshes weekly. Results reflect answers at check time and can vary between runs.', 'check-for-broken-links' ),
+							'suggestionsLabel'   => esc_html__( 'Try:', 'check-for-broken-links' ),
+							'addPlaceholder'     => esc_html__( 'One prompt per line, for example: best broken link checker for WordPress', 'check-for-broken-links' ),
+							'addButton'          => esc_html__( 'Track prompts', 'check-for-broken-links' ),
+							'addEmpty'           => esc_html__( 'Enter at least one prompt.', 'check-for-broken-links' ),
+							/* translators: %1$s: prompt credits left after the ones already tracked. */
+							'creditsLeft'        => esc_html__( '%1$s credits left', 'check-for-broken-links' ),
+							'colPrompt'          => esc_html__( 'Prompt', 'check-for-broken-links' ),
+							'colChatgpt'         => esc_html__( 'ChatGPT', 'check-for-broken-links' ),
+							'colPerplexity'      => esc_html__( 'Perplexity', 'check-for-broken-links' ),
+							'colGoogleAi'        => esc_html__( 'Google AI', 'check-for-broken-links' ),
+							'colVisibility'      => esc_html__( 'Visibility', 'check-for-broken-links' ),
+							'colChecked'         => esc_html__( 'Checked', 'check-for-broken-links' ),
+							'cited'              => esc_html__( 'Cited', 'check-for-broken-links' ),
+							/* translators: %1$s: citation position number. */
+							'citedWithPosition'  => esc_html__( 'Cited #%1$s', 'check-for-broken-links' ),
+							'absent'             => esc_html__( 'Absent', 'check-for-broken-links' ),
+							'pending'            => esc_html__( 'Pending', 'check-for-broken-links' ),
+							'notMeasured'        => esc_html__( 'Not measured yet', 'check-for-broken-links' ),
+							'neverChecked'       => esc_html__( 'Not yet checked', 'check-for-broken-links' ),
+							'remove'             => esc_html__( 'Remove', 'check-for-broken-links' ),
+						),
+					)
+				);
+			}
 		}
 
 		/**

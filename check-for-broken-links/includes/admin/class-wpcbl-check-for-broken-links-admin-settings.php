@@ -104,9 +104,15 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 
 			$services = array(
 				array(
-					'id'       => 'scan',
-					'title'    => __( 'Dashboard & Scan', 'check-for-broken-links' ),
+					'id'       => 'dashboard',
+					'title'    => __( 'Dashboard', 'check-for-broken-links' ),
 					'href'     => $page( '' ),
+					'external' => false,
+				),
+				array(
+					'id'       => 'scan',
+					'title'    => __( 'Broken link scan', 'check-for-broken-links' ),
+					'href'     => $page( '-scan' ),
 					'external' => false,
 				),
 				array(
@@ -122,30 +128,24 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 					'external' => false,
 				),
 				array(
+					'id'       => 'internal-links',
+					'title'    => __( 'Internal Link Optimizer', 'check-for-broken-links' ),
+					'href'     => $page( '-internal-links' ),
+					'external' => false,
+				),
+				array(
+					'id'       => 'ai-visibility',
+					'title'    => __( 'AI Visibility Tracker', 'check-for-broken-links' ),
+					'href'     => $page( '-ai-visibility' ),
+					'external' => false,
+				),
+				array(
 					'id'       => 'uptime',
 					'title'    => __( 'Uptime Monitor', 'check-for-broken-links' ),
 					'href'     => $page( '-uptime' ),
 					'external' => false,
 				),
 			);
-
-			// The remaining tools live on brokenlinkchecker.io. wpcbl_go()
-			// carries the connected site through, so they land on the right
-			// project instead of a generic dashboard.
-			if ( function_exists( 'wpcbl_go_url' ) ) {
-				$services[] = array(
-					'id'       => 'ai-visibility',
-					'title'    => __( 'AI Visibility Tracker', 'check-for-broken-links' ),
-					'href'     => wpcbl_go_url( 'ai-visibility' ),
-					'external' => true,
-				);
-				$services[] = array(
-					'id'       => 'internal-links',
-					'title'    => __( 'Internal Link Optimizer', 'check-for-broken-links' ),
-					'href'     => wpcbl_go_url( 'internal-links' ),
-					'external' => true,
-				);
-			}
 
 			$services[] = array(
 				'id'       => 'settings',
@@ -197,10 +197,19 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 
 			add_submenu_page(
 				'wpcbl-check-for-broken-links',
-				esc_html__( 'Dashboard & Scan', 'check-for-broken-links' ),
-				esc_html__( 'Dashboard & Scan', 'check-for-broken-links' ),
+				esc_html__( 'Dashboard', 'check-for-broken-links' ),
+				esc_html__( 'Dashboard', 'check-for-broken-links' ),
 				'manage_options',
 				'wpcbl-check-for-broken-links'
+			);
+
+			add_submenu_page(
+				'wpcbl-check-for-broken-links',
+				esc_html__( 'Broken link scan', 'check-for-broken-links' ),
+				esc_html__( 'Broken link scan', 'check-for-broken-links' ),
+				'manage_options',
+				'wpcbl-check-for-broken-links-scan',
+				array( $this, 'scan_results_page' )
 			);
 
 			add_submenu_page(
@@ -228,6 +237,24 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 				'manage_options',
 				'wpcbl-check-for-broken-links-seo-audit',
 				array( $this, 'seo_audit_page' )
+			);
+
+			add_submenu_page(
+				'wpcbl-check-for-broken-links',
+				esc_html__( 'Internal Link Optimizer', 'check-for-broken-links' ),
+				esc_html__( 'Internal Link Optimizer', 'check-for-broken-links' ),
+				'manage_options',
+				'wpcbl-check-for-broken-links-internal-links',
+				array( $this, 'internal_links_page' )
+			);
+
+			add_submenu_page(
+				'wpcbl-check-for-broken-links',
+				esc_html__( 'AI Visibility Tracker', 'check-for-broken-links' ),
+				esc_html__( 'AI Visibility Tracker', 'check-for-broken-links' ),
+				'manage_options',
+				'wpcbl-check-for-broken-links-ai-visibility',
+				array( $this, 'ai_visibility_page' )
 			);
 
 			add_submenu_page(
@@ -302,14 +329,26 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		}
 
 		/**
-		 * Renders the Scan Results page (main).
+		 * Renders the Dashboard page (main).
 		 *
 		 * @since 1.0.0
 		 *
 		 * @return void
 		 */
 		public function menu_page() {
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/scan.php';
+			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/dashboard.php';
+		}
+
+		/**
+		 * Renders the Broken link scan page: the results table split out of
+		 * the Dashboard in 3.0.8.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function scan_results_page() {
+			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/scan-results.php';
 		}
 
 		/**
@@ -377,6 +416,28 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		 */
 		public function seo_audit_page() {
 			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/seo-audit.php';
+		}
+
+		/**
+		 * Render the Internal Links page.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function internal_links_page() {
+			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/internal-links.php';
+		}
+
+		/**
+		 * Render the AI Visibility Tracker page.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ai_visibility_page() {
+			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/ai-visibility.php';
 		}
 
 		/**
@@ -905,9 +966,9 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		 * @return void
 		 */
 		/**
-		 * One-click "Turn on Fix with AI" from the dashboard: flips the
-		 * setting and returns to the scan page, where Fix all with AI is
-		 * ready to use.
+		 * One-click "Turn on Fix with AI" from Broken link scan: flips the
+		 * setting and returns to that page, where Fix all with AI is ready
+		 * to use.
 		 *
 		 * @since 3.0.4
 		 *
@@ -923,7 +984,10 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 			$settings['ai_fix'] = 'on';
 			update_option( 'wpcbl_check_for_broken_links_settings', $settings );
 
-			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) );
+			// This card only lives on Broken link scan (3.0.8): redirect there,
+			// not to the Dashboard, so "Fix all with AI" is right where the
+			// admin was reaching for it.
+			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-scan' ) );
 			exit;
 		}
 

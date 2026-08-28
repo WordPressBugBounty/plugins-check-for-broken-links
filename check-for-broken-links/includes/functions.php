@@ -457,6 +457,273 @@ if ( ! function_exists( 'wpcbl_collect_site_urls' ) ) {
 	}
 }
 
+if ( ! defined( 'WPCBL_ILO_UPLOAD_CONTENT_CHARS' ) ) {
+	/**
+	 * Bytes of one page's body the optimizer upload carries.
+	 *
+	 * Matches links.upload_content_chars on brokenlinkchecker.io. The
+	 * server truncates to the same number, but only after the whole POST
+	 * has crossed the wire, so a site with a handful of enormous pages
+	 * would still push megabytes per chunk. Cutting here keeps every
+	 * request small, and the two ends agree on what arrives.
+	 *
+	 * @since 3.0.8
+	 */
+	define( 'WPCBL_ILO_UPLOAD_CONTENT_CHARS', 60000 );
+}
+
+if ( ! function_exists( 'wpcbl_ilo_trim_content' ) ) {
+	/**
+	 * Cut one page's body to the upload limit.
+	 *
+	 * Cuts on bytes, the same unit the server's mb_strcut() uses, so a
+	 * page that is under the limit here is under it there too. mb_strcut()
+	 * is preferred because it will not split a multibyte character in
+	 * half, and substr() is the fallback when mbstring is missing.
+	 *
+	 * @since 3.0.8
+	 *
+	 * @param string $content Rendered page body.
+	 *
+	 * @return string
+	 */
+	function wpcbl_ilo_trim_content( $content ) {
+		$content = (string) $content;
+
+		if ( strlen( $content ) <= WPCBL_ILO_UPLOAD_CONTENT_CHARS ) {
+			return $content;
+		}
+
+		if ( function_exists( 'mb_strcut' ) ) {
+			return mb_strcut( $content, 0, WPCBL_ILO_UPLOAD_CONTENT_CHARS );
+		}
+
+		return substr( $content, 0, WPCBL_ILO_UPLOAD_CONTENT_CHARS );
+	}
+}
+
+if ( ! function_exists( 'wpcbl_collect_site_pages' ) ) {
+	/**
+	 * Published pages with their content, for the Internal Link Optimizer.
+	 *
+	 * The optimizer needs what the reader sees, so this sends the
+	 * the_content filtered body rather than raw post_content: shortcodes
+	 * and blocks are expanded, and no theme chrome is included. Applying a
+	 * suggestion later searches raw post_content instead, which is why an
+	 * apply can honestly refuse when a builder generated the text.
+	 *
+	 * Walks in batches so a large site never loads every body at once.
+	 *
+	 * The offset this function reports back is a QUERY offset -- how many
+	 * ids get_posts() has now handed out for this walk -- not a count of
+	 * rows returned to the caller. Those two numbers differ (the front
+	 * page is extra and outside $limit, a dedup or permalink skip drops a
+	 * row without freeing an offset slot), and only this function sees
+	 * both, so it alone can report the offset the next call must use.
+	 * $limit is always queried in full on every call, front page or not,
+	 * so 'has_more' (fewer ids returned than asked for) is a reliable
+	 * end-of-set signal regardless of what happened to sit at page_on_front.
+	 *
+	 * $post_types lets a caller narrow the walk to a saved selection (the
+	 * Internal Link Optimizer's own ilo_post_types option). Passing
+	 * nothing behaves exactly as before: the full
+	 * wpcbl_auditable_post_types() list. Passing a list intersects it
+	 * with wpcbl_auditable_post_types() rather than using it directly,
+	 * so the builder-record exclusions there still apply and a stale
+	 * saved type the site no longer has (or never had) cannot resurrect
+	 * a junk post type into the walk.
+	 *
+	 * @since 3.0.8
+	 *
+	 * @param int   $offset     Query offset to resume from (the previous call's next_offset).
+	 * @param int   $limit      Rows to ask the query for in this batch.
+	 * @param array $post_types Optional post-type names to restrict the walk to.
+	 *
+	 * @return array array{
+	 *     pages: array List of array{post_id:int|null, url:string, title:string, content:string}.
+	 *     next_offset: int Query offset the next call must use.
+	 *     has_more: bool Whether more posts remain beyond this batch.
+	 * }
+	 */
+	function wpcbl_collect_site_pages( $offset = 0, $limit = 50, $post_types = array() ) {
+		$offset = max( 0, (int) $offset );
+		$limit  = max( 1, (int) $limit );
+		$pages  = array();
+
+		// The front page anchors the link graph: click depth is measured
+		// from it. When a static page is set as the front page it is a
+		// real post, so it leads the first batch with its own content. A
+		// blog-index front page has no post behind it, and there is
+		// nothing honest to send, so nothing is sent. LinkGraph already
+		// falls back to the shallowest page when the home key is absent.
+		//
+		// The front row rides along OUTSIDE $limit and never touches the
+		// offset: $limit is still queried in full below, so batch 0 is
+		// never short a row just because the site has a static front page.
+		$front = 0 === $offset ? (int) get_option( 'page_on_front' ) : 0;
+
+		if ( $front > 0 ) {
+			$front_post = get_post( $front );
+
+			if ( $front_post && 'publish' === $front_post->post_status ) {
+				$pages[] = array(
+					'post_id' => $front,
+					'url'     => esc_url_raw( home_url( '/' ) ),
+					'title'   => (string) get_the_title( $front ),
+					'content' => wpcbl_ilo_trim_content( apply_filters( 'the_content', $front_post->post_content ) ),
+				);
+			}
+		}
+
+		$auditable = wpcbl_auditable_post_types();
+
+		if ( is_array( $post_types ) && array() !== $post_types ) {
+			// A saved selection narrows the walk, but only within what
+			// wpcbl_auditable_post_types() already allows -- see the
+			// docblock above.
+			$types = array_values( array_intersect( $post_types, $auditable ) );
+		} else {
+			$types = $auditable;
+		}
+
+		if ( array() === $types ) {
+			// Nothing queryable at all. No ids were consumed, and none
+			// ever will be, so the walk ends here.
+			return array(
+				'pages'       => $pages,
+				'next_offset' => $offset,
+				'has_more'    => false,
+			);
+		}
+
+		$ids = get_posts(
+			array(
+				'post_type'              => $types,
+				'post_status'            => 'publish',
+				'fields'                 => 'ids',
+				'orderby'                => 'modified',
+				'order'                  => 'DESC',
+				'posts_per_page'         => $limit,
+				'offset'                 => $offset,
+				'no_found_rows'          => true,
+				'ignore_sticky_posts'    => true,
+				'suppress_filters'       => false,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+			)
+		);
+		$ids = (array) $ids;
+
+		if ( array() !== $ids ) {
+			_prime_post_caches( $ids, false, false );
+		}
+
+		foreach ( $ids as $id ) {
+			// Already sent above as the front page. Sending it twice would
+			// put two nodes with one url into the graph. This is a display
+			// dedup only -- it does not change how many ids get_posts()
+			// handed out, so it must not change the offset either.
+			if ( $front > 0 && (int) $id === $front ) {
+				continue;
+			}
+
+			$post = get_post( $id );
+
+			if ( ! $post ) {
+				continue;
+			}
+
+			$permalink = get_permalink( $id );
+
+			if ( ! is_string( $permalink ) || '' === $permalink ) {
+				continue;
+			}
+
+			$pages[] = array(
+				'post_id' => (int) $id,
+				'url'     => esc_url_raw( $permalink ),
+				'title'   => (string) get_the_title( $id ),
+				'content' => wpcbl_ilo_trim_content( apply_filters( 'the_content', $post->post_content ) ),
+			);
+		}
+
+		return array(
+			'pages'       => $pages,
+			// The offset moves by the ids the query actually returned,
+			// never by count( $pages ) -- that count shrinks on a dedup
+			// or permalink skip while every id was still consumed.
+			'next_offset' => $offset + count( $ids ),
+			// Fewer ids than asked for is the only reliable "nothing
+			// left" signal here, because $limit is always queried in
+			// full now (the front row no longer borrows from it).
+			'has_more'    => count( $ids ) === $limit,
+		);
+	}
+}
+
+if ( ! function_exists( 'wpcbl_ilo_post_type_options' ) ) {
+	/**
+	 * The post types the Internal Link Optimizer's post-type picker can
+	 * offer, each with its human label. Always the full
+	 * wpcbl_auditable_post_types() list (never narrowed by a saved
+	 * selection) -- the picker needs every choice on offer, not just
+	 * the ones already ticked.
+	 *
+	 * @since 3.0.8
+	 *
+	 * @return array List of array{value:string, label:string}.
+	 */
+	function wpcbl_ilo_post_type_options() {
+		$options = array();
+
+		foreach ( wpcbl_auditable_post_types() as $type ) {
+			$object = get_post_type_object( $type );
+			$label  = ( $object && ! empty( $object->labels->name ) ) ? $object->labels->name : $type;
+
+			$options[] = array(
+				'value' => $type,
+				'label' => $label,
+			);
+		}
+
+		return $options;
+	}
+}
+
+if ( ! function_exists( 'wpcbl_dashboard_health_score' ) ) {
+	/**
+	 * Site link health score for the Dashboard's hero card: the share of
+	 * checked links that were not broken, 0-100.
+	 *
+	 * Only $total and $broken are stored for every past run (see
+	 * WPCBL_Check_Broken_Links_Utilities::record_scan_history()) -- warning
+	 * links (redirects, slow responses) are not split out per historical
+	 * scan. So "healthy" here means "not broken" rather than "good only",
+	 * and the same formula is used for the current score and the previous
+	 * run it is compared against, so the "since last scan" delta compares
+	 * like with like.
+	 *
+	 * @since 3.0.8
+	 *
+	 * @param int $total  Links checked in the run.
+	 * @param int $broken Broken links found in the run.
+	 *
+	 * @return int|null Score 0-100, or null when nothing was checked.
+	 */
+	function wpcbl_dashboard_health_score( $total, $broken ) {
+		$total  = (int) $total;
+		$broken = (int) $broken;
+
+		if ( $total <= 0 ) {
+			return null;
+		}
+
+		$healthy = max( 0, $total - $broken );
+
+		return (int) round( 100 * $healthy / $total );
+	}
+}
+
 if ( ! function_exists( 'wpcbl_go_url' ) ) {
 	/**
 	 * Deep link to a tool on brokenlinkchecker.io.

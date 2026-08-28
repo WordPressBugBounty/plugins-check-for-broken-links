@@ -1,6 +1,20 @@
 == Changelog ==
 
-= 3.0.7 - unreleased =
+= 3.0.8 - unreleased =
+* New: AI Visibility Tracker page in wp-admin. See your brand mentions overview, the platform split, and which competitors get cited alongside you. Track the prompts your customers ask AI and see whether ChatGPT, Perplexity and Google AI cite you for each one.
+* Improvement: AI Visibility Tracker now opens inside wp-admin. The sidebar and toolbar links used to send you to brokenlinkchecker.io in a new tab.
+* Improvement: AI Visibility Tracker page redesigned: score, mentions and next-check stat cards up top, an onboarding checklist before your first reading lands, a weekly mentions chart and a per-assistant mention rate chart once you have one, and a Run check now button for one extra manual check a day.
+* Improvement: Dashboard's AI Visibility card shows your mentions count and how it moved since the last reading, once you have one.
+* New: Internal Link Optimizer page in wp-admin. See orphan pages, dead ends, buried pages and weak anchors, then add the internal links your pages are missing.
+* New: Apply a link suggestion straight to the page. The plugin edits the post, and one click undoes it. WordPress also keeps a revision on post types that support one.
+* New: Choose which post types the optimizer reads. Every public type is listed and ticked by default, and your choice applies to the next analysis.
+* Improvement: The optimizer reads the pages WordPress already publishes. A newly connected site can run one right away instead of waiting for a crawl to find its pages.
+* Improvement: Internal Link Optimizer now opens inside wp-admin. The sidebar and toolbar links used to send you to brokenlinkchecker.io in a new tab.
+* New: Dashboard is now an overview: site link health score, broken links, last scan, and live numbers from every SEO tool in one screen.
+* New: Broken link scan is a page of its own, holding the full results table, filters and export. The sidebar entry that used to say Dashboard & Scan is now two entries: Dashboard and Broken link scan.
+* Improvement: Start scan stays on the Dashboard. Progress shows there, and the plugin sends you to Broken link scan for the results once a scan finishes.
+
+= 3.0.7 - 25 August 2026 =
 * New: SEO Audit page in wp-admin. Run a full SEO and AEO audit of your site without leaving WordPress. See your score, which category is costing you the most points, and a fix queue ordered by what moves the score most. Every issue lists the pages it affects and how to fix it. The checks that passed are listed too. Available on every plan for connected sites, with your monthly allowance shown on the page.
 * New: Fix with AI for audit issues. Missing, duplicate or overlong page titles and meta descriptions get AI-written replacements. You review and edit every one before anything is saved, and fixes are written to Yoast SEO, Rank Math or SEOPress, whichever your site runs.
 * New: Audit a single page on its own, without auditing the whole site.

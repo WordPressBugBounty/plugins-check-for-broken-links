@@ -5588,3 +5588,1540 @@ select.cbl-plan-select {
     transform: none;
   }
 }
+
+/* ==========================================================================
+   18. Internal Link Optimizer
+   ========================================================================== */
+
+/* Quota renders as topbar meta beside the page title, matching
+   .cbl-audit-quota's layout. No block margin here. */
+.cbl-ilo-quota {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Shared by the ILO post-types picker's Save row and the AI Visibility
+   Tracker's Track-prompts row: a button plus its inline status text. */
+.cbl-ilo-posttypes-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* -- Six tiles: pages analysed, links per page, and the four finding
+   counts that also drive the tab bar below. */
+.cbl-ilo-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.cbl-ilo-tile {
+  background: var(--cbl-bg-secondary);
+  border-radius: var(--cbl-radius-md);
+  padding: 12px 14px;
+}
+
+.cbl-ilo-tile-value {
+  display: block;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  line-height: 1.2;
+}
+
+.cbl-ilo-tile-label {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  margin-top: 2px;
+}
+
+.cbl-ilo-panel {
+  margin-top: 4px;
+}
+
+/* -- Findings tables: orphan pages, dead ends, buried pages share a
+   plain page list, weak anchors gets its own three-column table. */
+.cbl-ilo-table-wrap {
+  overflow-x: auto;
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+}
+
+.cbl-ilo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.cbl-ilo-table th,
+.cbl-ilo-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--cbl-border-color);
+}
+
+.cbl-ilo-table th {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-ilo-table tr:last-child td {
+  border-bottom: none;
+}
+
+.cbl-ilo-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+.cbl-ilo-page-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cbl-ilo-page-list li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cbl-border-color);
+}
+
+.cbl-ilo-page-list li:last-child {
+  border-bottom: none;
+}
+
+/* -- Suggested links: cards reuse .cbl-audit-sug / .cbl-audit-sug-actions
+   / .cbl-audit-sug-msg from the SEO Audit fix-review UI, these rules only
+   cover what is new here (impact/status pills, the source-target pair,
+   the now/after diff). */
+.cbl-ilo-sugs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cbl-ilo-apply-all {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cbl-ilo-sug-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cbl-ilo-impact {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cbl-ilo-impact-high {
+  background: var(--cbl-red-bg);
+  color: #A32D2D;
+}
+
+.cbl-ilo-impact-medium {
+  background: var(--cbl-amber-bg);
+  color: var(--cbl-amber);
+}
+
+.cbl-ilo-impact-low {
+  background: var(--cbl-bg-secondary);
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-ilo-status {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-ilo-status-approved,
+.cbl-ilo-status-applied {
+  color: var(--cbl-green);
+}
+
+.cbl-ilo-pair {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cbl-ilo-end {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cbl-ilo-end-title {
+  font-size: 11.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-ilo-arrow {
+  color: var(--cbl-text-hint);
+  flex-shrink: 0;
+}
+
+.cbl-ilo-reason {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin: 0;
+}
+
+.cbl-ilo-diff {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--cbl-bg-secondary);
+  border-radius: var(--cbl-radius-md);
+  padding: 10px 12px;
+}
+
+.cbl-ilo-diff-row {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.cbl-ilo-diff-tag {
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-ilo-diff-tag.is-after {
+  color: var(--cbl-purple);
+}
+
+.cbl-ilo-diff-row p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-ilo-t-add {
+  background: var(--cbl-green-bg);
+  color: #0F6E56;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.cbl-ilo-t-cut {
+  background: var(--cbl-red-bg);
+  color: #A32D2D;
+  text-decoration: line-through;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.cbl-ilo-t-link {
+  color: var(--cbl-purple);
+  text-decoration: underline;
+}
+
+.cbl-ilo-anchor {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cbl-ilo-anchor-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-ilo-anchor-text {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--cbl-purple-text);
+  background: var(--cbl-purple-bg);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+
+@media screen and (max-width: 1024px) {
+  .cbl-ilo-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==========================================================================
+   14b. AI Visibility Tracker - 3.0.8
+   ========================================================================== */
+
+.cbl-aiv-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 18px;
+}
+
+.cbl-aiv-stat-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-aiv-stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--cbl-text-primary);
+  line-height: 1.15;
+}
+
+.cbl-aiv-stat-note {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-aiv-stat-note.is-up {
+  color: var(--cbl-green);
+}
+
+.cbl-aiv-stat-note.is-down {
+  color: var(--cbl-red);
+}
+
+.cbl-aiv-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cbl-border-color);
+}
+
+.cbl-aiv-block-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-aiv-platforms {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.cbl-aiv-platform {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-aiv-source-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cbl-aiv-source-list li {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--cbl-border-color);
+}
+
+.cbl-aiv-source-list li:last-child {
+  border-bottom: none;
+}
+
+.cbl-aiv-add-row {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.cbl-aiv-add-textarea {
+  width: 100%;
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-md);
+  padding: 10px 12px;
+  font-size: 13.5px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+/* Intro line under the page title, describing the feature. Shown whether
+   or not the site is connected yet. */
+.cbl-page-intro {
+  font-size: 13.5px;
+  color: var(--cbl-text-secondary);
+  max-width: 640px;
+  margin: -6px 0 16px;
+}
+
+/* Three KPI cards: visibility score, brand mentions, next check. Each
+   wraps the existing .cbl-aiv-stat kicker/value/note block in its own
+   .cbl-card so the three sit in a row. */
+.cbl-aiv-kpis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.cbl-aiv-kpis .cbl-card {
+  margin-bottom: 0;
+}
+
+.cbl-aiv-kpis .cbl-aiv-stat {
+  margin-bottom: 0;
+}
+
+@media screen and (max-width: 900px) {
+  .cbl-aiv-kpis {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Onboarding strip shown before the first reading lands: three steps,
+   left to right, with a divider between them. */
+.cbl-aiv-steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  padding: 20px;
+  border: 1px dashed var(--cbl-border-color);
+  border-radius: var(--cbl-radius-lg);
+  background: var(--cbl-bg-secondary);
+}
+
+.cbl-aiv-step {
+  padding: 0 20px;
+  border-left: 1px solid var(--cbl-border-color);
+}
+
+.cbl-aiv-step:first-child {
+  padding-left: 0;
+  border-left: none;
+}
+
+.cbl-aiv-step-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.cbl-aiv-step-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border-radius: 50%;
+  border: 2px solid var(--cbl-border-color);
+  box-sizing: border-box;
+}
+
+.cbl-aiv-step.is-done .cbl-aiv-step-icon {
+  border-color: var(--cbl-green);
+  background: var(--cbl-green);
+  position: relative;
+}
+
+.cbl-aiv-step.is-done .cbl-aiv-step-icon::after {
+  content: '\2713';
+  position: absolute;
+  inset: 0;
+  color: #fff;
+  font-size: 11px;
+  line-height: 15px;
+  text-align: center;
+}
+
+.cbl-aiv-step.is-current .cbl-aiv-step-icon {
+  border-color: var(--cbl-purple);
+}
+
+.cbl-aiv-step-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-aiv-step.is-upcoming .cbl-aiv-step-title {
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-aiv-step-desc {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+  margin-top: 7px;
+  padding-left: 27px;
+}
+
+@media screen and (max-width: 900px) {
+  .cbl-aiv-steps {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .cbl-aiv-step {
+    padding: 0;
+    border-left: none;
+  }
+}
+
+/* Two-column chart area: weekly mentions bars, engine mention-rate bars. */
+.cbl-aiv-charts {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 32px;
+}
+
+.cbl-aiv-chart-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--cbl-text-hint);
+  margin-bottom: 14px;
+}
+
+.cbl-aiv-chart-col-right {
+  border-left: 1px solid var(--cbl-border-color);
+  padding-left: 28px;
+}
+
+.cbl-aiv-chart-note {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  margin-top: 10px;
+}
+
+.cbl-aiv-weekbars {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  height: 132px;
+}
+
+.cbl-aiv-weekbar {
+  flex: 1;
+  max-width: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.cbl-aiv-weekbar-value {
+  font-size: 11.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-aiv-weekbar-fill {
+  width: 100%;
+  max-width: 44px;
+  border-radius: 5px 5px 2px 2px;
+  background: #ddd3f7;
+  min-height: 3px;
+}
+
+.cbl-aiv-weekbar-fill.is-latest {
+  background: var(--cbl-purple);
+}
+
+.cbl-aiv-weekbar-label {
+  font-size: 11px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-aiv-engine-rates {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cbl-aiv-engine-row-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 7px;
+}
+
+.cbl-aiv-engine-row-head b {
+  font-weight: 560;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-aiv-engine-row-head span {
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-aiv-engine-track {
+  height: 7px;
+  border-radius: 4px;
+  background: var(--cbl-bg-tertiary);
+  overflow: hidden;
+}
+
+.cbl-aiv-engine-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--cbl-purple);
+}
+
+/* Visibility mini bar inside a Tracked prompts row. */
+.cbl-aiv-vis-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cbl-aiv-vis-track {
+  flex: 1;
+  min-width: 60px;
+  height: 6px;
+  border-radius: 4px;
+  background: var(--cbl-bg-tertiary);
+  overflow: hidden;
+}
+
+.cbl-aiv-vis-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--cbl-border-color);
+}
+
+.cbl-aiv-vis-fill.is-high {
+  background: var(--cbl-green);
+}
+
+.cbl-aiv-vis-fill.is-mid {
+  background: var(--cbl-amber);
+}
+
+.cbl-aiv-vis-label {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+  min-width: 34px;
+  text-align: right;
+}
+
+/* Status pill for a "never checked yet" engine cell. .cbl-pill-success/
+   -neutral (existing, shared with other pages) cover Cited/Absent. */
+.cbl-pill-pending {
+  background: #fff;
+  color: var(--cbl-text-hint);
+  border: 1px solid var(--cbl-border-color);
+}
+
+/* "Try:" prompt suggestion chips. */
+.cbl-aiv-suggestions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 11px;
+  flex-wrap: wrap;
+}
+
+.cbl-aiv-suggestions-label {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-aiv-suggestion-btn {
+  padding: 5px 11px;
+  border: 1px solid var(--cbl-border-color);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--cbl-text-secondary);
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.cbl-aiv-suggestion-btn:hover {
+  border-color: var(--cbl-purple);
+  color: var(--cbl-purple-text);
+  background: var(--cbl-purple-bg);
+}
+
+@media screen and (max-width: 900px) {
+  .cbl-aiv-charts {
+    grid-template-columns: 1fr;
+  }
+
+  .cbl-aiv-chart-col-right {
+    border-left: none;
+    padding-left: 0;
+    border-top: 1px solid var(--cbl-border-color);
+    padding-top: 20px;
+  }
+}
+
+/* ==========================================================================
+   15. Dashboard (overview) - 3.0.8 split from Dashboard & Scan
+   ========================================================================== */
+
+.cbl-dash-connect {
+  background: var(--cbl-purple-bg);
+  border: 1px solid var(--cbl-purple-border);
+  border-radius: var(--cbl-radius-lg);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.cbl-dash-connect-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 14px 12px 16px;
+}
+
+.cbl-dash-connect-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--cbl-amber-bg);
+  color: var(--cbl-amber);
+  font-size: 11.5px;
+  font-weight: 650;
+  padding: 4px 10px;
+  border-radius: 20px;
+  flex: 0 0 auto;
+}
+
+.cbl-dash-connect-badge .cbl-connect-status-dot {
+  background: var(--cbl-amber);
+}
+
+.cbl-dash-connect-info {
+  flex: 1 1 240px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cbl-dash-connect-title {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-connect-sub {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-dash-connect-toggle {
+  background: none;
+  border: 0;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--cbl-purple);
+  cursor: pointer;
+  padding: 6px 4px;
+  flex: 0 0 auto;
+}
+
+.cbl-dash-connect-toggle:hover {
+  text-decoration: underline;
+}
+
+.cbl-dash-connect-dismiss {
+  background: transparent;
+  border: 0;
+  color: var(--cbl-text-hint);
+  font-size: 15px;
+  line-height: 1;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  cursor: pointer;
+  flex: 0 0 28px;
+}
+
+.cbl-dash-connect-dismiss:hover {
+  background: #fff;
+  color: var(--cbl-purple);
+}
+
+.cbl-dash-connect-details {
+  border-top: 1px solid var(--cbl-purple-border);
+  background: #fdfcff;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 12px 22px;
+}
+
+.cbl-dash-connect-perk {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.cbl-dash-connect-perk-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  flex: 0 0 26px;
+}
+
+.cbl-dash-connect-perk-title {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-connect-perk-body {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+  line-height: 1.45;
+}
+
+/* Site health hero + Broken links + Last scan: 3-up, matches the old
+   4-stat grid's footprint at a glance. */
+.cbl-dash-top-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(268px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cbl-dash-health {
+  background: linear-gradient(100deg, #2c1a6b 0%, #45289c 100%);
+  border-radius: var(--cbl-radius-lg);
+  padding: 22px 24px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cbl-dash-health-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cbl-dash-health-label {
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  color: #c9befa;
+}
+
+.cbl-dash-health-chip {
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 4px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.cbl-dash-health-score-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.cbl-dash-health-score {
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.cbl-dash-health-score.is-empty {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cbl-dash-health-meta {
+  font-size: 12.5px;
+  color: #d3ceff;
+  padding-bottom: 6px;
+}
+
+.cbl-dash-health-delta-up {
+  color: #8ff0c0;
+}
+
+.cbl-dash-health-delta-down {
+  color: #ffb3ab;
+}
+
+.cbl-dash-health-bar {
+  height: 7px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.cbl-dash-health-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #7cf0c0, #9d8bff);
+}
+
+.cbl-dash-health-stats {
+  display: flex;
+  gap: 22px;
+  font-size: 12px;
+  color: #d3ceff;
+  flex-wrap: wrap;
+}
+
+.cbl-dash-health-stats strong {
+  color: #fff;
+  font-weight: 650;
+}
+
+.cbl-dash-health-cta {
+  align-self: flex-start;
+  margin-top: auto;
+  border: 0;
+  background: #fff;
+  color: #2b2472;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  padding: 11px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cbl-dash-health-cta:hover {
+  background: #efedff;
+}
+
+.cbl-dash-side-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbl-dash-side-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cbl-dash-side-label {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-dash-broken-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.cbl-dash-broken-value {
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cbl-red);
+}
+
+.cbl-dash-broken-value.is-empty {
+  color: #c8c8d8;
+}
+
+.cbl-dash-broken-sub {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-dash-broken-list {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-broken-list-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cbl-dash-broken-list-row span:last-child {
+  font-weight: 650;
+}
+
+.cbl-dash-broken-cta {
+  margin-top: 2px;
+  border: 1px solid var(--cbl-red-border);
+  background: var(--cbl-red-bg);
+  color: var(--cbl-red);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+}
+
+.cbl-dash-broken-cta:hover {
+  background: #fbeae8;
+  color: var(--cbl-red);
+}
+
+.cbl-dash-lastscan-value {
+  font-size: 16px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-lastscan-sub {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-dash-divider {
+  height: 1px;
+  background: var(--cbl-border-color);
+}
+
+.cbl-dash-lastscan-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 12.5px;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-lastscan-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cbl-dash-lastscan-row span:first-child {
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-dash-lastscan-row span:last-child {
+  font-weight: 650;
+}
+
+/* SEO tools grid */
+.cbl-dash-tools-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.cbl-dash-tools-head h2 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-tools-hint {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-dash-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(258px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.cbl-dash-tool-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cbl-dash-tool-card:hover {
+  border-color: var(--cbl-purple-border);
+  box-shadow: 0 4px 14px rgba(45, 30, 120, 0.08);
+  color: inherit;
+}
+
+.cbl-dash-tool-head {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.cbl-dash-tool-title {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-tool-value-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.cbl-dash-tool-value {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-tool-value.is-empty {
+  color: #c8c8d8;
+}
+
+.cbl-dash-tool-value-unit {
+  font-size: 15px;
+  color: var(--cbl-text-hint);
+  font-weight: 600;
+}
+
+.cbl-dash-tool-delta {
+  font-size: 12px;
+  font-weight: 650;
+  padding-bottom: 4px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-dash-tool-delta.is-up {
+  color: var(--cbl-green);
+}
+
+.cbl-dash-tool-delta.is-down {
+  color: var(--cbl-red);
+}
+
+.cbl-dash-tool-delta.is-warn {
+  color: var(--cbl-amber);
+}
+
+.cbl-dash-tool-desc {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-dash-tool-cta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--cbl-purple);
+  margin-top: auto;
+}
+
+/* Tip of the week card: same grid slot, lavender treatment */
+.cbl-dash-tip-card {
+  background: var(--cbl-purple-bg);
+  border: 1px solid var(--cbl-purple-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cbl-dash-tip-card:hover {
+  border-color: #cbbdfa;
+  color: inherit;
+}
+
+.cbl-dash-tip-body {
+  font-size: 13px;
+  line-height: 1.55;
+  color: #3c3c5c;
+}
+
+/* Needs attention + Scan activity */
+.cbl-dash-bottom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.cbl-dash-attention-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  display: flex;
+  flex-direction: column;
+}
+
+.cbl-dash-attention-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--cbl-border-color);
+}
+
+.cbl-dash-attention-head-title {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-attention-head-link {
+  font-size: 12.5px;
+  font-weight: 650;
+  color: var(--cbl-purple);
+  text-decoration: none;
+}
+
+.cbl-dash-attention-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 20px;
+  border-bottom: 1px solid #f3f4fa;
+}
+
+.cbl-dash-attention-row:last-child {
+  border-bottom: 0;
+}
+
+.cbl-dash-attention-url {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--cbl-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cbl-dash-attention-found {
+  font-size: 11.5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-dash-attention-date {
+  font-size: 11.5px;
+  color: var(--cbl-text-hint);
+  white-space: nowrap;
+}
+
+.cbl-dash-attention-empty {
+  padding: 34px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.cbl-dash-attention-empty-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--cbl-purple-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cbl-purple);
+}
+
+.cbl-dash-attention-empty-text {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  max-width: 38ch;
+  line-height: 1.55;
+}
+
+.cbl-dash-activity-card {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.cbl-dash-activity-title {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-dash-activity-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 96px;
+}
+
+.cbl-dash-activity-bar {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.cbl-dash-activity-fill {
+  width: 100%;
+  border-radius: 5px 5px 0 0;
+  background: var(--cbl-purple);
+  min-height: 3px;
+}
+
+.cbl-dash-activity-fill.has-broken {
+  background: #e4b3ae;
+}
+
+.cbl-dash-activity-label {
+  font-size: 10.5px;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-dash-activity-empty {
+  font-size: 12px;
+  color: var(--cbl-text-hint);
+  line-height: 1.5;
+}
+
+.cbl-dash-activity-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 11.5px;
+  color: var(--cbl-text-secondary);
+  flex-wrap: wrap;
+}
+
+.cbl-dash-activity-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cbl-dash-activity-legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+  background: var(--cbl-purple);
+}
+
+.cbl-dash-activity-legend-dot.has-broken {
+  background: #e4b3ae;
+}
+
+@media screen and (max-width: 782px) {
+  .cbl-dash-top-grid,
+  .cbl-dash-tools-grid,
+  .cbl-dash-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   16. Broken link scan (results) - 3.0.8 split from Dashboard & Scan
+   ========================================================================== */
+
+.cbl-results-empty {
+  background: var(--cbl-bg-secondary);
+  border-radius: var(--cbl-radius-md);
+  padding: 36px 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.cbl-results-empty-icon {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 6px 18px rgba(83, 74, 183, 0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cbl-purple);
+}
+
+.cbl-results-empty h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--cbl-text-primary);
+  margin: 0 0 6px;
+}
+
+.cbl-results-empty-sub {
+  font-size: 13px;
+  color: var(--cbl-text-secondary);
+  margin: 0 0 18px;
+}
+
+.cbl-results-breadcrumb {
+  font-size: 11.5px;
+  color: var(--cbl-text-hint);
+  margin: 0 0 4px;
+}
+
+.cbl-results-breadcrumb a {
+  color: var(--cbl-purple);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cbl-results-breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+/* Scan-state banner + BROKEN/WARNINGS/HEALTHY tiles, matching the mockups.
+   Static (server-rendered) here: the scan trigger lives on the Dashboard,
+   not this page, so there is no live "scanning" state to show. */
+.cbl-results-summary {
+  background: var(--cbl-bg-primary);
+  border: var(--cbl-border);
+  border-radius: var(--cbl-radius-lg);
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.cbl-results-state {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.cbl-results-state-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--cbl-green-bg);
+  color: var(--cbl-green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+}
+
+.cbl-results-state-title {
+  font-size: 13.5px;
+  font-weight: 650;
+  color: var(--cbl-text-primary);
+}
+
+.cbl-results-state-sub {
+  font-size: 12px;
+  color: var(--cbl-text-secondary);
+}
+
+.cbl-results-tiles {
+  display: flex;
+  gap: 24px;
+  padding-left: 8px;
+  border-left: 1px solid var(--cbl-border-color);
+  flex: 0 0 auto;
+}
+
+.cbl-results-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-left: 18px;
+}
+
+.cbl-results-tile:first-child {
+  padding-left: 0;
+}
+
+.cbl-results-tile-label {
+  font-size: 10.5px;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  color: var(--cbl-text-hint);
+}
+
+.cbl-results-tile-value {
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cbl-results-tile-value.is-broken {
+  color: var(--cbl-red);
+}
+
+.cbl-results-tile-value.is-warning {
+  color: var(--cbl-amber);
+}
+
+.cbl-results-tile-value.is-healthy {
+  color: var(--cbl-green);
+}
+
+@media screen and (max-width: 782px) {
+  .cbl-results-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cbl-results-tiles {
+    padding-left: 0;
+    border-left: 0;
+  }
+}

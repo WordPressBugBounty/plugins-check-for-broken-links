@@ -631,7 +631,18 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Links_List_Table' ) ) :
 							<option value="slider" <?php selected( $selected_location, 'slider' ); ?>"><?php esc_html_e( 'Slider Content', 'check-for-broken-links' ); ?></option>
 						</select>
 
-						<input type="hidden" name="page" value="wpcbl-check-for-broken-links">
+						<?php
+						// This table only renders on Broken link scan today, but the
+						// filter form must post back to whatever page is actually
+						// showing it (it used to be the combined Dashboard & Scan
+						// page) rather than a hardcoded slug, or the filter silently
+						// lands the admin on a different page with no table at all.
+						$wpcbl_filter_page = isset( $_REQUEST['page'] ) ? sanitize_key( wp_unslash( $_REQUEST['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+						if ( '' === $wpcbl_filter_page || 0 !== strpos( $wpcbl_filter_page, 'wpcbl-check-for-broken-links' ) ) {
+							$wpcbl_filter_page = 'wpcbl-check-for-broken-links-scan';
+						}
+						?>
+						<input type="hidden" name="page" value="<?php echo esc_attr( $wpcbl_filter_page ); ?>">
 						<input type="hidden" name="tab" value="scan">
 
 						<?php wp_nonce_field( 'wpcbl_filter_action', '_wpnonce' ); ?>

@@ -23,7 +23,7 @@ $wpcbl_pro_formats    = array(
 ?>
 
 <div class="wpcbl_export_csv_wrap">
-	<form name="wpcbl_export_csv_form" class="wpcbl_export_csv_form" id="wpcbl_export_csv_form" action="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) ); ?>" method="post">
+	<form name="wpcbl_export_csv_form" class="wpcbl_export_csv_form" id="wpcbl_export_csv_form" action="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-scan' ) ); ?>" method="post">
 		<input type="hidden" name="action" value="wpcbl_export_report"/>
 		<input type="hidden" name="nonce" value="<?php echo esc_attr( wp_create_nonce( 'wpcbl_export_csv_nonce' ) ); ?>"/>
 		<span class="cbl-export-label"><?php esc_html_e( 'Export report:', 'check-for-broken-links' ); ?></span>

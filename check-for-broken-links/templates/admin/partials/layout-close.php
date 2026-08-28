@@ -8,8 +8,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-// The Dashboard & Scan first-run view sets $wpcbl_hide_footer so the rating
-// footer stays out of the fresh-install experience.
+// The Dashboard and Broken link scan first-run views set $wpcbl_hide_footer
+// so the rating footer stays out of the fresh-install experience.
 if ( empty( $wpcbl_hide_footer ) ) :
 	?>
 			<div class="cbl-footer-text">

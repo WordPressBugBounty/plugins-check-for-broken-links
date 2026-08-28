@@ -49,7 +49,7 @@ $wpcbl_source_labels = array(
 
 	<?php if ( array() === $wpcbl_history ) : ?>
 		<p class="cbl-reports-empty">
-			<?php esc_html_e( 'No scans yet. Run one from Dashboard & Scan and it shows up here.', 'check-for-broken-links' ); ?>
+			<?php esc_html_e( 'No scans yet. Run one from the Dashboard and it shows up here.', 'check-for-broken-links' ); ?>
 		</p>
 	<?php else : ?>
 		<div class="cbl-reports-row cbl-reports-row-head">

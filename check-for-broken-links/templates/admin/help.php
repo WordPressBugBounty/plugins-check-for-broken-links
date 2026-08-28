@@ -16,7 +16,7 @@ $wpcbl_faq = array(
 	),
 	array(
 		'question' => __( 'How do I check for broken links on my site?', 'check-for-broken-links' ),
-		'answer'   => __( 'Go to the Dashboard & Scan page and click Start Manual Scan. The plugin will scan supported content and display the results in a table.', 'check-for-broken-links' ),
+		'answer'   => __( 'Go to the Dashboard and click Start Manual Scan. The plugin scans supported content and sends you to Broken link scan for the results.', 'check-for-broken-links' ),
 	),
 	array(
 		'question' => __( 'Will fixing broken links improve SEO?', 'check-for-broken-links' ),

@@ -1,15 +1,15 @@
 === Check for Broken Links - Broken Link Checker & SEO Suite ===
 Contributors: mvirik
 Donate link: https://brokenlinkchecker.io/wordpress-plugin
-Tags: broken link checker, rank tracker, uptime monitor, ai visibility, seo audit
+Tags: broken link checker, rank tracker, uptime monitor, ai visibility, internal link
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.0.7
+Stable tag: 3.0.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
-Find broken links, 404 errors and broken images. Plus rank tracking, AI visibility, SEO audits and uptime monitoring inside wp-admin.
+Find broken links, 404 errors & broken images. Internal link optimizer, rank tracking, AI visibility, SEO audits and uptime monitoring in one plugin.
 
 == Description ==
 
@@ -218,6 +218,17 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.0.8 = 28 August 2026
+* New: Dashboard is now an overview. Site link health, broken links, your last scan, and live numbers from every SEO tool on one screen.
+* New: Broken link scan has its own page, holding the full results table with filters and export. The old Dashboard & Scan entry is now two entries.
+* New: AI Visibility Tracker page in wp-admin. See how often AI assistants mention your brand, the split between Google and ChatGPT, and which competitors get cited alongside you. Track the questions your customers ask and see whether ChatGPT, Perplexity and Google AI cite you for each one. Charts show how your mentions move from one check to the next.
+* New: Internal Link Optimizer page in wp-admin. See orphan pages, dead ends, buried pages and weak anchors, then add the internal links your pages are missing.
+* New: Apply a link suggestion straight to the page. The plugin edits the post, and one click undoes it. WordPress also keeps a revision on post types that support one.
+* New: Choose which post types the Internal Link Optimizer reads. Every public type is listed and ticked by default, and your choice applies to the next analysis.
+* Improvement: Internal Link Optimizer and AI Visibility Tracker now open inside wp-admin. Both used to send you to brokenlinkchecker.io in a new tab.
+* Improvement: The Internal Link Optimizer reads the pages WordPress already publishes. A newly connected site can run one right away instead of waiting for a crawl to find its pages.
+* Improvement: Start scan stays on the Dashboard. Progress shows there, and the plugin sends you to Broken link scan for the results once a scan finishes.
 
 = 3.0.7 = 25 August 2026
 * New: SEO Audit page in wp-admin. Run a full SEO and AEO audit of your site without leaving WordPress. See your score, which category is costing you the most points, and a fix queue ordered by what moves the score most. Every issue lists the pages it affects and how to fix it. The checks that passed are listed too. Available on every plan for connected sites, with your monthly allowance shown on the page.

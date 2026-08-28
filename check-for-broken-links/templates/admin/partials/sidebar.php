@@ -11,11 +11,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Current page detection.
 $wpcbl_sidebar_page_map = array(
-	'wpcbl-check-for-broken-links'              => 'scan',
+	'wpcbl-check-for-broken-links'              => 'dashboard',
+	'wpcbl-check-for-broken-links-scan'         => 'scan-results',
 	'wpcbl-check-for-broken-links-reports'      => 'reports',
 	'wpcbl-check-for-broken-links-rank-tracker' => 'rank-tracker',
 	'wpcbl-check-for-broken-links-uptime'       => 'uptime',
 	'wpcbl-check-for-broken-links-seo-audit'   => 'seo-audit',
+	'wpcbl-check-for-broken-links-internal-links' => 'internal-links',
+	'wpcbl-check-for-broken-links-ai-visibility' => 'ai-visibility',
 	'wpcbl-check-for-broken-links-settings'     => 'settings',
 	'wpcbl-check-for-broken-links-seo-tip'  => 'seo-tip',
 	'wpcbl-check-for-broken-links-help'     => 'help',
@@ -103,9 +106,15 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 	<nav class="cbl-nav">
 
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) ); ?>"
-			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'scan' ) ); ?>">
+			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'dashboard' ) ); ?>">
+			<span class="dashicons dashicons-grid-view"></span>
+			<?php esc_html_e( 'Dashboard', 'check-for-broken-links' ); ?>
+		</a>
+
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-scan' ) ); ?>"
+			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'scan-results' ) ); ?>">
 			<span class="dashicons dashicons-search"></span>
-			<?php esc_html_e( 'Dashboard & Scan', 'check-for-broken-links' ); ?>
+			<?php esc_html_e( 'Broken link scan', 'check-for-broken-links' ); ?>
 		</a>
 
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-reports' ) ); ?>"
@@ -134,16 +143,16 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 			<?php esc_html_e( 'SEO / AEO Audit', 'check-for-broken-links' ); ?>
 		</a>
 
-		<a href="<?php echo esc_url( $wpcbl_go( 'ai-visibility' ) ); ?>" target="_blank" rel="noopener" class="cbl-nav-item cbl-nav-item-top">
-		<span class="dashicons dashicons-format-chat"></span>
-		<?php esc_html_e( 'AI Visibility Tracker', 'check-for-broken-links' ); ?>
-		<span class="cbl-nav-ext" aria-hidden="true">&#8599;</span>
-	</a>
-
-	<a href="<?php echo esc_url( $wpcbl_go( 'internal-links' ) ); ?>" target="_blank" rel="noopener" class="cbl-nav-item cbl-nav-item-top">
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-internal-links' ) ); ?>"
+			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'internal-links' ) ); ?>">
 			<span class="dashicons dashicons-admin-links"></span>
 			<?php esc_html_e( 'Internal Link Optimizer', 'check-for-broken-links' ); ?>
-			<span class="cbl-nav-ext" aria-hidden="true">&#8599;</span>
+		</a>
+
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-ai-visibility' ) ); ?>"
+			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'ai-visibility' ) ); ?>">
+			<span class="dashicons dashicons-format-chat"></span>
+			<?php esc_html_e( 'AI Visibility Tracker', 'check-for-broken-links' ); ?>
 		</a>
 
 		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-uptime' ) ); ?>"

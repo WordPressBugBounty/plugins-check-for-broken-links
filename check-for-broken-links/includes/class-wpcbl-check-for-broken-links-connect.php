@@ -31,6 +31,8 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		const TRANSIENT_PLANS   = 'wpcbl_plans_cache_v2';
 		const TRANSIENT_SHAPE   = 'wpcbl_billing_shape';
 		const TRANSIENT_AUDIT   = 'wpcbl_seo_audit_state';
+		const TRANSIENT_ILO     = 'wpcbl_ilo_state';
+		const TRANSIENT_AIV     = 'wpcbl_ai_visibility_state';
 		const ENT_TTL           = 12 * HOUR_IN_SECONDS;
 		const GRACE_TTL         = 14 * DAY_IN_SECONDS;
 		const NONCE_TTL         = 10 * MINUTE_IN_SECONDS;
@@ -859,6 +861,159 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			$response = wp_remote_request( $this->app_url( '/api/v1/site/seo-audit' . $path ), $args );
 
 			return $this->ai_fix_response( $response );
+		}
+
+		/**
+		 * Internal Link Optimizer API call.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param string     $method HTTP method.
+		 * @param string     $path   Path under the internal-links root.
+		 * @param array|null $body   JSON body, or null for none.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function internal_links_request( $method, $path = '', $body = null ) {
+			$args = array(
+				'method'  => $method,
+				// A full-site upload chunk is larger than an audit call,
+				// so it gets longer than the default thirty seconds.
+				'timeout' => 45,
+				'headers' => $this->api_headers(),
+			);
+
+			if ( null !== $body ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = wp_json_encode( $body );
+			} elseif ( 'GET' !== strtoupper( $method ) ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = '{}';
+			}
+
+			$response = wp_remote_request( $this->app_url( '/api/v1/site/internal-links' . $path ), $args );
+
+			return $this->ai_fix_response( $response );
+		}
+
+		/**
+		 * Cached Internal Link Optimizer state; $fresh bypasses and refills
+		 * the transient. Modelled exactly on seo_audit_state() -- every
+		 * page that reads this on render (the Dashboard's ILO card) must
+		 * go through here, never internal_links_request( 'GET' ) directly,
+		 * so the Dashboard never makes an uncached, blocking round trip to
+		 * the SaaS on every page load.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param bool $fresh Bypass the cache and re-fetch.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function internal_links_state( $fresh = false ) {
+			if ( ! $fresh ) {
+				$cached = get_transient( self::TRANSIENT_ILO );
+				if ( is_array( $cached ) ) {
+					return array( 'code' => 200, 'data' => $cached );
+				}
+			}
+
+			$result = $this->internal_links_request( 'GET' );
+			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
+				set_transient( self::TRANSIENT_ILO, $result['data'], 5 * MINUTE_IN_SECONDS );
+			}
+
+			return $result;
+		}
+
+		/**
+		 * Drop the cached Internal Link Optimizer state (a run started).
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function flush_internal_links_state() {
+			delete_transient( self::TRANSIENT_ILO );
+		}
+
+		/**
+		 * AI Visibility Tracker API call: the brand mentions overview,
+		 * tracked prompts, and (via $path '/refresh') the rate-limited
+		 * "Run check now" action. Cadence otherwise stays server-owned
+		 * (each reading costs the business money) -- this proxy is a thin
+		 * passthrough, the day-limit itself lives on brokenlinkchecker.io,
+		 * never trusted client-side.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param string     $method HTTP method.
+		 * @param string     $path   Sub-path appended to /api/v1/site/ai-visibility, empty for the base resource.
+		 * @param array|null $body   JSON body, or null for none.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function ai_visibility_request( $method, $path = '', $body = null ) {
+			$args = array(
+				'method'  => $method,
+				'timeout' => 20,
+				'headers' => $this->api_headers(),
+			);
+
+			if ( null !== $body ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = wp_json_encode( $body );
+			} elseif ( 'GET' !== strtoupper( $method ) ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = '{}';
+			}
+
+			$response = wp_remote_request( $this->app_url( '/api/v1/site/ai-visibility' . $path ), $args );
+
+			return $this->ai_fix_response( $response );
+		}
+
+		/**
+		 * Cached AI Visibility state; $fresh bypasses and refills the
+		 * transient. Modelled exactly on seo_audit_state(): the Dashboard
+		 * card and the AI Visibility page's own state action both read
+		 * through here, so wp-admin never makes an uncached, blocking
+		 * round trip to the SaaS on every page load.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param bool $fresh Bypass the cache and re-fetch.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function ai_visibility_state( $fresh = false ) {
+			if ( ! $fresh ) {
+				$cached = get_transient( self::TRANSIENT_AIV );
+				if ( is_array( $cached ) ) {
+					return array( 'code' => 200, 'data' => $cached );
+				}
+			}
+
+			$result = $this->ai_visibility_request( 'GET' );
+			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
+				set_transient( self::TRANSIENT_AIV, $result['data'], 5 * MINUTE_IN_SECONDS );
+			}
+
+			return $result;
+		}
+
+		/**
+		 * Drop the cached AI Visibility state (a prompt was added or
+		 * removed), so the Dashboard card and the page do not show a
+		 * stale count for up to five minutes after the user changes
+		 * something.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function flush_ai_visibility_state() {
+			delete_transient( self::TRANSIENT_AIV );
 		}
 
 		/**

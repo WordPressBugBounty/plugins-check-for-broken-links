@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Check for Broken Links - Broken Link Checker & 404 Monitor
  * Description: Scan your site for broken links and 404 errors to improve SEO and user experience.
- * Version: 3.0.7
+ * Version: 3.0.8
  * Author: Norse Digital Group LLC
  * Author URI: https://brokenlinkchecker.io/
  * Requires at least: 6.0
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Globals constants.
  */
 define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_NAME', 'Check for Broken Links' );
-define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.0.7' );
+define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.0.8' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_PHP_VER', '7.2' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER', '6.0' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH', __DIR__ );
@@ -108,6 +108,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links' ) ) :
 			include_once WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/includes/class-wpcbl-check-for-broken-links-connect.php';
 			include_once WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/includes/class-wpcbl-check-for-broken-links-remote-apply.php';
 			include_once WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/includes/class-wpcbl-check-for-broken-links-seo-apply.php';
+			include_once WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/includes/class-wpcbl-check-for-broken-links-link-apply.php';
 
 			/*
 			 * Back-end includes.

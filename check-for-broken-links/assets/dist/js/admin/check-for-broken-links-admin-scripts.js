@@ -68,7 +68,7 @@
    * On click of the manual scan button (topbar) or the first-scan button
    * (empty state), start the manual scan.
    */
-  $(document).on('click', '#wpcbl-manual-scan, #wpcbl-first-scan', function (event) {
+  $(document).on('click', '#wpcbl-manual-scan, #wpcbl-first-scan, .wpcbl-scan-trigger', function (event) {
     event.preventDefault();
     console.log('Manual scan started...');
     let nonce = wpcbl_check_for_broken_links_params.nonce;
@@ -77,17 +77,36 @@
       scan_page_url: wpcbl_check_for_broken_links_params.scanPageUrl,
       nonce: nonce
     };
-    let firstScan = $('#wpcbl-empty-state').length > 0;
+    // Which page this trigger fired on decides redirect vs. in-place
+    // refresh. #wpcbl-scan-results-page is an explicit marker Broken link
+    // scan renders on purpose (both its empty and its with-results state) --
+    // deliberately not a check for the results-table element itself, which
+    // exists only when a scan has already run, so this cannot silently
+    // break the next time that page's markup changes.
+    let onResultsPage = $('#wpcbl-scan-results-page').length > 0;
+    // Whether that page's own results table is on the DOM right now (its
+    // first-ever scan has none to refresh, everywhere else it does).
+    let hasResultsTable = $('.wpcbl-check-for-broken-links-links-table').length > 0;
 
     // Call the manual scan function.
     manualScan(data).then(result => {
       console.log(result);
       progressStop();
 
-      // A first scan has no results table to refresh in place; reload the
-      // page so it renders its normal with-results state.
-      if (firstScan && typeof result === 'object' && result.hasOwnProperty('success') && result.success) {
-        window.location.href = wpcbl_check_for_broken_links_params.scanPageUrl;
+      let ok = typeof result === 'object' && result.hasOwnProperty('success') && result.success;
+
+      // Not on Broken link scan (the Dashboard): it has no table to refresh,
+      // so send the admin there for the details once the scan finishes.
+      if (!onResultsPage && ok) {
+        window.location.href = wpcbl_check_for_broken_links_params.scanResultsUrl;
+        return;
+      }
+
+      // On Broken link scan, but nothing rendered yet to refresh in place
+      // (its own first scan): reload so the page renders its normal
+      // with-results state, same reasoning as the Dashboard case above.
+      if (onResultsPage && !hasResultsTable && ok) {
+        window.location.reload();
         return;
       }
 
@@ -127,19 +146,22 @@
               $('#wpcbl-ai-fix-batch-bar').toggle(brokenCount > 0);
             }
           }
-// Modify the pagination URLs
+// Modify the pagination URLs (the results table only ever lives on
+// Broken link scan, so pagination links point there).
           $('.wpcbl-check-for-broken-links-links-table .tablenav-pages a').each(function () {
             var oldUrl = new URL($(this).attr('href'));
             var paged = oldUrl.searchParams.get('paged');
-            var newUrl = new URL(wpcbl_check_for_broken_links_params.scanPageUrl);
+            var newUrl = new URL(wpcbl_check_for_broken_links_params.scanResultsUrl);
             newUrl.searchParams.set('paged', paged);
             $(this).attr('href', newUrl.toString());
           });
         } else {
           console.error('Error: Unexpected AJAX response', result);
+          actionFailed(result);
         }
       } else {
         console.error('Error: AJAX request failed', result);
+        actionFailed(result);
       }
     });
   });
@@ -160,8 +182,10 @@
       }
       linkAction('wpcbl_clear_scan_results', {}).done(function (result) {
         if (result && result.success) {
-          // Reload so the page renders its normal empty state.
-          window.location.href = wpcbl_check_for_broken_links_params.scanPageUrl;
+          // Clear Results only lives on Broken link scan (3.0.8): reload it
+          // so the page renders its normal empty state, staying put rather
+          // than bouncing back to the Dashboard.
+          window.location.reload();
         } else {
           actionFailed(result);
         }
@@ -560,7 +584,7 @@
 
   $(document).ready(function () {
     if (window.location.search.indexOf('wpcbl_autostart=1') !== -1) {
-      $('#wpcbl-manual-scan, #wpcbl-first-scan').first().trigger('click');
+      $('#wpcbl-manual-scan, #wpcbl-first-scan, .wpcbl-scan-trigger').first().trigger('click');
     }
   });
 
@@ -590,7 +614,7 @@
    * "Scanning…" while a scan runs (covers the hero and topbar buttons).
    */
   const setScanButtonsScanning = scanning => {
-    const $buttons = $('#wpcbl-manual-scan, #wpcbl-first-scan');
+    const $buttons = $('#wpcbl-manual-scan, #wpcbl-first-scan, .wpcbl-scan-trigger');
     $buttons.prop('disabled', scanning).toggleClass('is-scanning', scanning);
     $buttons.find('.cbl-btn-label').each(function () {
       const $label = $(this);

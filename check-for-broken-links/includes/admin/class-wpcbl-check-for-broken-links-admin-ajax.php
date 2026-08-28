@@ -63,6 +63,16 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			add_action( 'wp_ajax_wpcbl_seo_audit_ai_fix', array( $this, 'seo_audit_ai_fix' ) );
 			add_action( 'wp_ajax_wpcbl_seo_audit_ai_apply', array( $this, 'seo_audit_ai_apply' ) );
 			add_action( 'admin_post_wpcbl_seo_audit_pdf', array( $this, 'seo_audit_pdf' ) );
+			add_action( 'wp_ajax_wpcbl_ilo_state', array( $this, 'ilo_state' ) );
+			add_action( 'wp_ajax_wpcbl_ilo_run', array( $this, 'ilo_run' ) );
+			add_action( 'wp_ajax_wpcbl_ilo_resolve', array( $this, 'ilo_resolve' ) );
+			add_action( 'wp_ajax_wpcbl_ilo_apply', array( $this, 'ilo_apply' ) );
+			add_action( 'wp_ajax_wpcbl_ilo_undo', array( $this, 'ilo_undo' ) );
+			add_action( 'wp_ajax_wpcbl_ilo_post_types', array( $this, 'ilo_post_types' ) );
+			add_action( 'wp_ajax_wpcbl_aiv_state', array( $this, 'aiv_state' ) );
+			add_action( 'wp_ajax_wpcbl_aiv_add_prompts', array( $this, 'aiv_add_prompts' ) );
+			add_action( 'wp_ajax_wpcbl_aiv_delete_prompt', array( $this, 'aiv_delete_prompt' ) );
+			add_action( 'wp_ajax_wpcbl_aiv_refresh', array( $this, 'aiv_refresh' ) );
 			add_action( 'wp_ajax_wpcbl_billing_change_plan', array( $this, 'billing_change_plan' ) );
 		}
 
@@ -983,6 +993,823 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			// Raw binary passthrough: escaping would corrupt the file.
 			echo $pdf['body']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			exit;
+		}
+
+		/**
+		 * Internal Link Optimizer: current run, findings and suggestions.
+		 *
+		 * Reuses verify_seo_audit_request() as its guard rather than a
+		 * separate ILO-specific copy -- the guard (nonce, manage_options,
+		 * is_connected()) is identical, only the API root differs, and
+		 * that root lives in internal_links_request(), not the guard.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ilo_state() {
+			$connect = $this->verify_seo_audit_request();
+			$this->send_rank_result( $connect->internal_links_request( 'GET' ) );
+		}
+
+		/**
+		 * Internal Link Optimizer: upload one batch of pages.
+		 *
+		 * The browser calls this repeatedly, walking the site. A short
+		 * batch means the end, and that call also starts the run, so the
+		 * upload can never be left half-finished and unclaimed.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ilo_run() {
+			$connect = $this->verify_seo_audit_request();
+
+			// The Dashboard card reads through the cached
+			// internal_links_state() wrapper; a run starting means the
+			// figures it shows are about to change, so the cache is
+			// dropped up front rather than left to serve a stale count
+			// for up to five minutes.
+			$connect->flush_internal_links_state();
+
+			$offset = isset( $_POST['offset'] ) ? absint( wp_unslash( $_POST['offset'] ) ) : 0;
+			$upload = isset( $_POST['upload'] ) ? sanitize_text_field( wp_unslash( $_POST['upload'] ) ) : '';
+			$stored = isset( $_POST['stored'] ) ? absint( wp_unslash( $_POST['stored'] ) ) : 0;
+			// The account's page cap, read by the browser from the state
+			// payload's page_cap and passed through on every call. 0 means
+			// the browser never learned one, in which case nothing here
+			// changes and the server's own cap check is the only one.
+			$cap    = isset( $_POST['cap'] ) ? absint( wp_unslash( $_POST['cap'] ) ) : 0;
+			$batch  = 25;
+			$capped = false;
+
+			// Empty means "follow the shared auditable types", exactly
+			// today's behaviour -- wpcbl_collect_site_pages() intersects
+			// a non-empty selection with wpcbl_auditable_post_types()
+			// itself, so a stale saved type can never resurrect a junk
+			// post type here even if the site's own settings changed
+			// since it was saved.
+			$post_types = wpcbl_get_option( 'ilo_post_types', array() );
+			$post_types = is_array( $post_types ) ? $post_types : array();
+
+			// Without this block a free site with 60 pages uploaded batch
+			// 1, then had batch 2 refused with a 422 page_cap, which ended
+			// the walk before /run was ever posted: the analysis could
+			// never start at all and the uploaded rows sat orphaned until
+			// the daily sweep. The room left in the cap decides instead.
+			if ( $cap > 0 ) {
+				$room = $cap - $stored;
+
+				if ( $room <= 0 ) {
+					// The cap is spent. The walk is over exactly as it is
+					// when the site runs out of posts, so this takes the
+					// same route: no /pages call, straight to /run.
+					if ( '' === $upload ) {
+						wp_send_json_error( esc_html__( 'The upload could not be found. Start the analysis again.', 'check-for-broken-links' ), 400 );
+					}
+
+					// Spending the cap does not by itself mean anything
+					// was left out: a site whose page count lands exactly
+					// on the cap reaches this same branch, with nothing
+					// genuinely missed. has_more from the last batch
+					// cannot settle that (it is true whenever that
+					// batch's query came back full, which is also true
+					// exactly on this boundary), so a fresh probe query
+					// is what decides -- querying past the site's real
+					// end always comes back with zero pages, with none
+					// of has_more's ambiguity.
+					$genuinely_capped = $this->ilo_more_pages_after( $offset, $post_types );
+
+					$started = $connect->internal_links_request( 'POST', '/run', array( 'upload' => $upload ) );
+
+					if ( is_wp_error( $started ) || $started['code'] < 200 || $started['code'] >= 300 ) {
+						$this->send_rank_result( $started );
+					}
+
+					$payload = array(
+						'upload'       => $upload,
+						'pages_stored' => $stored,
+						'done'         => true,
+						'next_offset'  => $offset,
+						'run_id'       => isset( $started['data']['run_id'] ) ? $started['data']['run_id'] : '',
+					);
+
+					if ( $genuinely_capped ) {
+						// The browser says so plainly. The page is on
+						// every plan, so this is a statement of what
+						// was read, never an upgrade prompt.
+						$payload['capped']   = true;
+						$payload['page_cap'] = $cap;
+					}
+
+					wp_send_json_success( $payload );
+				}
+
+				if ( $room < $batch ) {
+					// Room for part of a batch. Collect only that many and
+					// end the walk after uploading them.
+					$batch  = $room;
+					$capped = true;
+				}
+			}
+
+			// wpcbl_collect_site_pages() owns the offset arithmetic: the
+			// rows it hands back and the query rows it actually consumed
+			// are different numbers (the front page rides outside $limit,
+			// a dedup or permalink skip drops a row without freeing an
+			// offset slot), and only the collector can see both. done and
+			// next_offset below are read from its has_more/next_offset,
+			// never derived from count( $pages ) again.
+			$collected = wpcbl_collect_site_pages( $offset, $batch, $post_types );
+			$pages     = $collected['pages'];
+
+			if ( $capped && count( $pages ) > $batch ) {
+				// The front page rides outside the collector's query limit
+				// on the first batch, so a capped batch can come back one
+				// row over the room left. Drop the extra rather than post
+				// a chunk the server would refuse outright.
+				$pages = array_slice( $pages, 0, $batch );
+			}
+
+			if ( array() === $pages ) {
+				// has_more decides this, ahead of the offset check: an
+				// empty batch does not mean the walk is over just because
+				// it landed at offset 0. A site whose first (or any)
+				// batch is entirely removed by the dedup or
+				// empty-permalink skip, with real posts still behind it,
+				// is not an empty site -- it is a walk that has not
+				// finished yet. Only when has_more is ALSO false does the
+				// offset get to decide between "nothing published at
+				// all" (0) and "the walk just ended" (anything else).
+				if ( $collected['has_more'] ) {
+					// Not over, whatever the offset: nothing to upload
+					// this round, but the walk continues. There is no
+					// /pages response to read pages_stored from here, so
+					// the browser's own running total (echoed back as
+					// 'stored') passes straight through unchanged,
+					// keeping the progress number monotonic instead of
+					// resetting to 0 mid-walk. Task 9's JS is responsible
+					// for sending it.
+					wp_send_json_success(
+						array(
+							'upload'       => $upload,
+							'pages_stored' => $stored,
+							'done'         => false,
+							'next_offset'  => $collected['next_offset'],
+						)
+					);
+				}
+
+				if ( 0 === $offset ) {
+					// Genuinely nothing published -- a real error.
+					wp_send_json_error( esc_html__( 'No published pages were found to analyse.', 'check-for-broken-links' ), 422 );
+				}
+
+				// The walk is genuinely over: nothing left to upload, and
+				// nothing left to walk past. The server requires
+				// pages => a non-empty array, so posting one here would be
+				// rejected outright rather than treated as a no-op; skip
+				// /pages entirely and go straight to /run instead. There
+				// is no /pages response to read the upload id from at
+				// this point, so the id the browser already sent along in
+				// this same request is what carries forward -- and
+				// without one there is nothing to start a run for, so
+				// refuse here with a plain message rather than letting
+				// the server's raw validation string reach the user.
+				if ( '' === $upload ) {
+					wp_send_json_error( esc_html__( 'The upload could not be found. Start the analysis again.', 'check-for-broken-links' ), 400 );
+				}
+
+				$started = $connect->internal_links_request( 'POST', '/run', array( 'upload' => $upload ) );
+
+				if ( is_wp_error( $started ) || $started['code'] < 200 || $started['code'] >= 300 ) {
+					$this->send_rank_result( $started );
+				}
+
+				wp_send_json_success(
+					array(
+						// No /pages response landed on this call either,
+						// so the running total the browser already holds
+						// is echoed back here too -- the same reason as
+						// the has_more branch above. Hardcoding 0 here
+						// would reset the displayed count on the very
+						// last response of the walk.
+						'upload'       => $upload,
+						'pages_stored' => $stored,
+						'done'         => true,
+						'next_offset'  => $offset,
+						'run_id'       => isset( $started['data']['run_id'] ) ? $started['data']['run_id'] : '',
+					)
+				);
+			}
+
+			$body = array( 'pages' => $pages );
+
+			if ( '' !== $upload ) {
+				$body['upload'] = $upload;
+			}
+
+			$result = $connect->internal_links_request( 'POST', '/pages', $body );
+
+			if ( is_wp_error( $result ) || $result['code'] < 200 || $result['code'] >= 300 ) {
+				$this->send_rank_result( $result );
+			}
+
+			$upload = isset( $result['data']['upload'] ) ? $result['data']['upload'] : $upload;
+			// A capped batch ends the walk whatever the collector says is
+			// left: the cap, not the site, is what stops here.
+			$done   = $capped || ! $collected['has_more'];
+
+			$payload = array(
+				'upload'       => $upload,
+				'pages_stored' => isset( $result['data']['pages_stored'] ) ? (int) $result['data']['pages_stored'] : 0,
+				'done'         => $done,
+				'next_offset'  => $done ? $offset : $collected['next_offset'],
+			);
+
+			// Only when the cap really cut the walk short. A short last
+			// batch that happened to fit inside the room left is the site
+			// ending, not the cap, and saying otherwise would be wrong.
+			// $collected['has_more'] is not what decides it: shrinking
+			// this call's own query to exactly the room left reproduces
+			// the same boundary ambiguity room <= 0 above works around,
+			// so the same probe settles it here too.
+			if ( $capped && $this->ilo_more_pages_after( $collected['next_offset'], $post_types ) ) {
+				$payload['capped']   = true;
+				$payload['page_cap'] = $cap;
+			}
+
+			if ( $done ) {
+				$started = $connect->internal_links_request( 'POST', '/run', array( 'upload' => $upload ) );
+
+				if ( is_wp_error( $started ) || $started['code'] < 200 || $started['code'] >= 300 ) {
+					$this->send_rank_result( $started );
+				}
+
+				$payload['run_id'] = isset( $started['data']['run_id'] ) ? $started['data']['run_id'] : '';
+			}
+
+			wp_send_json_success( $payload );
+		}
+
+		/**
+		 * Whether at least one more resolvable page sits beyond $offset,
+		 * once the plan's page cap has stopped ilo_run()'s walk.
+		 *
+		 * $collected['has_more'] cannot answer this on its own: it is
+		 * true whenever the query that filled the batch just uploaded
+		 * came back full, which is also true exactly on the boundary
+		 * where the site's page count lands on the cap with nothing left
+		 * behind it. A fresh one-row probe at the offset the walk would
+		 * resume from has none of that ambiguity -- querying past the
+		 * site's real end always comes back with zero pages.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param int   $offset     Query offset to probe from.
+		 * @param array $post_types Saved post-type filter, same as the walk used.
+		 *
+		 * @return bool
+		 */
+		private function ilo_more_pages_after( $offset, $post_types = array() ) {
+			$probe = wpcbl_collect_site_pages( $offset, 1, $post_types );
+
+			return array() !== $probe['pages'];
+		}
+
+		/**
+		 * Internal Link Optimizer: save which post types the optimizer
+		 * reads when it maps this site's links. Saving never starts a
+		 * run -- it only changes what the next one covers.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ilo_post_types() {
+			$this->verify_seo_audit_request();
+
+			$submitted = isset( $_POST['post_types'] ) ? (array) wp_unslash( $_POST['post_types'] ) : array();
+			$submitted = array_values( array_unique( array_map( 'sanitize_key', $submitted ) ) );
+
+			$auditable = wpcbl_auditable_post_types();
+			$unknown   = array_diff( $submitted, $auditable );
+
+			// A crafted POST cannot make the optimizer read a post type
+			// this site does not otherwise allow: anything outside the
+			// auditable list is refused outright, not silently dropped.
+			if ( array() !== $unknown ) {
+				wp_send_json_error( esc_html__( 'One or more of those post types are not available on this site.', 'check-for-broken-links' ), 400 );
+			}
+
+			$settings                   = get_option( 'wpcbl_check_for_broken_links_settings', array() );
+			$settings['ilo_post_types'] = $submitted;
+			update_option( 'wpcbl_check_for_broken_links_settings', $settings );
+
+			wp_send_json_success( array( 'post_types' => $submitted ) );
+		}
+
+		/**
+		 * Internal Link Optimizer: approve or skip one suggestion.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ilo_resolve() {
+			$connect = $this->verify_seo_audit_request();
+
+			$id     = isset( $_POST['suggestion_id'] ) ? sanitize_text_field( wp_unslash( $_POST['suggestion_id'] ) ) : '';
+			$status = isset( $_POST['status'] ) ? sanitize_text_field( wp_unslash( $_POST['status'] ) ) : '';
+
+			if ( '' === $id || ! in_array( $status, array( 'pending', 'approved', 'skipped' ), true ) ) {
+				wp_send_json_error( esc_html__( 'That suggestion could not be updated.', 'check-for-broken-links' ), 400 );
+			}
+
+			$this->send_rank_result( $connect->internal_links_request( 'POST', '/suggestions/' . rawurlencode( $id ), array( 'status' => $status ) ) );
+		}
+
+		/**
+		 * Internal Link Optimizer: apply one suggestion to a post.
+		 *
+		 * Every refusal here is deliberate and reported as such. Nothing
+		 * is guessed at, because a wrong guess silently edits the wrong
+		 * sentence of a customer's page.
+		 *
+		 * $anchor and $sentence are the two fields a suggestion carries
+		 * that get written into post_content verbatim (target_url goes
+		 * through esc_url_raw() and esc_attr() already, in the applier).
+		 * They come back from the SaaS API, not from this site's admin,
+		 * so wp_kses_post() runs on both before either reaches the
+		 * applier -- a compromised or malformed API response can not
+		 * plant a script tag in a customer's page this way.
+		 *
+		 * If this method's guard order, status codes or messages ever
+		 * change, tests/helpers/ilo-actions.php must change with it -- it
+		 * mirrors this method for a standalone test that cannot load
+		 * WordPress.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ilo_apply() {
+			$connect = $this->verify_seo_audit_request();
+
+			$id       = isset( $_POST['suggestion_id'] ) ? sanitize_text_field( wp_unslash( $_POST['suggestion_id'] ) ) : '';
+			$post_id  = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
+			$target   = isset( $_POST['target_url'] ) ? esc_url_raw( wp_unslash( $_POST['target_url'] ) ) : '';
+			$anchor   = isset( $_POST['anchor_text'] ) ? wp_kses_post( wp_unslash( $_POST['anchor_text'] ) ) : '';
+			$method   = isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : '';
+			$exist    = isset( $_POST['existing_text'] ) ? wp_unslash( $_POST['existing_text'] ) : '';
+			$after    = isset( $_POST['insert_after'] ) ? wp_unslash( $_POST['insert_after'] ) : '';
+			$sentence = isset( $_POST['insert_sentence'] ) ? wp_kses_post( wp_unslash( $_POST['insert_sentence'] ) ) : '';
+			$source   = isset( $_POST['source_url'] ) ? esc_url_raw( wp_unslash( $_POST['source_url'] ) ) : '';
+
+			if ( '' === $id || $post_id < 1 ) {
+				wp_send_json_error( esc_html__( 'This suggestion does not point at a page on this site. Open it on your dashboard instead.', 'check-for-broken-links' ), 400 );
+			}
+
+			$post = get_post( $post_id );
+
+			if ( ! $post ) {
+				wp_send_json_error( esc_html__( 'That page no longer exists on this site.', 'check-for-broken-links' ), 404 );
+			}
+
+			// The post id comes from the API, which resolves a project by
+			// DOMAIN. Two WordPress installs sharing one domain resolve to
+			// the same project, so an id minted on install A can arrive
+			// here on install B and point at a completely different post.
+			// The suggestion's own source_url is what settles it: unless
+			// this post's permalink IS that URL, this is not the page the
+			// suggestion was written for, and shared boilerplate ("Read
+			// more about our services") would match on it anyway.
+			if ( ! self::ilo_same_url( get_permalink( $post_id ), $source ) ) {
+				wp_send_json_error( esc_html__( 'That suggestion was written for a different page, so this one was left alone. Open it on your dashboard instead.', 'check-for-broken-links' ), 409 );
+			}
+
+			if ( 'publish' !== $post->post_status ) {
+				wp_send_json_error( esc_html__( 'That page is not published, so it was left alone.', 'check-for-broken-links' ), 409 );
+			}
+
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				wp_send_json_error( esc_html__( 'You cannot edit that page.', 'check-for-broken-links' ), 403 );
+			}
+
+			// The server sends 'remove_duplicate' for this method
+			// (SuggestionWriter, FixPromptWriter and DiffPreview all
+			// agree on that name -- verified against the SaaS source).
+			// 'unlink' is accepted too, at the cost of one extra
+			// condition, as a guard against a payload from an older or
+			// future server that used the plugin brief's original
+			// (wrong) name instead.
+			if ( 'remove_duplicate' === $method || 'unlink' === $method ) {
+				$result = WPCBL_Check_Broken_Links_Link_Apply::unlink_text( $post->post_content, $exist );
+			} elseif ( 'insert_sentence' === $method ) {
+				$result = WPCBL_Check_Broken_Links_Link_Apply::insert_sentence( $post->post_content, $after, $sentence, $anchor, $target );
+			} else {
+				$result = WPCBL_Check_Broken_Links_Link_Apply::wrap_existing( $post->post_content, $exist, $target );
+			}
+
+			if ( ! $result['ok'] ) {
+				wp_send_json_error( self::ilo_reason_message( $result['reason'] ), 422 );
+			}
+
+			$saved = wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_content' => $result['content'],
+				),
+				true
+			);
+
+			if ( is_wp_error( $saved ) ) {
+				wp_send_json_error( esc_html__( 'The page could not be saved. Please try again.', 'check-for-broken-links' ), 500 );
+			}
+
+			update_post_meta( $post_id, '_wpcbl_ilo_undo_' . $id, $result['undo'] );
+
+			// wp_update_post() only keeps a revision when the post type
+			// supports the 'revisions' feature. The post-types picker lets
+			// a site point the optimizer at any public type, and plenty of
+			// custom post types ship without revisions in their supports
+			// array, so this cannot be assumed true and has to be checked.
+			$has_revisions = post_type_supports( $post->post_type, 'revisions' );
+
+			// The dashboard and the plugin have to agree on a suggestion's
+			// status. When this write-back does not land, the page still
+			// has its link but the dashboard still lists the suggestion as
+			// open, and the message below says so rather than claiming the
+			// two are in sync.
+			$reported = $connect->internal_links_request( 'POST', '/suggestions/' . rawurlencode( $id ), array( 'status' => 'applied' ) );
+
+			wp_send_json_success(
+				array(
+					'status'  => 'applied',
+					'message' => self::ilo_apply_message( self::ilo_synced( $reported ), $has_revisions ),
+				)
+			);
+		}
+
+		/**
+		 * Internal Link Optimizer: put one applied suggestion back.
+		 *
+		 * If this method's guard order, status codes or messages ever
+		 * change, tests/helpers/ilo-actions.php must change with it -- it
+		 * mirrors this method for a standalone test that cannot load
+		 * WordPress.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function ilo_undo() {
+			$connect = $this->verify_seo_audit_request();
+
+			$id      = isset( $_POST['suggestion_id'] ) ? sanitize_text_field( wp_unslash( $_POST['suggestion_id'] ) ) : '';
+			$post_id = isset( $_POST['post_id'] ) ? absint( wp_unslash( $_POST['post_id'] ) ) : 0;
+
+			if ( '' === $id || $post_id < 1 ) {
+				wp_send_json_error( esc_html__( 'There is nothing to undo here.', 'check-for-broken-links' ), 400 );
+			}
+
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				wp_send_json_error( esc_html__( 'You cannot edit that page.', 'check-for-broken-links' ), 403 );
+			}
+
+			$undo = get_post_meta( $post_id, '_wpcbl_ilo_undo_' . $id, true );
+			$post = get_post( $post_id );
+
+			if ( ! is_array( $undo ) || ! $post ) {
+				wp_send_json_error( esc_html__( 'There is nothing to undo here.', 'check-for-broken-links' ), 404 );
+			}
+
+			$result = WPCBL_Check_Broken_Links_Link_Apply::undo( $post->post_content, $undo );
+
+			if ( ! $result['ok'] ) {
+				wp_send_json_error( self::ilo_undo_failure_message( $post->post_type ), 422 );
+			}
+
+			$saved = wp_update_post( array( 'ID' => $post_id, 'post_content' => $result['content'] ), true );
+
+			if ( is_wp_error( $saved ) ) {
+				wp_send_json_error( esc_html__( 'The page could not be saved. Please try again.', 'check-for-broken-links' ), 500 );
+			}
+
+			delete_post_meta( $post_id, '_wpcbl_ilo_undo_' . $id );
+
+			$reported = $connect->internal_links_request( 'POST', '/suggestions/' . rawurlencode( $id ), array( 'status' => 'approved' ) );
+
+			wp_send_json_success(
+				array(
+					'status'  => 'approved',
+					'message' => self::ilo_synced( $reported )
+						? esc_html__( 'Link removed and the page put back.', 'check-for-broken-links' )
+						: esc_html__( 'Link removed and the page put back. Your dashboard could not be updated, so it still shows this suggestion as applied.', 'check-for-broken-links' ),
+				)
+			);
+		}
+
+		/**
+		 * Did a status write-back to the API actually land?
+		 *
+		 * If this method changes, tests/helpers/ilo-actions.php must
+		 * change with it.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param mixed $result Return value of internal_links_request().
+		 *
+		 * @return bool
+		 */
+		private static function ilo_synced( $result ) {
+			if ( is_wp_error( $result ) || ! is_array( $result ) || ! isset( $result['code'] ) ) {
+				return false;
+			}
+
+			return $result['code'] >= 200 && $result['code'] < 300;
+		}
+
+		/**
+		 * The apply success message, for all four combinations of
+		 * whether the dashboard write-back landed and whether the post
+		 * type keeps a revision.
+		 *
+		 * wp_update_post() only creates a revision when the post type
+		 * supports the 'revisions' feature. The Internal Link Optimizer
+		 * can be pointed at any public post type, and custom post types
+		 * often ship without revisions, so the message must never claim
+		 * one exists unless it actually does. The undo itself does not
+		 * depend on a revision -- it restores from stored post meta -- so
+		 * every variant still points the customer at the one click that
+		 * puts the link back.
+		 *
+		 * If this method changes, tests/helpers/ilo-actions.php must
+		 * change with it.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param bool $synced        Whether the status write-back landed.
+		 * @param bool $has_revisions Whether the post type supports
+		 *                            revisions.
+		 *
+		 * @return string
+		 */
+		private static function ilo_apply_message( $synced, $has_revisions ) {
+			if ( $has_revisions ) {
+				return $synced
+					? esc_html__( 'Link added. WordPress kept a revision of the page.', 'check-for-broken-links' )
+					: esc_html__( 'Link added and WordPress kept a revision of the page. Your dashboard could not be updated, so it still shows this suggestion as open.', 'check-for-broken-links' );
+			}
+
+			return $synced
+				? esc_html__( 'Link added. You can undo it from this page.', 'check-for-broken-links' )
+				: esc_html__( 'Link added. You can undo it from this page. Your dashboard could not be updated, so it still shows this suggestion as open.', 'check-for-broken-links' );
+		}
+
+		/**
+		 * The undo failure message, for a post type with revisions and
+		 * one without.
+		 *
+		 * The failure only fires when the stored fragment no longer
+		 * matches the live content, so the automatic undo cannot run.
+		 * On a post type with revisions, the revision browser is a real
+		 * way back in. On one without, it is not, and pointing the
+		 * customer at an empty revision browser would only confuse them,
+		 * so this tells them plainly to edit the page directly instead.
+		 *
+		 * If this method changes, tests/helpers/ilo-actions.php must
+		 * change with it.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param string $post_type The post type of the page being undone.
+		 *
+		 * @return string
+		 */
+		private static function ilo_undo_failure_message( $post_type ) {
+			if ( post_type_supports( $post_type, 'revisions' ) ) {
+				return esc_html__( 'This page changed since the link was added. Use the revision browser in the editor to put it back.', 'check-for-broken-links' );
+			}
+
+			return esc_html__( 'This page changed since the link was added. The automatic undo cannot be applied, so edit the page directly to remove the link.', 'check-for-broken-links' );
+		}
+
+		/**
+		 * Are these two URLs the same page?
+		 *
+		 * A stored source_url and a live permalink can honestly differ on
+		 * scheme (the site moved to https after the run) and on a trailing
+		 * slash (permalink settings), and neither difference makes them a
+		 * different page. Nothing else is normalised: case and www are
+		 * left alone, because a host that differs there is a different
+		 * install as far as this guard is concerned, and guessing is what
+		 * this guard exists to stop.
+		 *
+		 * If this method changes, tests/helpers/ilo-actions.php must
+		 * change with it.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param string $a First URL.
+		 * @param string $b Second URL.
+		 *
+		 * @return bool
+		 */
+		private static function ilo_same_url( $a, $b ) {
+			$a = self::ilo_normalize_url( $a );
+			$b = self::ilo_normalize_url( $b );
+
+			return '' !== $a && $a === $b;
+		}
+
+		/**
+		 * Strip the scheme and any trailing slash from a URL.
+		 *
+		 * If this method changes, tests/helpers/ilo-actions.php must
+		 * change with it.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param string $url URL to normalise.
+		 *
+		 * @return string
+		 */
+		private static function ilo_normalize_url( $url ) {
+			$url = trim( (string) $url );
+
+			if ( '' === $url ) {
+				return '';
+			}
+
+			$url = preg_replace( '#^[a-z][a-z0-9+.-]*://#i', '', $url );
+
+			return rtrim( (string) $url, '/' );
+		}
+
+		/**
+		 * Turn a refusal code into something a person can act on.
+		 *
+		 * The default branch covers 'not_found' and 'no_paragraph_end'
+		 * alike. Raw classic-editor content usually has no wrapping <p>
+		 * tags at all (those are added at render time by wpautop, not
+		 * stored), so insert_sentence() reports 'not_found' there rather
+		 * than 'no_paragraph_end' even though the text is really on the
+		 * page. The wording below deliberately names no specific cause
+		 * (not "a theme or page builder", not "your editor") because it
+		 * covers three different ones at once -- text truly absent, text
+		 * generated by a builder, and plain classic-editor content that
+		 * was never wrapped in a <p> tag -- and naming just one of them
+		 * would read as flatly wrong for the other two.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @param string $reason Reason code from the applier.
+		 *
+		 * @return string
+		 */
+		private static function ilo_reason_message( $reason ) {
+			if ( 'already_linked' === $reason ) {
+				return esc_html__( 'That text already links to this page. Nothing to do.', 'check-for-broken-links' );
+			}
+
+			if ( 'linked_elsewhere' === $reason ) {
+				return esc_html__( 'That text already links somewhere else, so it was left alone.', 'check-for-broken-links' );
+			}
+
+			if ( 'anchor_not_in_sentence' === $reason ) {
+				return esc_html__( 'The suggested sentence does not contain the anchor text. Add this link in the editor.', 'check-for-broken-links' );
+			}
+
+			return esc_html__( 'That text was not found where the plugin can safely edit it. Add this link in the editor instead.', 'check-for-broken-links' );
+		}
+
+		/**
+		 * Shared guard for the AI Visibility endpoints: nonce + capability +
+		 * connection. Reuses verify_seo_audit_request() rather than a
+		 * separate copy, same as ilo_state() does -- the guard is
+		 * identical, only the API root differs, and that root lives in
+		 * ai_visibility_request(), not the guard.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return WPCBL_Check_Broken_Links_Connect
+		 */
+		private function verify_aiv_request() {
+			return $this->verify_seo_audit_request();
+		}
+
+		/**
+		 * AI Visibility: current overview, prompts and quota.
+		 *
+		 * Read-only against the SaaS: cadence (how often a reading is
+		 * captured) is server-owned because each reading costs real money.
+		 * aiv_refresh() below is the one deliberate, rate-limited
+		 * exception ("Run check now"), not this action. Reads through the
+		 * cached ai_visibility_state() wrapper, same as the Dashboard
+		 * card, rather than hitting the SaaS on every page load.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function aiv_state() {
+			$connect = $this->verify_aiv_request();
+			$this->send_rank_result( $connect->ai_visibility_state( ! empty( $_POST['fresh'] ) ) );
+		}
+
+		/**
+		 * AI Visibility: start tracking one or more prompts.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function aiv_add_prompts() {
+			$connect = $this->verify_aiv_request();
+			$prompts = isset( $_POST['prompts'] ) ? sanitize_textarea_field( wp_unslash( $_POST['prompts'] ) ) : '';
+
+			if ( '' === $prompts ) {
+				wp_send_json_error( esc_html__( 'Enter at least one prompt.', 'check-for-broken-links' ), 400 );
+			}
+
+			// The prompt count feeds both the page and the Dashboard
+			// card's "tracking" state -- drop the cache now so neither
+			// shows a stale count for up to five minutes.
+			$connect->flush_ai_visibility_state();
+			$this->send_rank_result( $connect->ai_visibility_request( 'POST', '/prompts', array( 'prompts' => $prompts ) ) );
+		}
+
+		/**
+		 * AI Visibility: stop tracking one prompt.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function aiv_delete_prompt() {
+			$connect = $this->verify_aiv_request();
+			$id      = isset( $_POST['id'] ) ? absint( $_POST['id'] ) : 0;
+
+			if ( ! $id ) {
+				wp_send_json_error( esc_html__( 'Missing prompt.', 'check-for-broken-links' ), 400 );
+			}
+
+			$connect->flush_ai_visibility_state();
+			$this->send_rank_result( $connect->ai_visibility_request( 'DELETE', '/prompts/' . $id ) );
+		}
+
+		/**
+		 * AI Visibility: "Run check now". A deliberate, rate-limited
+		 * exception to the read-only rule on the other three AI
+		 * Visibility actions above -- at most one manual capture per
+		 * project per calendar day, enforced server-side
+		 * (AiVisibilityService::requestManualMentionsRefresh() on
+		 * brokenlinkchecker.io), never trusted here.
+		 *
+		 * Not routed through send_rank_result(): that helper's generic
+		 * "Something went wrong" fallback is wrong for 429 (the day's
+		 * manual check is already spent) and 404 (the feature is off for
+		 * this account), so both get their own honest copy when the SaaS
+		 * does not supply a message of its own. 202 (accepted) still goes
+		 * through wp_send_json_success like every other successful call.
+		 *
+		 * @since 3.0.8
+		 *
+		 * @return void
+		 */
+		public function aiv_refresh() {
+			$connect = $this->verify_aiv_request();
+			$result  = $connect->ai_visibility_request( 'POST', '/refresh' );
+
+			if ( is_wp_error( $result ) ) {
+				wp_send_json_error( esc_html__( 'brokenlinkchecker.io is not reachable right now. Try again in a minute.', 'check-for-broken-links' ), 502 );
+			}
+
+			$code    = $result['code'];
+			$message = isset( $result['data']['message'] ) ? (string) $result['data']['message'] : '';
+
+			if ( 202 === $code ) {
+				// The reading itself lands minutes from now, not on this
+				// response -- drop the cache so the next state load does
+				// not hold a stale prompt count, even though the overview
+				// will not show the new reading until it actually lands.
+				$connect->flush_ai_visibility_state();
+				wp_send_json_success( array(
+					'message' => '' !== $message ? $message : esc_html__( 'Checking now. New results arrive in a few minutes.', 'check-for-broken-links' ),
+				) );
+			}
+
+			if ( 429 === $code ) {
+				wp_send_json_error( '' !== $message ? $message : esc_html__( 'You already ran a check today. The next manual check is available tomorrow.', 'check-for-broken-links' ), 429 );
+			}
+
+			if ( 404 === $code ) {
+				wp_send_json_error( esc_html__( 'Run check now is not available for this account yet.', 'check-for-broken-links' ), 404 );
+			}
+
+			wp_send_json_error( '' !== $message ? $message : esc_html__( 'Something went wrong. Please try again.', 'check-for-broken-links' ), $code );
 		}
 
 		/**
