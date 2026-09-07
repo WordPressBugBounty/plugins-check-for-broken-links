@@ -18,142 +18,230 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 	 */
 	class WPCBL_Check_Broken_Links_Utilities {
 		/**
-		 * Process the scan.
+		 * Run a whole scan in one call: begin, step until done, finish.
+		 *
+		 * Scheduled scans use this. The admin UI drives the same engine one
+		 * short step per request instead (scan_begin() then scan_step() until
+		 * done), so no single request outlives the host's execution limit
+		 * however big the site is.
 		 *
 		 * @since 1.0.0
 		 *
 		 * @param bool   $send_email Whether to send notification emails.
 		 * @param string $scan_source Scan source. Accepts manual or scheduled.
 		 *
-		 * @return bool True if the scan was successful, false otherwise.
+		 * @return bool True once the scan finished.
 		 */
 		public static function process_scan( $send_email = true, $scan_source = 'scheduled' ) {
-			$scan_start = microtime( true );
+			self::scan_begin( $scan_source, $send_email );
 
-			// Get the settings.
-			$settings         = get_option( 'wpcbl_check_for_broken_links_settings', array() );
-			$email_enabled    = isset( $settings['email_notifications'] ) ? $settings['email_notifications'] : 'off';
-			$email_addresses  = isset( $settings['email_addresses'] ) ? $settings['email_addresses'] : '';
-			$number_of_links  = isset( $settings['number_of_links'] ) ? $settings['number_of_links'] : 'all';
-			$set_number       = isset( $settings['set_links_number'] ) ? $settings['set_links_number'] : 0;
-			$exclusion_urls   = isset( $settings['exclusion_urls'] ) ? $settings['exclusion_urls'] : '';
-			$scan_timezone    = isset( $settings['scan_timezone'] ) ? $settings['scan_timezone'] : wp_timezone_string();
-			$scan_sliders     = isset( $settings['scan_slider_content'] ) ? $settings['scan_slider_content'] : 'on';
-			// Plain substring rules, exactly as the Settings page promises:
-			// any link whose URL contains the line's text is skipped. No
-			// slash-trimming — that made "/tag/" also match "/tagged-articles".
-			$links_to_exclude = array_map( 'trim', explode( "\n", $exclusion_urls ) );
+			do {
+				$state = self::scan_step( null );
+			} while ( is_array( $state ) && ! $state['done'] );
 
-			if ( 'all' == $number_of_links ) {
-				$number_of_links = -1;
-			} else {
-				$number_of_links = (int) $set_number;
-			}
+			return is_array( $state ) && $state['done'];
+		}
 
-			// Get the data to scan.
-			$data_to_scan = self::get_data_to_scan( $settings );
-
-			// Get already saved links.
-			$links_to_update = array(
-				'good'    => array(),
-				'warning' => array(),
-				'broken'  => array(),
-				'total'   => 0,
-			);
-
-			$count = 0;
-			$break = false;
-			$smart_slider_ids = array();
-
+		/**
+		 * Start a scan: snapshot the settings, list the content to scan and
+		 * store the job. Every later scan_step() call picks it up from there.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @param string $scan_source Scan source. Accepts manual or scheduled.
+		 * @param bool   $send_email  Whether the finishing step sends notification emails.
+		 *
+		 * @return array The stored job. 'total' is the item count the progress UI shows.
+		 */
+		public static function scan_begin( $scan_source = 'manual', $send_email = false ) {
+			$settings        = get_option( 'wpcbl_check_for_broken_links_settings', array() );
+			$number_of_links = isset( $settings['number_of_links'] ) ? $settings['number_of_links'] : 'all';
+			$set_number      = isset( $settings['set_links_number'] ) ? $settings['set_links_number'] : 0;
+			$exclusion_urls  = isset( $settings['exclusion_urls'] ) ? $settings['exclusion_urls'] : '';
+			$scan_sliders    = isset( $settings['scan_slider_content'] ) ? $settings['scan_slider_content'] : 'on';
 			// Link Types setting: which HTML elements get scanned.
 			$link_types = isset( $settings['link_types'] ) && is_array( $settings['link_types'] ) && ! empty( $settings['link_types'] ) ? $settings['link_types'] : array( 'html', 'image' );
+
+			// Posts are stored by id, comments by id too, and reloaded per
+			// step: the job has to fit in one option row.
+			$items = array();
+			foreach ( self::get_data_to_scan( $settings ) as $single ) {
+				$items[] = is_object( $single ) ? array( 'comment', (int) $single->comment_ID ) : array( 'post', (int) $single );
+			}
 
 			// A fresh scan resets Dismiss-ed entries (the Not broken whitelist is kept).
 			delete_option( 'wpcbl_session_dismissed' );
 
-			// Live progress for the admin UI: one tick per content item plus one
-			// for the slider stage, polled via the wpcbl_scan_progress AJAX action.
-			$progress_total   = count( $data_to_scan ) + ( 'on' === $scan_sliders ? 1 : 0 );
-			$progress_current = 0;
-			update_option( 'wpcbl_scan_progress', array( 'current' => 0, 'total' => $progress_total, 'links' => 0 ), false );
+			// One progress tick per content item plus one for the slider stage.
+			$total = count( $items ) + ( 'on' === $scan_sliders ? 1 : 0 );
 
-			foreach ( $data_to_scan as $single ) {
-				if ( is_object( $single ) ) {
-					$is_comment = true;
-					$post_id    = $single->comment_ID;
-					$content    = $single->comment_content;
+			$job = array(
+				'source'           => sanitize_key( $scan_source ),
+				'send_email'       => (bool) $send_email,
+				'started'          => microtime( true ),
+				'limit'            => 'all' == $number_of_links ? -1 : (int) $set_number,
+				// Plain substring rules, exactly as the Settings page promises:
+				// any link whose URL contains the line's text is skipped. No
+				// slash-trimming — that made "/tag/" also match "/tagged-articles".
+				'exclude'          => array_map( 'trim', explode( "\n", $exclusion_urls ) ),
+				'timezone'         => isset( $settings['scan_timezone'] ) ? $settings['scan_timezone'] : wp_timezone_string(),
+				'sliders'          => $scan_sliders,
+				'link_types'       => $link_types,
+				'email_enabled'    => isset( $settings['email_notifications'] ) ? $settings['email_notifications'] : 'off',
+				'email_addresses'  => isset( $settings['email_addresses'] ) ? $settings['email_addresses'] : '',
+				'items'            => $items,
+				'total'            => $total,
+				'item_index'       => 0,
+				'link_index'       => 0,
+				'count'            => 0,
+				'stopped'          => false,
+				'results'          => array( 'good' => array(), 'warning' => array(), 'broken' => array() ),
+				'smart_slider_ids' => array(),
+			);
+
+			update_option( 'wpcbl_scan_job', $job, false );
+			update_option( 'wpcbl_scan_progress', array( 'current' => 0, 'total' => $total, 'links' => 0 ), false );
+
+			return $job;
+		}
+
+		/**
+		 * Check links until the time budget is spent, then save where the
+		 * scan got to. A step always makes progress (at least one link), so
+		 * a zero budget means one link per step. A null budget runs to the
+		 * end. The step that runs out of work finishes the scan and reports
+		 * done.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @param float|null $budget_seconds Seconds of checking per step, null for no limit.
+		 * @param int|null   $link_timeout   Per-request timeout override for this step, null for the setting.
+		 *
+		 * @return array|false Progress: done, current, total, links. False when no scan is running.
+		 */
+		public static function scan_step( $budget_seconds = null, $link_timeout = null ) {
+			$job = get_option( 'wpcbl_scan_job', false );
+			if ( ! is_array( $job ) || ! isset( $job['items'], $job['results'] ) ) {
+				return false;
+			}
+
+			$step_start  = microtime( true );
+			$out_of_time = function () use ( $budget_seconds, $step_start ) {
+				return null !== $budget_seconds && ( microtime( true ) - $step_start ) >= (float) $budget_seconds;
+			};
+
+			$total_items = count( $job['items'] );
+
+			while ( ! $job['stopped'] && $job['item_index'] < $total_items ) {
+				list( $kind, $id ) = $job['items'][ $job['item_index'] ];
+				$is_comment        = 'comment' === $kind;
+
+				if ( $is_comment ) {
+					$comment = get_comment( $id );
+					$content = $comment ? $comment->comment_content : '';
 				} else {
-					$is_comment      = false;
-					$post_id         = $single;
-					$get_the_content = get_the_content( null, false, $post_id );
-
-					$content = apply_filters( 'the_content', $get_the_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Deliberately running content through the core filter so shortcodes/builders render before link extraction.
+					$content = apply_filters( 'the_content', get_the_content( null, false, $id ) ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Deliberately running content through the core filter so shortcodes/builders render before link extraction.
 				}
 
-				$content_smart_slider_ids = self::extract_smart_slider_ids( $content );
-				$smart_slider_ids         = array_merge( $smart_slider_ids, $content_smart_slider_ids );
-				$slider_links             = self::extract_slider_links( $content );
+				if ( 0 === $job['link_index'] ) {
+					$job['smart_slider_ids'] = array_merge( $job['smart_slider_ids'], self::extract_smart_slider_ids( $content ) );
+				}
+				$slider_links = self::extract_slider_links( $content );
 
-				// Extract links from content.
-				$links = self::extract_links( $content, $link_types );
+				// Extract links from content. Same content, same list, so a
+				// resumed item continues at the saved link index.
+				$links       = self::extract_links( $content, $job['link_types'] );
+				$link_count  = count( $links );
+				$paused      = false;
 
-				if ( ! empty( $links ) ) {
-					foreach ( $links as $link_item ) {
-						$link = $link_item['url'];
-						++$count;
+				for ( $i = $job['link_index']; $i < $link_count; $i++ ) {
+					$link = $links[ $i ]['url'];
+					++$job['count'];
 
-						if ( -1 !== $number_of_links && $count > (int) $number_of_links ) {
-							$break = true;
-							break;
-						}
+					if ( -1 !== $job['limit'] && $job['count'] > $job['limit'] ) {
+						$job['stopped'] = true;
+						break;
+					}
 
-						// Exclusion rules are substring matches; the Not broken
-						// whitelist is checked in the same helper.
-						if ( self::is_excluded( $link, $links_to_exclude ) ) {
-							continue;
-						}
+					// Exclusion rules are substring matches; the Not broken
+					// whitelist is checked in the same helper.
+					if ( ! self::is_excluded( $link, $job['exclude'] ) ) {
+						$status = self::check_link( $link, $id, $is_comment, $link_timeout );
 
-						// Check the link.
-						$status = self::check_link( $link, $post_id, $is_comment );
-
-						$link_source           = self::get_link_source( $link );
-						$status['link_source'] = $link_source;
-						$status['element']     = $link_item['element'];
-						$status['detected_at'] = self::format_scan_datetime( null, 'F j, Y', $scan_timezone );
+						$status['link_source'] = self::get_link_source( $link );
+						$status['element']     = $links[ $i ]['element'];
+						$status['detected_at'] = self::format_scan_datetime( null, 'F j, Y', $job['timezone'] );
 
 						if ( in_array( $link, $slider_links, true ) || in_array( rtrim( $link, '/' ), array_map( 'untrailingslashit', $slider_links ), true ) ) {
 							$status['is_slider'] = true;
 						}
 
-						$links_to_update[ $status['type'] ][] = $status;
+						$job['results'][ $status['type'] ][] = $status;
+					}
+
+					if ( $i + 1 < $link_count && $out_of_time() ) {
+						$job['link_index'] = $i + 1;
+						$paused            = true;
+						break;
 					}
 				}
 
-				++$progress_current;
-				update_option( 'wpcbl_scan_progress', array( 'current' => $progress_current, 'total' => $progress_total, 'links' => $count ), false );
+				if ( $paused ) {
+					break;
+				}
 
-				if ( $break ) {
+				// Item done.
+				++$job['item_index'];
+				$job['link_index'] = 0;
+				update_option( 'wpcbl_scan_progress', array( 'current' => $job['item_index'], 'total' => $job['total'], 'links' => $job['count'] ), false );
+
+				if ( $job['stopped'] || $out_of_time() ) {
 					break;
 				}
 			}
 
-			
-			if ( 'on' === $scan_sliders ) {
+			if ( ! $job['stopped'] && $job['item_index'] < $total_items ) {
+				update_option( 'wpcbl_scan_job', $job, false );
+
+				return array( 'done' => false, 'current' => $job['item_index'], 'total' => $job['total'], 'links' => $job['count'] );
+			}
+
+			self::scan_finish( $job );
+
+			return array( 'done' => true, 'current' => $job['total'], 'total' => $job['total'], 'links' => $job['count'] );
+		}
+
+		/**
+		 * Finish a scan: slider content, notification mail, summary, history,
+		 * and the results option every results page reads.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @param array $job The job as scan_step() left it.
+		 *
+		 * @return bool Whether the results option was saved.
+		 */
+		public static function scan_finish( $job ) {
+			$results = $job['results'];
+			$count   = (int) $job['count'];
+
+			if ( 'on' === $job['sliders'] ) {
 				// Best-effort: scan slider plugin content (if present).
-				list( $slider_results, $slider_count ) = self::scan_slider_content( $links_to_exclude, $number_of_links, $count, $scan_timezone, array_unique( array_map( 'absint', $smart_slider_ids ) ) );
+				list( $slider_results, $slider_count ) = self::scan_slider_content( $job['exclude'], $job['limit'], $count, $job['timezone'], array_unique( array_map( 'absint', $job['smart_slider_ids'] ) ) );
 				$count += $slider_count;
 				if ( ! empty( $slider_results ) ) {
 					foreach ( $slider_results as $sr ) {
 						if ( isset( $sr['type'] ) ) {
-							$links_to_update[ $sr['type'] ][] = $sr;
+							$results[ $sr['type'] ][] = $sr;
 						}
 					}
 				}
 			}
-			// Update the total scanned links.
-			$links_to_update['total'] = $count;
 
-			update_option( 'wpcbl_scan_progress', array( 'current' => $progress_total, 'total' => $progress_total, 'links' => $count ), false );
+			// Update the total scanned links.
+			$results['total'] = $count;
+
+			update_option( 'wpcbl_scan_progress', array( 'current' => $job['total'], 'total' => $job['total'], 'links' => $count ), false );
 
 			$email_result = array(
 				'status'     => 'skipped',
@@ -162,30 +250,31 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 			);
 
 			// Send email.
-			$scan_time = time();
-			$scan_time_str = self::format_scan_datetime( null, 'j F Y \a\t H:i:s', $scan_timezone );
+			$scan_time     = time();
+			$scan_time_str = self::format_scan_datetime( null, 'j F Y \a\t H:i:s', $job['timezone'] );
 
-			if ( $send_email ) {
-				$email_result = self::send_mails( $email_enabled, $email_addresses, $links_to_update['broken'], $scan_time_str );
+			if ( $job['send_email'] ) {
+				$email_result = self::send_mails( $job['email_enabled'], $job['email_addresses'], $results['broken'], $scan_time_str );
 			}
 
 			$wpcbl_summary = array(
 				'time'     => $scan_time,
 				'time_str' => $scan_time_str,
-				'duration' => microtime( true ) - $scan_start,
+				'duration' => microtime( true ) - (float) $job['started'],
 				'total'    => $count,
-				'broken'   => count( $links_to_update['broken'] ),
+				'broken'   => count( $results['broken'] ),
 				'email'    => $email_result,
-				'source'   => sanitize_key( $scan_source ),
+				'source'   => $job['source'],
 			);
 
 			update_option( 'wpcbl_last_scan_summary', $wpcbl_summary );
 			self::record_scan_history( $wpcbl_summary );
 
 			delete_option( 'wpcbl_scan_progress' );
+			delete_option( 'wpcbl_scan_job' );
 			update_option( 'wpcbl_completed_scans', (int) get_option( 'wpcbl_completed_scans', 0 ) + 1, false );
 
-			return update_option( 'wpcbl_check_for_broken_links_links', $links_to_update );
+			return update_option( 'wpcbl_check_for_broken_links_links', $results );
 		}
 
 		/**
@@ -1058,12 +1147,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		 * @param string  $link The link to check.
 		 * @param integer $post_id The post ID.
 		 * @param boolean $is_comment If the link is a comment.
+		 * @param integer|null $timeout Per-request timeout in seconds, null for the setting.
 		 *
 		 * @since 1.0.0
 		 *
 		 * @return array
 		 */
-		public static function check_link( $link, $post_id, $is_comment ) {
+		public static function check_link( $link, $post_id, $is_comment, $timeout = null ) {
 			// Filter the link.
 			$link = apply_filters( 'wpcbl_link_before_prechecks', $link );
 
@@ -1155,7 +1245,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 				if ( ! url_to_postid( $link ) ) {
 
 					// It may be redirected or an archive page, so let's check status anyway.
-					return self::check_url_status_code( $link, $is_comment, $post_id );
+					return self::check_url_status_code( $link, $is_comment, $post_id, $timeout );
 				}
 
 				// Otherwise.
@@ -1170,7 +1260,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 				}
 
 				// Return the status.
-				return self::check_url_status_code( $link, $is_comment, $post_id );
+				return self::check_url_status_code( $link, $is_comment, $post_id, $timeout );
 			}
 
 			return $status;

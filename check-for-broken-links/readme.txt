@@ -5,7 +5,7 @@ Tags: broken link checker, rank tracker, uptime monitor, ai visibility, internal
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.0.8
+Stable tag: 3.0.9
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -218,6 +218,11 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.0.9 = 7 September 2026
+* Fix: Scans finish on big sites. The scan now runs as a series of short steps and saves its progress after each one, so the host's execution limit no longer kills it. Sites with a few hundred posts used to stop after a minute or two with Something went wrong.
+* Fix: A scan step that fails on the wire is retried from where it stopped instead of failing the whole scan.
+* Fix: The Help page's support link now opens the contact form at brokenlinkchecker.io/contact. It pointed to a page that did not exist.
 
 = 3.0.8 = 28 August 2026
 * New: Dashboard is now an overview. Site link health, broken links, your last scan, and live numbers from every SEO tool on one screen.

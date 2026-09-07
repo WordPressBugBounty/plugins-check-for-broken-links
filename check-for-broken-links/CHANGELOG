@@ -1,6 +1,11 @@
 == Changelog ==
 
-= 3.0.8 - unreleased =
+= 3.0.9 - 7 September 2026 =
+* Fix: Scans finish on big sites. The scan now runs as a series of short steps and saves its progress after each one, so the host's execution limit no longer kills it. Sites with a few hundred posts used to stop after a minute or two with Something went wrong.
+* Fix: A scan step that fails on the wire is retried from where it stopped instead of failing the whole scan.
+* Fix: The Help page's support link now opens the contact form at brokenlinkchecker.io/contact. It pointed to a page that did not exist.
+
+= 3.0.8 - 28 August 2026 =
 * New: AI Visibility Tracker page in wp-admin. See your brand mentions overview, the platform split, and which competitors get cited alongside you. Track the prompts your customers ask AI and see whether ChatGPT, Perplexity and Google AI cite you for each one.
 * Improvement: AI Visibility Tracker now opens inside wp-admin. The sidebar and toolbar links used to send you to brokenlinkchecker.io in a new tab.
 * Improvement: AI Visibility Tracker page redesigned: score, mentions and next-check stat cards up top, an onboarding checklist before your first reading lands, a weekly mentions chart and a per-assistant mention rate chart once you have one, and a Run check now button for one extra manual check a day.

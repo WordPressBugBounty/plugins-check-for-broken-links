@@ -29,6 +29,8 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 		 */
 		public function __construct() {
 			add_action( 'wp_ajax_wpcbl_broken_links_manual_scan', array( $this, 'manual_scan' ) );
+			add_action( 'wp_ajax_wpcbl_scan_start', array( $this, 'scan_start' ) );
+			add_action( 'wp_ajax_wpcbl_scan_step', array( $this, 'scan_step' ) );
 			add_action( 'wp_ajax_wpcbl_clear_scan_results', array( $this, 'clear_scan_results' ) );
 			add_action( 'wp_ajax_wpcbl_scan_progress', array( $this, 'scan_progress' ) );
 			add_action( 'wp_ajax_wpcbl_dismiss_ttswp_banner', array( $this, 'dismiss_ttswp_banner' ) );
@@ -2280,32 +2282,139 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 				// Run the scan.
 				WPCBL_Check_Broken_Links_Utilities::process_scan( false, 'manual' );
 
-				// Get the links from the db.
-				$links        = get_option( 'wpcbl_check_for_broken_links_links', array() );
-				$broken_links = isset( $links['broken'] ) ? $links['broken'] : array();
-
-				// Create a new instance of the table class.
-				$broken_links_table = new WPCBL_Check_Broken_Links_Admin_Links_List_Table();
-				$broken_links_table->prepare_items();
-
-				// Capture the output of the display method.
-				ob_start();
-
-				// If there are no broken links, return a message.
-				if ( empty( $broken_links ) ) {
-					include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/no-broken-links.php';
-				}
-
-				echo '<form method="get">';
-				$broken_links_table->display();
-				echo '</form>';
-				$table_html = ob_get_clean();
-
 				// Return the table HTML in the AJAX response.
-				wp_send_json_success( array( 'table_html' => $table_html, 'summary' => get_option( 'wpcbl_last_scan_summary' ) ) );
+				wp_send_json_success( $this->scan_results_payload() );
 			}
 
 			die();
+		}
+
+		/**
+		 * Start a chunked manual scan. The admin JS then calls scan_step()
+		 * until it reports done, so no single request outlives the host's
+		 * execution limit however big the site is. The one-request
+		 * manual_scan() above died after a minute or two on sites with a
+		 * few hundred posts.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return void
+		 */
+		public function scan_start() {
+			$this->verify_scan_request();
+
+			$job = WPCBL_Check_Broken_Links_Utilities::scan_begin( 'manual', false );
+
+			wp_send_json_success( array( 'done' => false, 'current' => 0, 'total' => $job['total'], 'links' => 0 ) );
+		}
+
+		/**
+		 * Run one step of the chunked scan and report progress. The step that
+		 * finishes the scan also carries the results table and summary.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return void
+		 */
+		public function scan_step() {
+			$this->verify_scan_request();
+
+			// A closed tab must not kill a step halfway through saving its state.
+			ignore_user_abort( true );
+
+			// Lift the limit where the host allows it. Where it does not, the
+			// budget below keeps the step inside whatever limit applies.
+			@set_time_limit( 300 ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged -- Disabled on some hosts, and that is handled.
+
+			list( $budget, $link_timeout ) = self::scan_step_limits();
+
+			$state = WPCBL_Check_Broken_Links_Utilities::scan_step( $budget, $link_timeout );
+
+			if ( false === $state ) {
+				wp_send_json_error( esc_html__( 'No scan is running. Start a new scan.', 'check-for-broken-links' ), 409 );
+			}
+
+			if ( $state['done'] ) {
+				$state = array_merge( $state, $this->scan_results_payload() );
+			}
+
+			wp_send_json_success( $state );
+		}
+
+		/**
+		 * Seconds of link checking per step, and the per-request timeout that
+		 * keeps the last link of a step inside the host's execution limit.
+		 *
+		 * With no limit (CLI, or set_time_limit() worked) a step checks for
+		 * 20 seconds with the configured timeout. Under a hard limit the
+		 * budget leaves 10 seconds of headroom and the per-request timeout
+		 * is capped so budget + one slow request still fits.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return array{0: int, 1: int|null} Budget seconds, per-request timeout or null for the setting.
+		 */
+		public static function scan_step_limits() {
+			$limit = (int) ini_get( 'max_execution_time' );
+			if ( $limit <= 0 || $limit >= 120 ) {
+				return array( 20, null );
+			}
+
+			$budget       = max( 3, min( 20, $limit - 10 ) );
+			$link_timeout = max( 3, $limit - $budget - 3 );
+
+			return array( $budget, $link_timeout );
+		}
+
+		/**
+		 * Nonce and capability check shared by the scan actions.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return void
+		 */
+		private function verify_scan_request() {
+			if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wpcbl_check_for_broken_links' ) ) {
+				wp_die( esc_html__( 'Cheatin&#8217; huh?', 'check-for-broken-links' ) );
+			}
+
+			// Scanning is an admin-only, expensive operation.
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_send_json_error( esc_html__( 'You do not have permission to run a scan.', 'check-for-broken-links' ), 403 );
+			}
+		}
+
+		/**
+		 * The rendered results table and last-scan summary a finished scan
+		 * hands back to the admin JS.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return array{table_html: string, summary: mixed}
+		 */
+		private function scan_results_payload() {
+			// Get the links from the db.
+			$links        = get_option( 'wpcbl_check_for_broken_links_links', array() );
+			$broken_links = isset( $links['broken'] ) ? $links['broken'] : array();
+
+			// Create a new instance of the table class.
+			$broken_links_table = new WPCBL_Check_Broken_Links_Admin_Links_List_Table();
+			$broken_links_table->prepare_items();
+
+			// Capture the output of the display method.
+			ob_start();
+
+			// If there are no broken links, return a message.
+			if ( empty( $broken_links ) ) {
+				include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/no-broken-links.php';
+			}
+
+			echo '<form method="get">';
+			$broken_links_table->display();
+			echo '</form>';
+			$table_html = ob_get_clean();
+
+			return array( 'table_html' => $table_html, 'summary' => get_option( 'wpcbl_last_scan_summary' ) );
 		}
 	}
 

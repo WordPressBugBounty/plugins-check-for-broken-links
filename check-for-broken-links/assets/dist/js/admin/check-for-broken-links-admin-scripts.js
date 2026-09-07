@@ -29,22 +29,29 @@
    */
   let progressTimer = null;
 
+  const renderProgress = data => {
+    if (!data || !data.total) {
+      return;
+    }
+    var current = parseInt(data.current, 10) || 0;
+    var total = parseInt(data.total, 10) || 1;
+    var links = parseInt(data.links, 10) || 0;
+    var percent = Math.min(100, Math.round(current / total * 100));
+    $('#wpcbl-scan-progress-fill').css('width', percent + '%');
+    $('#wpcbl-scan-progress-text').text(wpcbl_check_for_broken_links_params.progressText.replace('%1$s', current).replace('%2$s', total).replace('%3$s', links));
+    // Fill the Links checked stat card live.
+    $('#wpcbl-last-scan-total-visible').text(links);
+  };
+
   const progressPoll = () => {
     $.post(wpcbl_check_for_broken_links_params.ajaxUrl, {
       action: 'wpcbl_scan_progress',
       nonce: wpcbl_check_for_broken_links_params.nonce
     }).done(function (result) {
-      if (!result || !result.success || !result.data || !result.data.total) {
+      if (!result || !result.success) {
         return;
       }
-      var current = parseInt(result.data.current, 10) || 0;
-      var total = parseInt(result.data.total, 10) || 1;
-      var links = parseInt(result.data.links, 10) || 0;
-      var percent = Math.min(100, Math.round(current / total * 100));
-      $('#wpcbl-scan-progress-fill').css('width', percent + '%');
-      $('#wpcbl-scan-progress-text').text(wpcbl_check_for_broken_links_params.progressText.replace('%1$s', current).replace('%2$s', total).replace('%3$s', links));
-      // Fill the Links checked stat card live.
-      $('#wpcbl-last-scan-total-visible').text(links);
+      renderProgress(result.data);
     });
   };
 
@@ -71,12 +78,6 @@
   $(document).on('click', '#wpcbl-manual-scan, #wpcbl-first-scan, .wpcbl-scan-trigger', function (event) {
     event.preventDefault();
     console.log('Manual scan started...');
-    let nonce = wpcbl_check_for_broken_links_params.nonce;
-    let data = {
-      action: 'wpcbl_broken_links_manual_scan',
-      scan_page_url: wpcbl_check_for_broken_links_params.scanPageUrl,
-      nonce: nonce
-    };
     // Which page this trigger fired on decides redirect vs. in-place
     // refresh. #wpcbl-scan-results-page is an explicit marker Broken link
     // scan renders on purpose (both its empty and its with-results state) --
@@ -89,7 +90,7 @@
     let hasResultsTable = $('.wpcbl-check-for-broken-links-links-table').length > 0;
 
     // Call the manual scan function.
-    manualScan(data).then(result => {
+    manualScan().then(result => {
       console.log(result);
       progressStop();
 
@@ -626,31 +627,66 @@
     });
   };
 
-  const manualScan = async data => {
-    let result;
+  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+  /**
+   * Run a scan as a series of short requests: wpcbl_scan_start lists the
+   * work, then wpcbl_scan_step checks links for a few seconds at a time and
+   * saves where it got to, until it reports done. One request per scan used
+   * to be killed by the host after a minute or two on bigger sites. A step
+   * that fails on the wire (504, dropped connection) is retried, since the
+   * server saved its progress before answering.
+   */
+  const manualScan = async () => {
+    const params = wpcbl_check_for_broken_links_params;
+    const post = body => $.post(params.ajaxUrl, Object.assign({ nonce: params.nonce }, body));
+
+    console.log('Sending data...');
+    loader('show');
+    progressStart();
+    setScanButtonsScanning(true);
+    $('.wpcbl_export_csv_wrap').hide();
+    $('.wpcbl-check-for-broken-links-links-table').html('<div class="notice notice-info" style="margin:12px 0; padding:10px;">Scanning…</div>');
+
     try {
-      result = await $.ajax({
-        url: wpcbl_check_for_broken_links_params.ajaxUrl,
-        type: 'POST',
-        data: data,
-        beforeSend: function () {
-          console.log('Sending data...');
-          loader('show');
-          progressStart();
-          setScanButtonsScanning(true);
-          $('.wpcbl_export_csv_wrap').hide();
-          $('.wpcbl-check-for-broken-links-links-table').html('<div class="notice notice-info" style="margin:12px 0; padding:10px;">Scanning…</div>');
-        },
-        complete: function () {
-          console.log('Data sent.');
-          progressStop();
-          loader('hide');
-          setScanButtonsScanning(false);
+      const started = await post({ action: 'wpcbl_scan_start' });
+      if (!started || !started.success) {
+        return started;
+      }
+      renderProgress(started.data);
+
+      let failures = 0;
+      for (;;) {
+        let step;
+        try {
+          step = await post({ action: 'wpcbl_scan_step' });
+        } catch (error) {
+          failures++;
+          console.error('Scan step failed (' + failures + '):', error.statusText);
+          if (failures >= 3) {
+            return undefined;
+          }
+          await sleep(2000);
+          continue;
         }
-      });
-      return result;
+        failures = 0;
+
+        if (!step || !step.success) {
+          return step;
+        }
+        renderProgress(step.data);
+        if (step.data && step.data.done) {
+          return step;
+        }
+      }
     } catch (error) {
       console.error('Error:', error.statusText);
+      return undefined;
+    } finally {
+      console.log('Data sent.');
+      progressStop();
+      loader('hide');
+      setScanButtonsScanning(false);
     }
   };
 

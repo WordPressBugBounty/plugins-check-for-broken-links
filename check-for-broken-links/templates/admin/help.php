@@ -63,8 +63,8 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		echo wp_kses(
 			sprintf(
 				/* translators: 1: support URL, 2: forum URL. */
-				__( 'Reach out to us at <a href="%1$s" target="_blank" rel="noopener noreferrer">brokenlinkchecker.io/support</a> or post in the <a href="%2$s" target="_blank" rel="noopener noreferrer">WordPress.org support forum</a>.', 'check-for-broken-links' ),
-				'https://brokenlinkchecker.io/support/',
+				__( 'Reach out to us at <a href="%1$s" target="_blank" rel="noopener noreferrer">brokenlinkchecker.io/contact</a> or post in the <a href="%2$s" target="_blank" rel="noopener noreferrer">WordPress.org support forum</a>.', 'check-for-broken-links' ),
+				'https://brokenlinkchecker.io/contact',
 				'https://wordpress.org/support/plugin/check-for-broken-links/'
 			),
 			array( 'a' => array( 'href' => true, 'target' => true, 'rel' => true ) )
