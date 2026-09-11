@@ -48,7 +48,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Export' ) ) :
 				return '';
 			}
 
-			fputcsv( $handle, $row ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
+			fputcsv( $handle, $row, ",", '"', "\\" ); // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_fputcsv
 			rewind( $handle );
 			$line = stream_get_contents( $handle );
 			fclose( $handle ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose

@@ -1,5 +1,19 @@
 == Changelog ==
 
+= 3.1.0 - 11 September 2026 =
+* Fix: Automatic scans run again. Since 2.0.0 the plugin cleared its own schedule, so the daily, weekly and monthly setting never ran a scan. Pro sites now get the scan at the time and timezone they picked. A site that turns Pro is scheduled on its next admin visit.
+* Fix: Automatic scans run in the same short steps as manual scans, so big sites finish on hosts with a low execution limit.
+* Fix: Settings shows the saved scan frequency and the real time of the next automatic scan. It showed Never and no date.
+* Fix: Run analysis on the Internal Link Optimizer page no longer answers Too Many Attempts on the first click. The service counted the page upload against the analysis limit on sites with more than 125 pages.
+* Improvement: Every Pro tool page explains what it does before you connect, with a concrete example: Internal Link Optimizer, Rank Tracker, SEO / AEO Audit, AI Visibility Tracker and Uptime Monitor. The connect button names the action, for example Connect site and track keywords.
+* Improvement: The AI Visibility Tracker page no longer repeats its intro above the connect box.
+* Improvement: The connect card on the Dashboard and the Connect tab reads Instant activation. Connect once and every feature unlocks here automatically.
+* Improvement: Uptime alert mails retry for 12 minutes if the mail server is unreachable, so an alert is not lost to a short outage.
+* Improvement: brokenlinkchecker.io checks its own connection before opening an uptime incident, so a network problem on our side no longer alerts you about your site.
+* Fix: Site scans on brokenlinkchecker.io no longer skip links on large sites when the site is slow to answer. Every link is checked or retried until done.
+* Fix: CSV export no longer triggers a PHP deprecation notice on PHP 8.4 and newer.
+* Learn more about every tool: https://brokenlinkchecker.io/wordpress-plugin
+
 = 3.0.9 - 7 September 2026 =
 * Fix: Scans finish on big sites. The scan now runs as a series of short steps and saves its progress after each one, so the host's execution limit no longer kills it. Sites with a few hundred posts used to stop after a minute or two with Something went wrong.
 * Fix: A scan step that fails on the wire is retried from where it stopped instead of failing the whole scan.

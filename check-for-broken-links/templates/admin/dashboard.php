@@ -187,8 +187,8 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 			<div class="cbl-dash-connect-perk">
 				<span class="cbl-dash-connect-perk-icon cbl-benefit-icon-green"><span class="dashicons dashicons-superhero"></span></span>
 				<div>
-					<div class="cbl-dash-connect-perk-title"><?php esc_html_e( 'Instant Pro activation', 'check-for-broken-links' ); ?></div>
-					<div class="cbl-dash-connect-perk-body"><?php esc_html_e( 'Upgrade once and every Pro feature unlocks here automatically.', 'check-for-broken-links' ); ?></div>
+					<div class="cbl-dash-connect-perk-title"><?php esc_html_e( 'Instant activation', 'check-for-broken-links' ); ?></div>
+					<div class="cbl-dash-connect-perk-body"><?php esc_html_e( 'Connect once and every feature unlocks here automatically.', 'check-for-broken-links' ); ?></div>
 				</div>
 			</div>
 			<div class="cbl-dash-connect-perk">

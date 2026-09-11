@@ -212,6 +212,31 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		}
 
 		/**
+		 * Seconds of link checking per step, and the per-request timeout that
+		 * keeps the last link of a step inside the host's execution limit.
+		 *
+		 * With no limit (CLI, or set_time_limit() worked) a step checks for
+		 * 20 seconds with the configured timeout. Under a hard limit the
+		 * budget leaves 10 seconds of headroom and the per-request timeout
+		 * is capped so budget + one slow request still fits.
+		 *
+		 * @since 3.0.9
+		 *
+		 * @return array{0: int, 1: int|null} Budget seconds, per-request timeout or null for the setting.
+		 */
+		public static function scan_step_limits() {
+			$limit = (int) ini_get( 'max_execution_time' );
+			if ( $limit <= 0 || $limit >= 120 ) {
+				return array( 20, null );
+			}
+
+			$budget       = max( 3, min( 20, $limit - 10 ) );
+			$link_timeout = max( 3, $limit - $budget - 3 );
+
+			return array( $budget, $link_timeout );
+		}
+
+		/**
 		 * Finish a scan: slider content, notification mail, summary, history,
 		 * and the results option every results page reads.
 		 *

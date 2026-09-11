@@ -34,12 +34,13 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 <?php if ( ! $wpcbl_ilo_is_on ) : ?>
 
 	<div class="cbl-card">
-		<h2><?php esc_html_e( 'Turn your pages into a stronger link network', 'check-for-broken-links' ); ?></h2>
-		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io, free plan included, and find the internal links your pages are missing. You need a connected site before an analysis can run.', 'check-for-broken-links' ); ?></p>
+		<h2><?php esc_html_e( 'Find the internal links your pages are missing', 'check-for-broken-links' ); ?></h2>
+		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io to run an internal link analysis. You get a free plan included, and the scan shows which pages should link to each other and where.', 'check-for-broken-links' ); ?></p>
+		<p><?php esc_html_e( 'Example: Your post "How to choose running shoes" mentions marathon training but doesn\'t link to your "Marathon training plan" page. The analysis finds gaps like this and suggests the anchor text to use.', 'check-for-broken-links' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="wpcbl_connect_start" />
 			<?php wp_nonce_field( 'wpcbl_connect_start' ); ?>
-			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect this site', 'check-for-broken-links' ); ?></button>
+			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect site and analyze links', 'check-for-broken-links' ); ?></button>
 		</form>
 	</div>
 

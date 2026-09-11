@@ -924,10 +924,10 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		 * @return void
 		 */
 		public function settings_scan_frequency() {
-			$scan_frequency              = 'never';
+			$scan_frequency              = isset( $this->settings['scan_frequency'] ) ? $this->settings['scan_frequency'] : 'never';
 			$scan_time                   = isset( $this->settings['scan_time'] ) ? $this->settings['scan_time'] : '00:00';
 			$scan_timezone               = ! empty( $this->settings['scan_timezone'] ) ? $this->settings['scan_timezone'] : wp_timezone_string();
-			$next_scheduled              = false;
+			$next_scheduled              = wp_next_scheduled( WPCBL_Check_Broken_Links_Schedule::EVENT );
 			$has_scheduled_scans_access  = wpcbl_has_pro();
 			$upgrade_url                 = 'https://checkout.freemius.com/plugin/30464/plan/50060/';
 

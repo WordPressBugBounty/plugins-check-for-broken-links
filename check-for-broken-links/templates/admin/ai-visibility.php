@@ -41,17 +41,16 @@ if ( $wpcbl_aiv_is_on ) {
 require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.php';
 ?>
 
-<p class="cbl-page-intro"><?php esc_html_e( 'See whether AI assistants recommend your site when people ask the questions your customers ask. Checked on ChatGPT, Perplexity and Google AI.', 'check-for-broken-links' ); ?></p>
-
 <?php if ( ! $wpcbl_aiv_is_on ) : ?>
 
 	<div class="cbl-card">
-		<h2><?php esc_html_e( 'See when AI answers mention you', 'check-for-broken-links' ); ?></h2>
-		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io, free plan included, and track how often ChatGPT, Perplexity and Google AI cite you.', 'check-for-broken-links' ); ?></p>
+		<h2><?php esc_html_e( 'Find out if ChatGPT recommends you or your competitors', 'check-for-broken-links' ); ?></h2>
+		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io to track your visibility in AI answers. You get a free plan included, and the tracker checks ChatGPT, Perplexity and Google AI for the questions your customers actually ask.', 'check-for-broken-links' ); ?></p>
+		<p><?php esc_html_e( 'Example: Someone asks ChatGPT "what is the best broken link checker for WordPress". The tracker shows whether your site is mentioned, which competitors are named instead, and how this changes week by week.', 'check-for-broken-links' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="wpcbl_connect_start" />
 			<?php wp_nonce_field( 'wpcbl_connect_start' ); ?>
-			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect this site', 'check-for-broken-links' ); ?></button>
+			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect site and track AI mentions', 'check-for-broken-links' ); ?></button>
 		</form>
 	</div>
 

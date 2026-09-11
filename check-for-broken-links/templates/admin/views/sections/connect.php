@@ -89,8 +89,8 @@ $wpcbl_plan_label   = ucfirst( ! empty( $wpcbl_connection['plan'] ) ? $wpcbl_con
 				<div class="cbl-benefit-icon cbl-benefit-icon-green">
 					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
 				</div>
-				<h3 class="cbl-benefit-heading"><?php esc_html_e( 'Instant Pro activation', 'check-for-broken-links' ); ?></h3>
-				<p class="cbl-pro-feature-desc"><?php esc_html_e( 'Upgrade once and every Pro feature unlocks here automatically.', 'check-for-broken-links' ); ?></p>
+				<h3 class="cbl-benefit-heading"><?php esc_html_e( 'Instant activation', 'check-for-broken-links' ); ?></h3>
+				<p class="cbl-pro-feature-desc"><?php esc_html_e( 'Connect once and every feature unlocks here automatically.', 'check-for-broken-links' ); ?></p>
 			</div>
 
 			<div class="cbl-card cbl-benefit-card">

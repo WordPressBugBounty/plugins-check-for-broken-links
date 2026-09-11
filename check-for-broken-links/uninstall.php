@@ -47,4 +47,5 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	 * Delete plugin cron jobs.
 	 */
 	wp_clear_scheduled_hook( 'wpcbl_check_for_broken_links_scheduled_event' );
+	wp_clear_scheduled_hook( 'wpcbl_check_for_broken_links_scan_step' );
 }

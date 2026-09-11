@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Check for Broken Links - Broken Link Checker & 404 Monitor
  * Description: Scan your site for broken links and 404 errors to improve SEO and user experience.
- * Version: 3.0.9
+ * Version: 3.1.0
  * Author: Norse Digital Group LLC
  * Author URI: https://brokenlinkchecker.io/
  * Requires at least: 6.0
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Globals constants.
  */
 define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_NAME', 'Check for Broken Links' );
-define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.0.9' );
+define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.1.0' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_PHP_VER', '7.2' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER', '6.0' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH', __DIR__ );
@@ -221,6 +221,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links' ) ) :
 		 */
 		public static function deactivate() {
 			wp_clear_scheduled_hook( 'wpcbl_check_for_broken_links_scheduled_event' );
+			wp_clear_scheduled_hook( 'wpcbl_check_for_broken_links_scan_step' );
 		}
 
 		/**

@@ -42,12 +42,13 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 <?php if ( ! $wpcbl_rank_is_on ) : ?>
 
 	<div class="cbl-card">
-		<h2><?php esc_html_e( 'Track your Google and Bing rankings', 'check-for-broken-links' ); ?></h2>
-		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io, free plan included, and track where your keywords rank.', 'check-for-broken-links' ); ?></p>
+		<h2><?php esc_html_e( 'See where your keywords rank on Google and Bing', 'check-for-broken-links' ); ?></h2>
+		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io to start tracking your rankings. You get a free plan included, and the tracker shows position changes for each keyword over time.', 'check-for-broken-links' ); ?></p>
+		<p><?php esc_html_e( 'Example: You track "wordpress broken link checker" and see it move from position 14 to 8 after you update the page. The tracker shows the change, so you know which edits actually worked.', 'check-for-broken-links' ); ?></p>
 		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<input type="hidden" name="action" value="wpcbl_connect_start" />
 			<?php wp_nonce_field( 'wpcbl_connect_start' ); ?>
-			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect this site', 'check-for-broken-links' ); ?></button>
+			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect site and track keywords', 'check-for-broken-links' ); ?></button>
 		</form>
 	</div>
 
