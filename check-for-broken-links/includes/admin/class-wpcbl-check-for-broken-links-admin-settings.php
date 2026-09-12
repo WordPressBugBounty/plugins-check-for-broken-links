@@ -43,6 +43,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 			add_action( 'admin_init', array( $this, 'redirect_legacy_tabs' ) );
 			add_action( 'admin_post_wpcbl_enable_ai_fix', array( $this, 'handle_enable_ai_fix' ) );
+			add_action( 'admin_post_wpcbl_review_dismiss', array( $this, 'handle_review_dismiss' ) );
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_link' ), 90 );
 
 			// Filters.
@@ -974,6 +975,34 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		 *
 		 * @return void
 		 */
+		/**
+		 * The Dashboard's review request. "Maybe later" and the close
+		 * button hide it for 30 days. "Leave a review" hides it for good
+		 * and sends the admin to the WordPress.org review form.
+		 *
+		 * @since 3.1.1
+		 *
+		 * @return void
+		 */
+		public function handle_review_dismiss() {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_die( esc_html__( 'You are not allowed to do this.', 'check-for-broken-links' ), '', array( 'response' => 403 ) );
+			}
+			check_admin_referer( 'wpcbl_review_dismiss' );
+
+			$mode = isset( $_GET['mode'] ) ? sanitize_key( wp_unslash( $_GET['mode'] ) ) : 'later';
+
+			if ( 'review' === $mode ) {
+				update_option( 'wpcbl_review_dismissed', 1, false );
+				wp_redirect( 'https://wordpress.org/support/plugin/check-for-broken-links/reviews/#new-post' ); // phpcs:ignore WordPress.Security.SafeRedirect.wp_redirect_wp_redirect -- fixed external URL, no user input.
+				exit;
+			}
+
+			set_transient( 'wpcbl_review_later', 1, 30 * DAY_IN_SECONDS );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) );
+			exit;
+		}
+
 		public function handle_enable_ai_fix() {
 			if ( ! current_user_can( 'manage_options' ) ) {
 				wp_die( esc_html__( 'You are not allowed to do this.', 'check-for-broken-links' ), '', array( 'response' => 403 ) );

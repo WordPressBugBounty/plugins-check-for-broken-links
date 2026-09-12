@@ -1,5 +1,12 @@
 == Changelog ==
 
+= 3.1.1 - 12 September 2026 =
+* Improvement: The Dashboard lists the SEO tools as one row each, name, status, one line on what it does and the next step, in place of the grid of cards. The three status cards share one white style, and the tip of the week is a banner under the tools.
+* New: After three completed scans the Dashboard asks for a WordPress.org review, once. Maybe later hides it for 30 days, Leave a review hides it for good.
+* Improvement: The Help page puts the questions on the left and a support rail on the right: contact support, the WordPress.org forum, the plugin guide, a review link, and the plugin version with the connection status. The answers about what the plugin does, fixing links and pricing were out of date and now match the product.
+* New: Every Pro tool page shows a preview of the tool with sample data before you connect: Rank Tracker, SEO / AEO Audit, Internal Link Optimizer, AI Visibility Tracker and Uptime Monitor. The headline, a short explanation and one Connect button sit beside it, with No credit card and two more reassurances under the button.
+* Improvement: The Internal Link Optimizer now calls its first tab No content links instead of Orphan pages. Menu and footer links never counted there, and the old name read as if the page had no links at all.
+
 = 3.1.0 - 11 September 2026 =
 * Fix: Automatic scans run again. Since 2.0.0 the plugin cleared its own schedule, so the daily, weekly and monthly setting never ran a scan. Pro sites now get the scan at the time and timezone they picked. A site that turns Pro is scheduled on its next admin visit.
 * Fix: Automatic scans run in the same short steps as manual scans, so big sites finish on hosts with a low execution limit.

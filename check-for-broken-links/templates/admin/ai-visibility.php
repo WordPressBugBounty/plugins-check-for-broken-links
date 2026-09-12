@@ -43,16 +43,18 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 
 <?php if ( ! $wpcbl_aiv_is_on ) : ?>
 
-	<div class="cbl-card">
-		<h2><?php esc_html_e( 'Find out if ChatGPT recommends you or your competitors', 'check-for-broken-links' ); ?></h2>
-		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io to track your visibility in AI answers. You get a free plan included, and the tracker checks ChatGPT, Perplexity and Google AI for the questions your customers actually ask.', 'check-for-broken-links' ); ?></p>
-		<p><?php esc_html_e( 'Example: Someone asks ChatGPT "what is the best broken link checker for WordPress". The tracker shows whether your site is mentioned, which competitors are named instead, and how this changes week by week.', 'check-for-broken-links' ); ?></p>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="wpcbl_connect_start" />
-			<?php wp_nonce_field( 'wpcbl_connect_start' ); ?>
-			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect site and track AI mentions', 'check-for-broken-links' ); ?></button>
-		</form>
-	</div>
+	<?php
+	$wpcbl_empty = array(
+		'tool'         => 'aiv',
+		'headline'     => __( 'Find out if ChatGPT recommends you or your competitors', 'check-for-broken-links' ),
+		'body'         => __( 'Connect this site to brokenlinkchecker.io to track your visibility in AI answers. You get a free plan included, and the tracker checks ChatGPT, Perplexity and Google AI for the questions your customers actually ask.', 'check-for-broken-links' ),
+		'example'      => __( 'Example: Someone asks ChatGPT "what is the best broken link checker for WordPress". The tracker shows whether your site is mentioned, which competitors are named instead, and how this changes week by week.', 'check-for-broken-links' ),
+		'cta'          => __( 'Connect site and track AI mentions', 'check-for-broken-links' ),
+		'chips'        => array( __( 'No credit card', 'check-for-broken-links' ), __( 'Checked weekly', 'check-for-broken-links' ), __( 'ChatGPT + Perplexity + Google AI', 'check-for-broken-links' ) ),
+		'preview_meta' => __( 'This week', 'check-for-broken-links' ),
+	);
+	require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/tool-empty.php';
+	?>
 
 <?php else : ?>
 

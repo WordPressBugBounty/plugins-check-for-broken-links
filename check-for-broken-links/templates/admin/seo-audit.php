@@ -44,16 +44,18 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 
 <?php if ( ! $wpcbl_audit_is_on ) : ?>
 
-	<div class="cbl-card">
-		<h2><?php esc_html_e( 'See what is holding your search rankings back', 'check-for-broken-links' ); ?></h2>
-		<p><?php esc_html_e( 'Connect this site to brokenlinkchecker.io to run a full SEO and AEO audit. You get a free plan included, and the audit checks how your pages perform both in Google and in AI answers from ChatGPT, Gemini and Perplexity.', 'check-for-broken-links' ); ?></p>
-		<p><?php esc_html_e( 'Example: The audit finds that 12 pages are missing meta descriptions and that your product pages have no FAQ schema, which makes them harder for AI assistants to cite. Each issue comes with a fix.', 'check-for-broken-links' ); ?></p>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="action" value="wpcbl_connect_start" />
-			<?php wp_nonce_field( 'wpcbl_connect_start' ); ?>
-			<button type="submit" class="cbl-btn cbl-btn-primary cbl-btn-lg"><?php esc_html_e( 'Connect site and run audit', 'check-for-broken-links' ); ?></button>
-		</form>
-	</div>
+	<?php
+	$wpcbl_empty = array(
+		'tool'         => 'audit',
+		'headline'     => __( 'See what is holding your search rankings back', 'check-for-broken-links' ),
+		'body'         => __( 'Connect this site to brokenlinkchecker.io to run a full SEO and AEO audit. You get a free plan included, and the audit checks how your pages perform both in Google and in AI answers from ChatGPT, Gemini and Perplexity.', 'check-for-broken-links' ),
+		'example'      => __( 'Example: The audit finds that 12 pages are missing meta descriptions and that your product pages have no FAQ schema, which makes them harder for AI assistants to cite. Each issue comes with a fix.', 'check-for-broken-links' ),
+		'cta'          => __( 'Connect site and run audit', 'check-for-broken-links' ),
+		'chips'        => array( __( 'No credit card', 'check-for-broken-links' ), __( 'Every issue comes with a fix', 'check-for-broken-links' ), __( 'Google + AI answers', 'check-for-broken-links' ) ),
+		'preview_meta' => __( '18 checks', 'check-for-broken-links' ),
+	);
+	require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/tool-empty.php';
+	?>
 
 <?php else : ?>
 

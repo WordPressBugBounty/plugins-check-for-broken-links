@@ -166,6 +166,38 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 	<?php require_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/loader.php'; ?>
 </div>
 
+<?php
+// Review request: after three completed scans, until "Maybe later"
+// (30 days) or a click through to the review form (for good).
+$wpcbl_show_review = $wpcbl_reports_kept >= 3
+	&& ! get_option( 'wpcbl_review_dismissed' )
+	&& ! get_transient( 'wpcbl_review_later' );
+if ( $wpcbl_show_review ) :
+	$wpcbl_review_later_url  = wp_nonce_url( admin_url( 'admin-post.php?action=wpcbl_review_dismiss&mode=later' ), 'wpcbl_review_dismiss' );
+	$wpcbl_review_review_url = wp_nonce_url( admin_url( 'admin-post.php?action=wpcbl_review_dismiss&mode=review' ), 'wpcbl_review_dismiss' );
+	?>
+	<div class="cbl-dash-review" id="wpcbl-dash-review">
+		<span class="cbl-dash-review-icon" aria-hidden="true"><svg viewBox="0 0 20 20" width="22" height="22" fill="#c47f12"><path d="M10 1.5l2.4 5.2 5.6.7-4.1 3.9 1 5.6-4.9-2.8-4.9 2.8 1-5.6L2 7.4l5.6-.7L10 1.5z"></path></svg></span>
+		<div class="cbl-dash-review-text">
+			<div class="cbl-dash-review-head">
+				<span class="cbl-dash-review-title"><?php esc_html_e( 'Do you love the plugin? Please leave a review', 'check-for-broken-links' ); ?></span>
+				<span class="cbl-dash-review-count"><?php
+					printf(
+						/* translators: %d: number of completed scans. */
+						esc_html( _n( '%d scan done', '%d scans done', $wpcbl_reports_kept, 'check-for-broken-links' ) ),
+						(int) $wpcbl_reports_kept
+					);
+				?></span>
+			</div>
+			<p class="cbl-dash-review-body"><?php esc_html_e( 'Three scans in, and your links are in better shape. A short review on WordPress.org helps us out and keeps us motivated to keep improving the plugin.', 'check-for-broken-links' ); ?></p>
+		</div>
+		<div class="cbl-dash-review-actions">
+			<a href="<?php echo esc_url( $wpcbl_review_later_url ); ?>" class="cbl-dash-review-later"><?php esc_html_e( 'Maybe later', 'check-for-broken-links' ); ?></a>
+			<a href="<?php echo esc_url( $wpcbl_review_review_url ); ?>" target="_blank" rel="noopener noreferrer" class="cbl-btn cbl-btn-primary cbl-dash-review-cta"><span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <?php esc_html_e( 'Leave a review', 'check-for-broken-links' ); ?></a>
+		</div>
+		<a href="<?php echo esc_url( $wpcbl_review_later_url ); ?>" class="cbl-dash-review-close" aria-label="<?php esc_attr_e( 'Dismiss for now', 'check-for-broken-links' ); ?>">&times;</a>
+	</div>
+<?php endif; ?>
 <?php if ( ! $wpcbl_is_connected ) : ?>
 	<div class="cbl-dash-connect" id="wpcbl-dash-connect">
 		<div class="cbl-dash-connect-row">
@@ -359,6 +391,7 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 
 </div>
 
+<div class="cbl-dash-tools">
 <div class="cbl-dash-tools-head">
 	<h2><?php esc_html_e( 'SEO tools', 'check-for-broken-links' ); ?></h2>
 	<span class="cbl-dash-tools-hint"><?php esc_html_e( 'Set each tool up once, numbers appear here', 'check-for-broken-links' ); ?></span>
@@ -385,7 +418,7 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		}
 	}
 	?>
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-rank-tracker' ) ); ?>" class="cbl-dash-tool-card">
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-rank-tracker' ) ); ?>" class="cbl-dash-tool-row">
 		<div class="cbl-dash-tool-head">
 			<span class="cbl-benefit-icon cbl-benefit-icon-purple"><span class="dashicons dashicons-chart-bar"></span></span>
 			<span class="cbl-dash-tool-title"><?php esc_html_e( 'Keyword Rank Tracker', 'check-for-broken-links' ); ?></span>
@@ -415,7 +448,7 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		}
 	}
 	?>
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-seo-audit' ) ); ?>" class="cbl-dash-tool-card">
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-seo-audit' ) ); ?>" class="cbl-dash-tool-row">
 		<div class="cbl-dash-tool-head">
 			<span class="cbl-benefit-icon cbl-benefit-icon-green"><span class="dashicons dashicons-visibility"></span></span>
 			<span class="cbl-dash-tool-title"><?php esc_html_e( 'SEO / AEO Audit', 'check-for-broken-links' ); ?></span>
@@ -469,7 +502,7 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		}
 	}
 	?>
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-ai-visibility' ) ); ?>" class="cbl-dash-tool-card">
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-ai-visibility' ) ); ?>" class="cbl-dash-tool-row">
 		<div class="cbl-dash-tool-head">
 			<span class="cbl-benefit-icon cbl-benefit-icon-purple"><span class="dashicons dashicons-format-chat"></span></span>
 			<span class="cbl-dash-tool-title"><?php esc_html_e( 'AI Visibility Tracker', 'check-for-broken-links' ); ?></span>
@@ -529,7 +562,7 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		}
 	}
 	?>
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-internal-links' ) ); ?>" class="cbl-dash-tool-card">
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-internal-links' ) ); ?>" class="cbl-dash-tool-row">
 		<div class="cbl-dash-tool-head">
 			<span class="cbl-benefit-icon cbl-benefit-icon-blue"><span class="dashicons dashicons-admin-links"></span></span>
 			<span class="cbl-dash-tool-title"><?php esc_html_e( 'Internal Link Optimizer', 'check-for-broken-links' ); ?></span>
@@ -597,7 +630,7 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		}
 	}
 	?>
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-uptime' ) ); ?>" class="cbl-dash-tool-card">
+	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-uptime' ) ); ?>" class="cbl-dash-tool-row">
 		<div class="cbl-dash-tool-head">
 			<span class="cbl-benefit-icon cbl-benefit-icon-green"><span class="dashicons dashicons-chart-line"></span></span>
 			<span class="cbl-dash-tool-title"><?php esc_html_e( 'Uptime Monitor', 'check-for-broken-links' ); ?></span>
@@ -636,16 +669,17 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 		<div class="cbl-dash-tool-cta"><?php echo null === $wpcbl_uptime_pct ? esc_html__( 'Turn on monitor', 'check-for-broken-links' ) : esc_html__( 'Open monitor', 'check-for-broken-links' ); ?> <span>&rarr;</span></div>
 	</a>
 
-	<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-seo-tip' ) ); ?>" class="cbl-dash-tip-card">
-		<div class="cbl-dash-tool-head">
-			<span class="cbl-benefit-icon" style="background:#fff5dc;color:#b8710b;"><span class="dashicons dashicons-lightbulb"></span></span>
-			<span class="cbl-dash-tool-title"><?php esc_html_e( 'SEO / AEO tip of the week', 'check-for-broken-links' ); ?></span>
-		</div>
-		<div class="cbl-dash-tip-body"><?php esc_html_e( 'Your links are healthy. Now let visitors listen. Add audio versions of your posts in two minutes with TTSWP, no account needed.', 'check-for-broken-links' ); ?></div>
-		<div class="cbl-dash-tool-cta"><?php esc_html_e( 'See this week\'s tip', 'check-for-broken-links' ); ?> <span>&rarr;</span></div>
-	</a>
-
 </div>
+</div>
+
+<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-seo-tip' ) ); ?>" class="cbl-dash-tip-banner">
+	<span class="cbl-dash-tip-icon" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" fill="#8a4b00"><path d="M8 1a4.4 4.4 0 0 0-2.6 7.9c.4.3.6.8.6 1.3V11h4v-.8c0-.5.2-1 .6-1.3A4.4 4.4 0 0 0 8 1zM6 12.2h4v.9a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1v-.9z"></path></svg></span>
+	<span class="cbl-dash-tip-text">
+		<span class="cbl-dash-tip-title"><?php esc_html_e( 'SEO / AEO tip of the week', 'check-for-broken-links' ); ?></span>
+		<span class="cbl-dash-tip-body"><?php esc_html_e( 'Your links are healthy. Now let visitors listen. Add audio versions of your posts in two minutes with TTSWP, no account needed.', 'check-for-broken-links' ); ?></span>
+	</span>
+	<span class="cbl-dash-tip-cta"><?php esc_html_e( 'See this week\'s tip', 'check-for-broken-links' ); ?> <span aria-hidden="true">&rarr;</span></span>
+</a>
 
 <div class="cbl-dash-bottom-grid">
 
