@@ -362,14 +362,28 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		public function settings_page() {
 			$wpcbl_connect_notice = isset( $_GET['wpcbl_connect'] ) ? sanitize_key( wp_unslash( $_GET['wpcbl_connect'] ) ) : '';
 
+			// Each handshake failure has its own reason so the user (and
+			// support) can tell a timeout from a host that blocks requests.
+			$wpcbl_try_again = ' <a href="' . esc_url( wpcbl_connect_url() ) . '">' . esc_html__( 'Try again', 'check-for-broken-links' ) . '</a>';
+			$wpcbl_failures  = array(
+				'expired'     => __( 'The connect request expired before it was approved.', 'check-for-broken-links' ),
+				'unreachable' => __( 'This site could not reach brokenlinkchecker.io. Your host may block outgoing requests.', 'check-for-broken-links' ),
+				'rejected'    => __( 'brokenlinkchecker.io did not accept the connect code.', 'check-for-broken-links' ),
+				'mismatch'    => __( 'The connection was approved for a different site address.', 'check-for-broken-links' ),
+				'error'       => __( 'Could not complete the connection.', 'check-for-broken-links' ),
+			);
+
 			if ( 'connected' === $wpcbl_connect_notice ) {
-				add_settings_error( 'wpcbl_connect', 'wpcbl_connect', __( 'Site connected. Pro is now active.', 'check-for-broken-links' ), 'updated' );
+				$wpcbl_connected_msg = wpcbl_has_pro()
+					? __( 'Site connected. Pro is now active.', 'check-for-broken-links' )
+					: __( 'Site connected.', 'check-for-broken-links' );
+				add_settings_error( 'wpcbl_connect', 'wpcbl_connect', $wpcbl_connected_msg, 'updated' );
 			} elseif ( 'disconnected' === $wpcbl_connect_notice ) {
 				add_settings_error( 'wpcbl_connect', 'wpcbl_connect', __( 'Site disconnected.', 'check-for-broken-links' ), 'updated' );
 			} elseif ( 'refreshed' === $wpcbl_connect_notice ) {
 				add_settings_error( 'wpcbl_connect', 'wpcbl_connect', __( 'Connection refreshed. Your plan and features are up to date.', 'check-for-broken-links' ), 'updated' );
-			} elseif ( 'error' === $wpcbl_connect_notice ) {
-				add_settings_error( 'wpcbl_connect', 'wpcbl_connect', __( 'Could not complete the connection. Please try again.', 'check-for-broken-links' ), 'error' );
+			} elseif ( isset( $wpcbl_failures[ $wpcbl_connect_notice ] ) ) {
+				add_settings_error( 'wpcbl_connect', 'wpcbl_connect', esc_html( $wpcbl_failures[ $wpcbl_connect_notice ] ) . $wpcbl_try_again, 'error' );
 			}
 
 			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/settings.php';
@@ -565,242 +579,9 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 				)
 			);
 
-			$has_pro = wpcbl_has_pro();
-
-			// Section order: General -> Scan -> Notifications -> Pro/SEO.
-			// Each section renders as its own card (before_section/after_section).
-			add_settings_section(
-				'wpcbl_check_for_broken_links_general_settings_section',
-				esc_html__( 'General', 'check-for-broken-links' ),
-				array( $this, 'settings_autosave_hint' ),
-				'wpcbl-check-for-broken-links',
-				array(
-					'before_section' => '<div class="cbl-card cbl-settings-card">',
-					'after_section'  => '</div>',
-				)
-			);
-
-			add_settings_section(
-				'wpcbl_check_for_broken_links_scan_scope_section',
-				esc_html__( 'Scan', 'check-for-broken-links' ),
-				null,
-				'wpcbl-check-for-broken-links',
-				array(
-					// Deep-link target for the dashboard's "Adjust in Settings" link.
-					'before_section' => '<div id="scan" class="cbl-card cbl-settings-card">',
-					'after_section'  => '</div>',
-				)
-			);
-
-			// Email alerts are a Pro feature. Free installs still see the
-			// Notifications card, but its fields are dimmed and inert until Pro
-			// is active, so nobody types settings that will not take effect.
-			$wpcbl_notifications_locked = ! wpcbl_has_pro();
-			add_settings_section(
-				'wpcbl_check_for_broken_links_notifications_section',
-				esc_html__( 'Notifications', 'check-for-broken-links' ),
-				$wpcbl_notifications_locked ? array( $this, 'settings_notifications_lock_note' ) : null,
-				'wpcbl-check-for-broken-links',
-				array(
-					'before_section' => $wpcbl_notifications_locked
-						? '<div class="cbl-card cbl-settings-card cbl-settings-card-locked">'
-						: '<div class="cbl-card cbl-settings-card">',
-					'after_section'  => '</div>',
-				)
-			);
-
-			add_settings_section(
-				'wpcbl_check_for_broken_links_seo_section',
-				// Free users see the Unlock-with-Pro card's own heading instead.
-				$has_pro ? esc_html__( 'SEO', 'check-for-broken-links' ) : '',
-				null,
-				'wpcbl-check-for-broken-links',
-				array(
-					// The -seo class keeps this card's toggle helpers on the
-					// right; other cards move descriptions under their labels.
-					'before_section' => '<div class="cbl-card cbl-settings-card cbl-settings-card-seo">',
-					'after_section'  => '</div>',
-				)
-			);
-
-			// --- General ---
-			add_settings_field(
-				'scan_frequency',
-				esc_html__( 'Scan Frequency', 'check-for-broken-links' ),
-				array( $this, 'settings_scan_frequency' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_general_settings_section'
-			);
-
-			add_settings_field(
-				'number_of_links',
-				esc_html__( 'Number of Links to Scan', 'check-for-broken-links' ),
-				array( $this, 'settings_number_of_links' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_general_settings_section'
-			);
-
-			add_settings_field(
-				'timeout',
-				esc_html__( 'Timeout', 'check-for-broken-links' ),
-				array( $this, 'settings_timeout' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_general_settings_section'
-			);
-
-			add_settings_field(
-				'recheck_all',
-				esc_html__( 'Re-check', 'check-for-broken-links' ),
-				array( $this, 'settings_recheck_all' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_general_settings_section'
-			);
-
-			// --- Scan ---
-			add_settings_field(
-				'scan_post_types',
-				esc_html__( 'Content Types to Scan', 'check-for-broken-links' ),
-				array( $this, 'settings_scan_post_types' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_scan_scope_section'
-			);
-
-			add_settings_field(
-				'link_types',
-				esc_html__( 'Link Types', 'check-for-broken-links' ),
-				array( $this, 'settings_link_types' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_scan_scope_section'
-			);
-
-			add_settings_field(
-				'exclusion_urls',
-				esc_html__( 'Exclusions', 'check-for-broken-links' ),
-				array( $this, 'settings_exclusion_urls' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_scan_scope_section'
-			);
-
-			add_settings_field(
-				'scan_slider_content',
-				esc_html__( 'Slider Content', 'check-for-broken-links' ),
-				array( $this, 'settings_scan_slider_content' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_scan_scope_section'
-			);
-
-			// Pro only: free users see this feature inside the Unlock-with-Pro card.
-			if ( $has_pro ) {
-				add_settings_field(
-					'scan_comments',
-					esc_html__( 'Comments & Custom Fields', 'check-for-broken-links' ),
-					array( $this, 'settings_comments_custom_fields' ),
-					'wpcbl-check-for-broken-links',
-					'wpcbl_check_for_broken_links_scan_scope_section'
-				);
-			}
-
-			// --- Notifications ---
-			add_settings_field(
-				'email_notifications',
-				esc_html__( 'Email Notifications', 'check-for-broken-links' ),
-				array( $this, 'settings_email_notifications' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_notifications_section'
-			);
-
-			add_settings_field(
-				'email_addresses',
-				esc_html__( 'Email Address(es)', 'check-for-broken-links' ),
-				array( $this, 'settings_email_addresses' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_notifications_section'
-			);
-
-			// Pro only: free users see this feature inside the Unlock-with-Pro card.
-			if ( $has_pro ) {
-				add_settings_field(
-					'notify_authors',
-					esc_html__( 'Notify Post Authors', 'check-for-broken-links' ),
-					array( $this, 'settings_pro_toggle' ),
-					'wpcbl-check-for-broken-links',
-					'wpcbl_check_for_broken_links_notifications_section',
-					array(
-						'key'    => 'notify_authors',
-						'label'  => __( 'Also email the post author when broken links are found in their posts', 'check-for-broken-links' ),
-						'helper' => __( 'Authors only get alerts for their own content.', 'check-for-broken-links' ),
-					)
-				);
-			}
-
-			// --- Pro / SEO ---
-			// Free: all six Pro features collapse into one Unlock-with-Pro card
-			// with a single upgrade CTA. Pro: the four SEO toggles render here,
-			// working, individually.
-			if ( ! $has_pro ) {
-				add_settings_field(
-					'unlock_pro',
-					'',
-					array( $this, 'settings_unlock_pro' ),
-					'wpcbl-check-for-broken-links',
-					'wpcbl_check_for_broken_links_seo_section',
-					array( 'class' => 'cbl-seo-toolkit-row' )
-				);
-
-				return;
-			}
-
-			add_settings_field(
-				'ai_fix',
-				esc_html__( 'Fix with AI', 'check-for-broken-links' ),
-				array( $this, 'settings_pro_toggle' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_seo_section',
-				array(
-					'key'    => 'ai_fix',
-					'label'  => __( 'Fix broken links with AI', 'check-for-broken-links' ),
-					'helper' => __( 'AI finds the working replacement for each broken link and fixes it with one click. Every suggestion is verified live before it reaches you.', 'check-for-broken-links' ),
-				)
-			);
-
-			add_settings_field(
-				'nofollow_broken',
-				esc_html__( 'Nofollow Broken Links', 'check-for-broken-links' ),
-				array( $this, 'settings_pro_toggle' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_seo_section',
-				array(
-					'key'    => 'nofollow_broken',
-					'label'  => __( 'Add rel=nofollow to broken links until fixed', 'check-for-broken-links' ),
-					'helper' => __( 'Stops search engines from following broken links, protecting your crawl budget and rankings.', 'check-for-broken-links' ),
-				)
-			);
-
-			add_settings_field(
-				'fix_redirects',
-				esc_html__( 'Auto-fix Redirects', 'check-for-broken-links' ),
-				array( $this, 'settings_pro_toggle' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_seo_section',
-				array(
-					'key'    => 'fix_redirects',
-					'label'  => __( 'Detect permanent redirects (301/308)', 'check-for-broken-links' ),
-					'helper' => __( 'Redirected links get a Fix redirect action that replaces the URL with the final destination.', 'check-for-broken-links' ),
-				)
-			);
-
-			add_settings_field(
-				'wayback_suggestions',
-				esc_html__( 'Replacement Suggestions', 'check-for-broken-links' ),
-				array( $this, 'settings_pro_toggle' ),
-				'wpcbl-check-for-broken-links',
-				'wpcbl_check_for_broken_links_seo_section',
-				array(
-					'key'    => 'wayback_suggestions',
-					'label'  => __( 'Suggest replacements from the Wayback Machine', 'check-for-broken-links' ),
-					'helper' => __( 'Broken external links get a View archived version action.', 'check-for-broken-links' ),
-				)
-			);
+			// The Settings page renders its own markup (templates/admin/settings.php)
+			// and posts to options.php under this option, so no sections or fields
+			// are registered.
 		}
 
 		/**
@@ -814,9 +595,12 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		 */
 		public function sanitize_settings( $input ) {
 			$sanitized_input = array();
+			$has_pro         = wpcbl_has_pro();
 
-			// Scheduled scans are a Pro feature in the free plugin.
-			$sanitized_input['scan_frequency'] = 'never';
+			// Scheduled scans are Pro. Before 3.1.3 this was forced to never
+			// for everyone, so Pro sites could not save a schedule at all.
+			$frequency                         = isset( $input['scan_frequency'] ) ? sanitize_key( $input['scan_frequency'] ) : 'never';
+			$sanitized_input['scan_frequency'] = $has_pro && in_array( $frequency, array( 'daily', 'weekly', 'monthly' ), true ) ? $frequency : 'never';
 
 			if ( isset( $input['scan_time'] ) && preg_match( '/^([01]\d|2[0-3]):([0-5]\d)$/', $input['scan_time'] ) ) {
 				$sanitized_input['scan_time'] = $input['scan_time'];
@@ -837,11 +621,26 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 				$sanitized_input['scan_timezone'] = wp_timezone_string();
 			}
 
-			// Email alerts are a Pro feature in the free plugin.
-			$sanitized_input['email_notifications'] = '';
+			// Email alerts are Pro, and were blanked for everyone before 3.1.3.
+			// Addresses are kept while alerts are off, so switching them back
+			// on does not mean typing the list again.
+			$sanitized_input['email_notifications'] = $has_pro && isset( $input['email_notifications'] ) ? 'on' : '';
 			$sanitized_input['scan_slider_content'] = isset( $input['scan_slider_content'] ) ? 'on' : '';
 
-			$sanitized_input['email_addresses'] = '';
+			// On by default. The form posts "off" from a hidden field when the
+			// switch is off, so a stored array without the key stays on.
+			$sanitized_input['remove_url_params'] = isset( $input['remove_url_params'] ) && 'off' === $input['remove_url_params'] ? 'off' : 'on';
+
+			$emails = array();
+			if ( $has_pro && isset( $input['email_addresses'] ) ) {
+				foreach ( preg_split( '/[\s,;]+/', (string) $input['email_addresses'] ) as $email ) {
+					$email = sanitize_email( $email );
+					if ( '' !== $email && is_email( $email ) ) {
+						$emails[] = $email;
+					}
+				}
+			}
+			$sanitized_input['email_addresses'] = implode( ', ', array_unique( $emails ) );
 
 			// Ensure `number_of_links` is stored correctly (Radio Button).
 			if ( isset( $input['number_of_links'] ) ) {
@@ -890,10 +689,22 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 				$sanitized_input['exclusion_urls'] = implode( "\n", $sanitized_rules ); // Store as a multiline string.
 			}
 
+			// The Internal Link Optimizer stores its post types in this same
+			// option from its own page. The Settings form never posts them, so
+			// keep what was saved instead of wiping it on every save.
+			if ( isset( $input['ilo_post_types'] ) && is_array( $input['ilo_post_types'] ) ) {
+				$sanitized_input['ilo_post_types'] = array_values( array_unique( array_map( 'sanitize_key', $input['ilo_post_types'] ) ) );
+			} else {
+				$stored = get_option( 'wpcbl_check_for_broken_links_settings', array() );
+				if ( is_array( $stored ) && isset( $stored['ilo_post_types'] ) && is_array( $stored['ilo_post_types'] ) ) {
+					$sanitized_input['ilo_post_types'] = $stored['ilo_post_types'];
+				}
+			}
+
 			// Pro-only toggles are stored empty in the free plugin.
 			$pro_toggles = array( 'notify_authors', 'scan_comments', 'scan_custom_fields', 'nofollow_broken', 'fix_redirects', 'wayback_suggestions', 'ai_fix' );
 			foreach ( $pro_toggles as $pro_toggle ) {
-				$sanitized_input[ $pro_toggle ] = wpcbl_has_pro() && isset( $input[ $pro_toggle ] ) ? 'on' : '';
+				$sanitized_input[ $pro_toggle ] = $has_pro && isset( $input[ $pro_toggle ] ) ? 'on' : '';
 			}
 
 			return $sanitized_input;
@@ -917,64 +728,6 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 			return $status;
 		}
 
-		/**
-		 * Renders the scan frequency field.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_scan_frequency() {
-			$scan_frequency              = isset( $this->settings['scan_frequency'] ) ? $this->settings['scan_frequency'] : 'never';
-			$scan_time                   = isset( $this->settings['scan_time'] ) ? $this->settings['scan_time'] : '00:00';
-			$scan_timezone               = ! empty( $this->settings['scan_timezone'] ) ? $this->settings['scan_timezone'] : wp_timezone_string();
-			$next_scheduled              = wp_next_scheduled( WPCBL_Check_Broken_Links_Schedule::EVENT );
-			$has_scheduled_scans_access  = wpcbl_has_pro();
-			$upgrade_url                 = 'https://checkout.freemius.com/plugin/30464/plan/50060/';
-
-			// Manual-offset sites get "+02:00" from wp_timezone_string(), but
-			// wp_timezone_choice() only matches its own "UTC+2" option format.
-			if ( preg_match( '/^[+-]/', $scan_timezone ) ) {
-				$wpcbl_gmt_offset = (float) get_option( 'gmt_offset' );
-				$scan_timezone    = 'UTC' . ( $wpcbl_gmt_offset >= 0 ? '+' : '' ) . rtrim( rtrim( sprintf( '%.2f', $wpcbl_gmt_offset ), '0' ), '.' );
-			}
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/scan-frequency.php';
-		}
-
-		/**
-		 * Render the email addresses field.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_email_addresses() {
-			$email_notifications     = isset( $this->settings['email_notifications'] ) ? $this->settings['email_notifications'] : 'off';
-			$email_addresses         = isset( $this->settings['email_addresses'] ) ? $this->settings['email_addresses'] : '';
-			$has_email_alerts_access = wpcbl_has_pro();
-			$upgrade_url             = admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' );
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/email-addresses.php';
-		}
-
-		/**
-		 * Renders the "available on Pro" note above the locked Notifications
-		 * fields, linking down to the Unlock with Pro card on the same page.
-		 *
-		 * @since 3.0.1
-		 *
-		 * @return void
-		 */
-		/**
-		 * One-click "Turn on Fix with AI" from Broken link scan: flips the
-		 * setting and returns to that page, where Fix all with AI is ready
-		 * to use.
-		 *
-		 * @since 3.0.4
-		 *
-		 * @return void
-		 */
 		/**
 		 * The Dashboard's review request. "Maybe later" and the close
 		 * button hide it for 30 days. "Leave a review" hides it for good
@@ -1003,6 +756,15 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 			exit;
 		}
 
+		/**
+		 * One-click "Turn on Fix with AI" from Broken link scan: flips the
+		 * setting and returns to that page, where Fix all with AI is ready
+		 * to use.
+		 *
+		 * @since 3.0.4
+		 *
+		 * @return void
+		 */
 		public function handle_enable_ai_fix() {
 			if ( ! current_user_can( 'manage_options' ) ) {
 				wp_die( esc_html__( 'You are not allowed to do this.', 'check-for-broken-links' ), '', array( 'response' => 403 ) );
@@ -1018,193 +780,6 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 			// admin was reaching for it.
 			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-scan' ) );
 			exit;
-		}
-
-		/**
-		 * The General card's top-right autosave indicator. The settings-page
-		 * script flips its text between saving states.
-		 *
-		 * @since 3.0.4
-		 *
-		 * @return void
-		 */
-		public function settings_autosave_hint() {
-			printf(
-				'<span class="cbl-autosave-hint" id="cbl-autosave-hint" data-idle="%1$s" data-saving="%2$s" data-saved="%3$s">%1$s</span>',
-				esc_attr__( 'Changes are saved automatically', 'check-for-broken-links' ),
-				esc_attr__( 'Saving…', 'check-for-broken-links' ),
-				esc_attr__( 'Saved', 'check-for-broken-links' )
-			);
-		}
-
-		public function settings_notifications_lock_note() {
-			printf(
-				'<a class="cbl-settings-card-lock-note" href="#cbl-unlock-pro">%s</a>',
-				esc_html__( 'Email alerts are available on Pro', 'check-for-broken-links' )
-			);
-		}
-
-		/**
-		 * Renders the email notifications field.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_email_notifications() {
-			$email_notifications     = isset( $this->settings['email_notifications'] ) ? $this->settings['email_notifications'] : 'off';
-			$email_addresses         = isset( $this->settings['email_addresses'] ) ? $this->settings['email_addresses'] : '';
-			$has_email_alerts_access = wpcbl_has_pro();
-			$upgrade_url             = admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' );
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/email-notifications.php';
-		}
-
-		/**
-		 * Renders the scan slider content field.
-		 *
-		 * @since 1.0.2
-		 *
-		 * @return void
-		 */
-		public function settings_scan_slider_content() {
-			$scan_slider_content = isset( $this->settings['scan_slider_content'] ) ? $this->settings['scan_slider_content'] : 'on';
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/scan-slider-content.php';
-		}
-
-		/**
-		 * Renders the number of links field.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_number_of_links() {
-			$number_of_links = isset( $this->settings['number_of_links'] ) ? $this->settings['number_of_links'] : 'all';
-			$set_number      = isset( $this->settings['set_links_number'] ) ? $this->settings['set_links_number'] : '';
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/number-of-links.php';
-		}
-
-		/**
-		 * Renders the content types to scan field.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_scan_post_types() {
-			$scan_post_types = isset( $this->settings['scan_post_types'] ) && is_array( $this->settings['scan_post_types'] ) ? $this->settings['scan_post_types'] : array();
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/scan-post-types.php';
-		}
-
-		/**
-		 * Renders the link types field.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_link_types() {
-			$link_types = isset( $this->settings['link_types'] ) && is_array( $this->settings['link_types'] ) ? $this->settings['link_types'] : array( 'html', 'image' );
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/link-types.php';
-		}
-
-		/**
-		 * Renders the timeout field.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_timeout() {
-			$timeout = isset( $this->settings['timeout'] ) ? (int) $this->settings['timeout'] : 30;
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/timeout.php';
-		}
-
-		/**
-		 * Renders the Pro comments and custom fields toggles.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_comments_custom_fields() {
-			$this->settings_pro_toggle(
-				array(
-					'key'   => 'scan_comments',
-					'label' => __( 'Scan comments', 'check-for-broken-links' ),
-				)
-			);
-			$this->settings_pro_toggle(
-				array(
-					'key'    => 'scan_custom_fields',
-					'label'  => __( 'Scan custom fields (incl. ACF)', 'check-for-broken-links' ),
-					'helper' => __( 'Checks links stored in post meta, including ACF fields.', 'check-for-broken-links' ),
-				)
-			);
-		}
-
-		/**
-		 * Renders a Pro-gated toggle: visible, disabled, PRO badge, upgrade link.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param array $args Field args: key, label, optional helper.
-		 *
-		 * @return void
-		 */
-		public function settings_pro_toggle( $args ) {
-			$key         = isset( $args['key'] ) ? $args['key'] : '';
-			$label       = isset( $args['label'] ) ? $args['label'] : '';
-			$helper      = isset( $args['helper'] ) ? $args['helper'] : '';
-			$value       = isset( $this->settings[ $key ] ) ? $this->settings[ $key ] : '';
-			$has_pro     = wpcbl_has_pro();
-			$upgrade_url = admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' );
-
-			include WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/pro-toggle.php';
-		}
-
-		/**
-		 * Renders the free-version Unlock-with-Pro card: all six Pro
-		 * features as a read-only list with one upgrade CTA.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_unlock_pro() {
-			$upgrade_url = admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' );
-
-			include WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/unlock-pro.php';
-		}
-
-		/**
-		 * Renders the re-check all links button.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_recheck_all() {
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/recheck-all.php';
-		}
-
-		/**
-		 * Renders the exclusion urls field.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return void
-		 */
-		public function settings_exclusion_urls() {
-			$exclusion_urls = isset( $this->settings['exclusion_urls'] ) ? $this->settings['exclusion_urls'] : '';
-
-			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/views/sections/fields/exclusion-urls.php';
 		}
 	}
 

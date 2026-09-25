@@ -155,7 +155,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 					/* translators: 1: positions used, 2: positions limit. */
 					'rankQuotaText'     => esc_html__( '%1$s of %2$s positions used', 'check-for-broken-links' ),
 					/* translators: 1: refreshes used, 2: monthly refresh limit. */
-					'rankRefreshesText' => esc_html__( '%1$s of %2$s refreshes left this month', 'check-for-broken-links' ),
+					'rankRefreshesText' => esc_html__( '%1$s of %2$s refreshes left this week', 'check-for-broken-links' ),
 					'rankRefreshNow'    => esc_html__( 'Refresh now', 'check-for-broken-links' ),
 					'rankExportCsv'     => esc_html__( 'Export CSV', 'check-for-broken-links' ),
 					'rankDeleteSelected' => esc_html__( 'Delete', 'check-for-broken-links' ),
@@ -445,6 +445,205 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 				);
 			}
 
+			// Rank Tracker (3.1.3 layout): its own page script and stylesheet,
+			// same pattern as the AI Visibility Tracker below.
+			if ( 'wpcbl-check-for-broken-links-rank-tracker' === $current_page ) {
+				$rt_js      = 'assets/dist/js/admin/cbl-rank-tracker.js';
+				$rt_css     = 'assets/dist/css/admin/cbl-rank-tracker.css';
+				$rt_js_ver  = file_exists( WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $rt_js ) ? filemtime( WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $rt_js ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+				$rt_css_ver = file_exists( WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $rt_css ) ? filemtime( WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $rt_css ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+
+				wp_enqueue_style( 'cbl-rank-tracker', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $rt_css, array( 'wpcbl_check_for_broken_links_admin_styles' ), $rt_css_ver, 'all' );
+				wp_enqueue_script( 'cbl-rank-tracker', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $rt_js, array(), $rt_js_ver, true );
+
+				// First-run ideas: the site's own name and main page titles,
+				// the searches a site owner is most likely to care about.
+				$rt_ideas = array();
+				$rt_skip  = array( 'home', 'blog', 'contact', 'contact us', 'about', 'about us', 'privacy policy', 'cookie policy', 'terms', 'cart', 'checkout', 'my account', 'shop', 'sample page' );
+				$rt_name  = strtolower( trim( wp_strip_all_tags( get_bloginfo( 'name' ) ) ) );
+				if ( '' !== $rt_name ) {
+					$rt_ideas[] = $rt_name;
+				}
+				$rt_pages = get_posts(
+					array(
+						'post_type'      => 'page',
+						'post_status'    => 'publish',
+						'posts_per_page' => 12,
+						'orderby'        => 'menu_order title',
+						'order'          => 'ASC',
+						'fields'         => 'ids',
+					)
+				);
+				foreach ( $rt_pages as $rt_page_id ) {
+					$rt_title = strtolower( trim( wp_strip_all_tags( get_the_title( $rt_page_id ) ) ) );
+					if ( '' === $rt_title || strlen( $rt_title ) > 40 || in_array( $rt_title, $rt_skip, true ) || in_array( $rt_title, $rt_ideas, true ) ) {
+						continue;
+					}
+					$rt_ideas[] = $rt_title;
+					if ( count( $rt_ideas ) >= 5 ) {
+						break;
+					}
+				}
+
+				wp_localize_script(
+					'cbl-rank-tracker',
+					'wpcblRank',
+					array(
+						'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
+						'nonce'       => wp_create_nonce( 'wpcbl_check_for_broken_links' ),
+						'settingsUrl' => esc_url( add_query_arg( 'view', 'settings', admin_url( 'admin.php?page=wpcbl-check-for-broken-links-rank-tracker' ) ) ),
+						'upgradeUrl'  => esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-upgrade' ) ),
+						'flagsBase'   => esc_url( WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . 'assets/dist/images/admin/flags/' ),
+						'ideas'       => array_map( 'esc_html', $rt_ideas ),
+						'i18n'        => array(
+							'loadError'       => esc_html__( 'Could not load rankings. brokenlinkchecker.io might be briefly unavailable.', 'check-for-broken-links' ),
+							'generic'         => esc_html__( 'Something went wrong. Please try again.', 'check-for-broken-links' ),
+							'google'          => esc_html__( 'Google', 'check-for-broken-links' ),
+							'bing'            => esc_html__( 'Bing', 'check-for-broken-links' ),
+							'both'            => esc_html__( 'Google and Bing', 'check-for-broken-links' ),
+							'bothShort'       => esc_html__( 'Both', 'check-for-broken-links' ),
+							'desktop'         => esc_html__( 'Desktop', 'check-for-broken-links' ),
+							'mobile'          => esc_html__( 'Mobile', 'check-for-broken-links' ),
+							'deviceBoth'      => esc_html__( 'Desktop and mobile', 'check-for-broken-links' ),
+							'change'          => esc_html__( 'Change', 'check-for-broken-links' ),
+							// First run.
+							'firstTitle'      => esc_html__( 'Track your first keywords', 'check-for-broken-links' ),
+							'firstLead'       => esc_html__( 'Add the searches you want to rank for. First positions arrive within minutes.', 'check-for-broken-links' ),
+							'kwPlaceholder'   => esc_html__( 'One keyword per line, or separate with commas', 'check-for-broken-links' ),
+							'ideasTitle'      => esc_html__( 'Ideas to start with', 'check-for-broken-links' ),
+							'startTracking'   => esc_html__( 'Start tracking', 'check-for-broken-links' ),
+							/* translators: %s: number of keywords. */
+							'startTrackingN'  => esc_html__( 'Start tracking %s keywords', 'check-for-broken-links' ),
+							'startTracking1'  => esc_html__( 'Start tracking 1 keyword', 'check-for-broken-links' ),
+							'adding'          => esc_html__( 'Adding…', 'check-for-broken-links' ),
+							'weekly'          => esc_html__( 'Positions update weekly.', 'check-for-broken-links' ),
+							'daily'           => esc_html__( 'Positions update every morning.', 'check-for-broken-links' ),
+							/* translators: %s: number of free keyword slots. */
+							'slotsAvailable'  => esc_html__( '%s keyword slots available. Each keyword uses 1 slot per engine and device.', 'check-for-broken-links' ),
+							/* translators: 1: slots this addition uses, 2: free slots. */
+							'slotsUses'       => esc_html__( 'Uses %1$s of %2$s available keyword slots', 'check-for-broken-links' ),
+							/* translators: 1: slots this addition needs, 2: free slots. */
+							'slotsNeeds'      => esc_html__( 'Needs %1$s slots, only %2$s available', 'check-for-broken-links' ),
+							'previewTitle'    => esc_html__( 'What you will see', 'check-for-broken-links' ),
+							'previewKw1'      => esc_html__( 'your main keyword', 'check-for-broken-links' ),
+							'previewKw2'      => esc_html__( 'product + city', 'check-for-broken-links' ),
+							'previewKw3'      => esc_html__( 'how to …', 'check-for-broken-links' ),
+							'trend'           => esc_html__( 'Trend', 'check-for-broken-links' ),
+							'keyword'         => esc_html__( 'Keyword', 'check-for-broken-links' ),
+							'point1'          => esc_html__( 'Desktop and mobile positions side by side', 'check-for-broken-links' ),
+							'point2'          => esc_html__( 'Weekly changes, best position and trend', 'check-for-broken-links' ),
+							'point3'          => esc_html__( 'Search volume, CPC and intent for each keyword', 'check-for-broken-links' ),
+							// Results.
+							/* translators: 1: slots used, 2: slot limit. */
+							'slotsUsed'       => esc_html__( '%1$s of %2$s keyword slots used', 'check-for-broken-links' ),
+							'getMore'         => esc_html__( 'Get more', 'check-for-broken-links' ),
+							'getMoreKeywords' => esc_html__( 'Get more keywords', 'check-for-broken-links' ),
+							/* translators: 1: date of the last check, 2: date of the next check. */
+							'updatedNext'     => esc_html__( 'Updated %1$s · next update %2$s', 'check-for-broken-links' ),
+							/* translators: %s: date of the next check. */
+							'firstUpdate'     => esc_html__( 'First update %s', 'check-for-broken-links' ),
+							'refreshNow'      => esc_html__( 'Refresh now', 'check-for-broken-links' ),
+							'refreshing'      => esc_html__( 'Checking…', 'check-for-broken-links' ),
+							/* translators: 1: refreshes left, 2: weekly refresh allowance. */
+							'refreshesLeft'   => esc_html__( '%1$s of %2$s refreshes left this week', 'check-for-broken-links' ),
+							'pubTitle'        => esc_html__( 'Public report', 'check-for-broken-links' ),
+							'pubOffHint'      => esc_html__( 'Share read-only rankings with clients or your team. No login needed.', 'check-for-broken-links' ),
+							'pubOnHint'       => esc_html__( 'Anyone with the link can view rankings. Updates automatically.', 'check-for-broken-links' ),
+							'pubOnPwHint'     => esc_html__( 'Anyone with the link and the password can view rankings. Updates automatically.', 'check-for-broken-links' ),
+							'generate'        => esc_html__( 'Generate public URL', 'check-for-broken-links' ),
+							'generating'      => esc_html__( 'Generating…', 'check-for-broken-links' ),
+							'copy'            => esc_html__( 'Copy', 'check-for-broken-links' ),
+							'copied'          => esc_html__( 'Copied', 'check-for-broken-links' ),
+							'open'            => esc_html__( 'Open', 'check-for-broken-links' ),
+							'disableLink'     => esc_html__( 'Turn off the public link', 'check-for-broken-links' ),
+							'visibility'      => esc_html__( 'Visibility', 'check-for-broken-links' ),
+							'traffic'         => esc_html__( 'Estimated traffic', 'check-for-broken-links' ),
+							'avgPosition'     => esc_html__( 'Average position', 'check-for-broken-links' ),
+							/* translators: %s: change in percentage points. */
+							'pts'             => esc_html__( '%s pts', 'check-for-broken-links' ),
+							'perMonth'        => esc_html__( '/mo', 'check-for-broken-links' ),
+							'filter'          => esc_html__( 'Filter keywords', 'check-for-broken-links' ),
+							/* translators: %s: number of selected keywords. */
+							'selected'        => esc_html__( '%s selected', 'check-for-broken-links' ),
+							'stopTracking'    => esc_html__( 'Stop tracking', 'check-for-broken-links' ),
+							'stopConfirm'     => esc_html__( 'Stop tracking the selected keywords? Their ranking history is deleted.', 'check-for-broken-links' ),
+							'cancel'          => esc_html__( 'Cancel', 'check-for-broken-links' ),
+							'selectAll'       => esc_html__( 'Select all keywords', 'check-for-broken-links' ),
+							/* translators: %s: keyword. */
+							'selectRow'       => esc_html__( 'Select %s', 'check-for-broken-links' ),
+							'best'            => esc_html__( 'Best', 'check-for-broken-links' ),
+							'weeks8'          => esc_html__( '8 weeks', 'check-for-broken-links' ),
+							'volume'          => esc_html__( 'Volume', 'check-for-broken-links' ),
+							'cpc'             => esc_html__( 'CPC', 'check-for-broken-links' ),
+							'intent'          => esc_html__( 'Intent', 'check-for-broken-links' ),
+							'rankingPage'     => esc_html__( 'Ranking page', 'check-for-broken-links' ),
+							'notTracked'      => esc_html__( 'Not tracked on this device', 'check-for-broken-links' ),
+							'notRanked'       => esc_html__( 'Not in the top 100', 'check-for-broken-links' ),
+							'checking'        => esc_html__( 'Checking', 'check-for-broken-links' ),
+							'pendingNote'     => esc_html__( 'New keywords are being checked. Positions appear here in a few minutes.', 'check-for-broken-links' ),
+							/* translators: %s: the filter text. */
+							'noMatch'         => esc_html__( 'No keywords match "%s".', 'check-for-broken-links' ),
+							'dailyTitle'      => esc_html__( 'Daily ranking updates', 'check-for-broken-links' ),
+							'dailyText'       => esc_html__( 'Positions update weekly on your plan. The Daily add-on re-checks every keyword every morning.', 'check-for-broken-links' ),
+							'dailyButton'     => esc_html__( 'Get daily updates', 'check-for-broken-links' ),
+							// Add modal.
+							'addTitle'        => esc_html__( 'Add keywords', 'check-for-broken-links' ),
+							'addLead'         => esc_html__( 'One keyword per line, or separate them with commas.', 'check-for-broken-links' ),
+							'close'           => esc_html__( 'Close', 'check-for-broken-links' ),
+							'dupes'           => esc_html__( 'Duplicates are removed automatically.', 'check-for-broken-links' ),
+							/* translators: %s: number of keywords. */
+							'detected'        => esc_html__( '%s keywords detected', 'check-for-broken-links' ),
+							'detected1'       => esc_html__( '1 keyword detected', 'check-for-broken-links' ),
+							'location'        => esc_html__( 'Location and language', 'check-for-broken-links' ),
+							'engine'          => esc_html__( 'Search engine', 'check-for-broken-links' ),
+							'engineHint'      => esc_html__( 'Set for the whole tracker in Settings.', 'check-for-broken-links' ),
+							'device'          => esc_html__( 'Device', 'check-for-broken-links' ),
+							/* translators: 1: keywords, 2: engines, 3: devices. */
+							'slotMath'        => esc_html__( '%1$s × %2$s × %3$s', 'check-for-broken-links' ),
+							'kwUnit'          => esc_html__( 'keyword', 'check-for-broken-links' ),
+							'kwUnits'         => esc_html__( 'keywords', 'check-for-broken-links' ),
+							'engineUnit'      => esc_html__( 'engine', 'check-for-broken-links' ),
+							'engineUnits'     => esc_html__( 'engines', 'check-for-broken-links' ),
+							'deviceUnit'      => esc_html__( 'device', 'check-for-broken-links' ),
+							'deviceUnits'     => esc_html__( 'devices', 'check-for-broken-links' ),
+							/* translators: 1: slots in use, 2: slot limit, 3: slots left after adding. */
+							'slotsAfter'      => esc_html__( '%1$s of %2$s already in use. %3$s left after adding.', 'check-for-broken-links' ),
+							'slotsOverFoot'   => esc_html__( 'Remove keywords, pick one device, or get more slots.', 'check-for-broken-links' ),
+							/* translators: 1: engine name, 2: device name. */
+							'onEngineDevice'  => esc_html__( 'On %1$s, %2$s', 'check-for-broken-links' ),
+							/* translators: 1: number of keywords, 2: engine name, 3: device name. */
+							'nOnEngineDevice' => esc_html__( '%1$s keywords on %2$s, %3$s', 'check-for-broken-links' ),
+							/* translators: 1: engine name, 2: device name. */
+							'oneOnEngineDevice' => esc_html__( '1 keyword on %1$s, %2$s', 'check-for-broken-links' ),
+							// Settings.
+							'tracking'        => esc_html__( 'Tracking', 'check-for-broken-links' ),
+							'engineLead'      => esc_html__( 'Where rankings are checked.', 'check-for-broken-links' ),
+							'googleHint'      => esc_html__( 'Most search traffic', 'check-for-broken-links' ),
+							'bingHint'        => esc_html__( 'Also powers ChatGPT search', 'check-for-broken-links' ),
+							'bothHint'        => esc_html__( 'Compare both side by side', 'check-for-broken-links' ),
+							'defaultDevice'   => esc_html__( 'Default device', 'check-for-broken-links' ),
+							'deviceLead'      => esc_html__( 'Rankings can differ between desktop and mobile results. New keywords use this device.', 'check-for-broken-links' ),
+							'emailReports'    => esc_html__( 'Email reports', 'check-for-broken-links' ),
+							'emailLead'       => esc_html__( 'Get ranking changes by email after each update.', 'check-for-broken-links' ),
+							'sendTo'          => esc_html__( 'Send to', 'check-for-broken-links' ),
+							'emailAdd'        => esc_html__( 'Add another email', 'check-for-broken-links' ),
+							'emailFirst'      => esc_html__( 'name@example.com', 'check-for-broken-links' ),
+							'emailHint'       => esc_html__( 'Press Enter or comma to add each address.', 'check-for-broken-links' ),
+							'emailBad'        => esc_html__( 'That is not a valid email address.', 'check-for-broken-links' ),
+							/* translators: %s: email address. */
+							'emailRemove'     => esc_html__( 'Remove %s', 'check-for-broken-links' ),
+							'pwTitle'         => esc_html__( 'Public report password', 'check-for-broken-links' ),
+							'pwLead'          => esc_html__( 'Optional. Visitors to the public link must enter it first.', 'check-for-broken-links' ),
+							'pwIsSet'         => esc_html__( 'A password is set. Enter a new one to replace it.', 'check-for-broken-links' ),
+							'pwNeedsLink'     => esc_html__( 'Generate a public URL on the tracker first.', 'check-for-broken-links' ),
+							'pwSave'          => esc_html__( 'Set password', 'check-for-broken-links' ),
+							'pwPlaceholder'   => esc_html__( 'At least 4 characters', 'check-for-broken-links' ),
+							'pwSaved'         => esc_html__( 'Password set.', 'check-for-broken-links' ),
+						),
+					)
+				);
+			}
+
 			// AI Visibility Tracker: its own small self-contained script,
 			// same pattern as the Internal Link Optimizer above.
 			if ( 'wpcbl-check-for-broken-links-ai-visibility' === $current_page ) {
@@ -579,6 +778,22 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 
 			wp_enqueue_style( 'dashicons' );
 			wp_enqueue_style( 'wpcbl_check_for_broken_links_admin_styles', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $style_rel, array(), $style_ver, 'all' );
+
+			if ( 'wpcbl-check-for-broken-links-settings' === $current_page ) {
+				$settings_rel = 'assets/dist/css/admin/cbl-settings.css';
+				$settings_abs = WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $settings_rel;
+				$settings_ver = file_exists( $settings_abs ) ? filemtime( $settings_abs ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+
+				wp_enqueue_style( 'wpcbl_check_for_broken_links_settings', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $settings_rel, array( 'wpcbl_check_for_broken_links_admin_styles' ), $settings_ver, 'all' );
+			}
+
+			if ( 'wpcbl-check-for-broken-links-upgrade' === $current_page ) {
+				$upgrade_rel = 'assets/dist/css/admin/cbl-upgrade.css';
+				$upgrade_abs = WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $upgrade_rel;
+				$upgrade_ver = file_exists( $upgrade_abs ) ? filemtime( $upgrade_abs ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+
+				wp_enqueue_style( 'wpcbl_check_for_broken_links_upgrade', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $upgrade_rel, array( 'wpcbl_check_for_broken_links_admin_styles' ), $upgrade_ver, 'all' );
+			}
 		}
 	}
 

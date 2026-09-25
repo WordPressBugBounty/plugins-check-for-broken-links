@@ -212,7 +212,7 @@ if ( $wpcbl_show_review ) :
 			<button type="button" class="cbl-dash-connect-toggle" id="wpcbl-dash-connect-toggle" aria-expanded="false">
 				<?php esc_html_e( 'What do I get?', 'check-for-broken-links' ); ?>
 			</button>
-			<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-settings' ) . '#cbl-connect' ); ?>" class="cbl-btn cbl-btn-primary cbl-btn-sm"><?php esc_html_e( 'Connect this site', 'check-for-broken-links' ); ?></a>
+			<a href="<?php echo esc_url( wpcbl_connect_url() ); ?>" class="cbl-btn cbl-btn-primary cbl-btn-sm"><?php esc_html_e( 'Connect this site', 'check-for-broken-links' ); ?></a>
 			<button type="button" class="cbl-dash-connect-dismiss" id="wpcbl-dash-connect-dismiss" title="<?php esc_attr_e( 'Dismiss', 'check-for-broken-links' ); ?>">&times;</button>
 		</div>
 		<div class="cbl-dash-connect-details" id="wpcbl-dash-connect-details" style="display:none;">

@@ -35,7 +35,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		const TRANSIENT_AIV     = 'wpcbl_ai_visibility_state';
 		const ENT_TTL           = 12 * HOUR_IN_SECONDS;
 		const GRACE_TTL         = 14 * DAY_IN_SECONDS;
-		const NONCE_TTL         = 10 * MINUTE_IN_SECONDS;
+		const NONCE_TTL         = 30 * MINUTE_IN_SECONDS;
 
 		/**
 		 * Hook the has_pro filter and the throttled entitlements poll.
@@ -45,7 +45,43 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		public function __construct() {
 			add_filter( 'wpcbl_has_pro', array( $this, 'filter_has_pro' ) );
 			add_action( 'admin_init', array( $this, 'poll_entitlements' ) );
+			add_action( 'update_option_wpcbl_check_for_broken_links_settings', array( $this, 'push_site_settings' ), 10, 2 );
 			$this->register_admin_post();
+		}
+
+		/**
+		 * Send crawl settings the site shares with its brokenlinkchecker.io
+		 * project, when one of them changed. Remove URL parameters is the
+		 * only one today. A failed push is not retried: the next change
+		 * sends the current value again.
+		 *
+		 * @since 3.1.3
+		 *
+		 * @param mixed $old_value Settings before the save.
+		 * @param mixed $new_value Settings after the save.
+		 *
+		 * @return void
+		 */
+		public function push_site_settings( $old_value, $new_value ) {
+			$was = ! ( is_array( $old_value ) && isset( $old_value['remove_url_params'] ) && 'off' === $old_value['remove_url_params'] );
+			$now = ! ( is_array( $new_value ) && isset( $new_value['remove_url_params'] ) && 'off' === $new_value['remove_url_params'] );
+
+			if ( $was === $now || ! $this->is_connected() ) {
+				return;
+			}
+
+			$headers                 = $this->api_headers();
+			$headers['Content-Type'] = 'application/json';
+
+			wp_remote_request(
+				$this->app_url( '/api/v1/site/settings' ),
+				array(
+					'method'  => 'PUT',
+					'timeout' => 10,
+					'headers' => $headers,
+					'body'    => wp_json_encode( array( 'remove_url_params' => $now ) ),
+				)
+			);
 		}
 
 		/**
@@ -443,8 +479,11 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			$saved = get_transient( self::TRANSIENT_NONCE );
 			delete_transient( self::TRANSIENT_NONCE );
 
+			// A missing or stale nonce almost always means the request timed
+			// out (new users sign up and wait for a code email in between) or
+			// an older tab was used after a newer Connect click.
 			if ( '' === $code || '' === $nonce || ! $saved || ! hash_equals( (string) $saved, $nonce ) ) {
-				wp_safe_redirect( $this->settings_url( 'error' ) );
+				wp_safe_redirect( $this->settings_url( 'expired' ) );
 				exit;
 			}
 
@@ -464,8 +503,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 				)
 			);
 
-			if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
-				wp_safe_redirect( $this->settings_url( 'error' ) );
+			if ( is_wp_error( $response ) ) {
+				wp_safe_redirect( $this->settings_url( 'unreachable' ) );
+				exit;
+			}
+
+			if ( 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+				wp_safe_redirect( $this->settings_url( 'rejected' ) );
 				exit;
 			}
 
@@ -478,7 +522,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			if ( ! is_array( $data ) || empty( $data['token'] )
 				|| empty( $data['site']['url'] )
 				|| $this->normalize_site_url( $data['site']['url'] ) !== $this->normalize_site_url( home_url() ) ) {
-				wp_safe_redirect( $this->settings_url( 'error' ) );
+				wp_safe_redirect( $this->settings_url( 'mismatch' ) );
 				exit;
 			}
 

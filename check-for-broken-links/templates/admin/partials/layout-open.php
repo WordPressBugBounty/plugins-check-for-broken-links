@@ -35,10 +35,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<?php
 				if ( ! empty( $wpcbl_topbar_actions ) ) {
 					echo wp_kses( $wpcbl_topbar_actions, array(
-						'button' => array( 'type' => true, 'form' => true, 'class' => true, 'id' => true, 'title' => true, 'disabled' => true ),
+						'button' => array( 'type' => true, 'form' => true, 'class' => true, 'id' => true, 'title' => true, 'disabled' => true, 'hidden' => true ),
 						'input'  => array( 'type' => true, 'id' => true, 'class' => true, 'name' => true, 'value' => true, 'form' => true, 'placeholder' => true, 'checked' => true ),
 						'a'      => array( 'href' => true, 'class' => true, 'id' => true, 'target' => true, 'rel' => true, 'style' => true ),
-						'span'   => array( 'class' => true, 'id' => true ),
+						'span'   => array( 'class' => true, 'id' => true, 'tabindex' => true, 'role' => true, 'aria-label' => true, 'aria-describedby' => true, 'aria-live' => true, 'data-idle' => true, 'data-saving' => true, 'data-saved' => true ),
 						'select' => array( 'id' => true, 'class' => true, 'name' => true ),
 						'option' => array( 'value' => true, 'selected' => true ),
 					) );

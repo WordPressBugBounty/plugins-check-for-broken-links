@@ -29,9 +29,13 @@ if ( $wpcbl_audit_is_on ) {
 			<option value="page"><?php esc_html_e( 'One page', 'check-for-broken-links' ); ?></option>
 		</select>
 		<input type="text" id="wpcbl-audit-url" class="cbl-audit-url" style="display:none;" placeholder="<?php echo esc_attr( home_url( '/pricing' ) ); ?>" />
-		<span id="wpcbl-audit-skipquery-wrap" class="cbl-audit-skip">
-			<input type="checkbox" id="wpcbl-audit-skipquery" checked />
-			<span><?php esc_html_e( 'Skip ?query URLs', 'check-for-broken-links' ); ?></span>
+		<span id="wpcbl-audit-params-wrap" class="cbl-audit-skip">
+			<input type="checkbox" id="wpcbl-audit-params" <?php checked( wpcbl_remove_url_params() ); ?> aria-labelledby="wpcbl-audit-params-label" />
+			<span id="wpcbl-audit-params-label"><?php esc_html_e( 'Remove URL parameters', 'check-for-broken-links' ); ?></span>
+			<span class="cbl-info cbl-info-end" tabindex="0" role="button" aria-label="<?php esc_attr_e( 'What Remove URL parameters does', 'check-for-broken-links' ); ?>" aria-describedby="wpcbl-audit-params-tip">
+				<span class="dashicons dashicons-info-outline" aria-hidden="true"></span>
+				<span class="cbl-info-bubble" id="wpcbl-audit-params-tip" role="tooltip"><?php echo esc_html( wpcbl_url_params_tip() ); ?></span>
+			</span>
 		</span>
 		<button type="button" id="wpcbl-audit-run" class="cbl-btn cbl-btn-primary"><?php esc_html_e( 'Run audit', 'check-for-broken-links' ); ?></button>
 	</span>

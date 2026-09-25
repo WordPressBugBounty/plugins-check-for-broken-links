@@ -986,985 +986,7 @@
     aiBatchBegin();
   }
 
-  // ===== Rank Tracker =====
-  const rankApp = $('#wpcbl-rank-app');
-  if (rankApp.length) {
-    const params = wpcbl_check_for_broken_links_params;
-    const rankView = rankApp.data('wpcbl-rank-view') || 'tracker';
-    const rankSkeleton = $('#wpcbl-rank-skeleton');
-    const rankErrorBox = $('#wpcbl-rank-error');
-    const rankContent = $('#wpcbl-rank-content');
-    const rankAddBtn = $('#wpcbl-rank-add');
-
-    let rankState = null;
-    let rankPolls = 0;
-    let rankPollTimer = null;
-    let rankSelected = new Set();
-    let rankActiveEngine = null;
-    let rankStatusMessage = null;
-    let rankStatusWarning = false;
-
-    const rankPost = (action, data) =>
-      $.post(params.ajaxUrl, Object.assign({ action: action, nonce: params.nonce }, data || {}));
-
-    const rankResponseError = jqXHR =>
-      jqXHR && jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : params.rankLoadError;
-
-    const rankShowStatus = (message, isWarning) => {
-      rankStatusMessage = message || null;
-      rankStatusWarning = !!isWarning;
-      const status = $('#wpcbl-rank-status');
-      if (!status.length) {
-        return;
-      }
-      status.text(message || '').toggleClass('cbl-rank-status-warning', !!isWarning);
-    };
-
-    // Clears the persisted status message. Call this when a new user
-    // action starts so a stale message from a previous action doesn't
-    // reappear after the next renderRank().
-    const rankClearStatus = () => {
-      rankStatusMessage = null;
-      rankStatusWarning = false;
-    };
-
-    const rankDeviceLabel = device => {
-      if ('mobile' === device) {
-        return params.rankDeviceMobile;
-      }
-      if ('both' === device) {
-        return params.rankDeviceBoth;
-      }
-      return params.rankDeviceDesktop;
-    };
-
-    // Static markup only; no server strings are interpolated here.
-    const RANK_DEVICE_SVG = {
-      mobile:
-        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 3h8a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="2"/><path d="M11 18h2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
-      desktop:
-        '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 5h18v11H3z" stroke="currentColor" stroke-width="2"/><path d="M9 20h6M12 16v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
-    };
-
-    const rankDeviceIcon = device => {
-      const key = 'mobile' === device ? 'mobile' : 'desktop';
-      return $('<span></span>')
-        .addClass('cbl-rank-device-ico cbl-rank-device-ico-' + key)
-        .attr('title', rankDeviceLabel(device))
-        .attr('role', 'img')
-        .attr('aria-label', rankDeviceLabel(device))
-        .html(RANK_DEVICE_SVG[key]);
-    };
-
-    const rankEngineLabel = engine => {
-      if ('bing' === engine) {
-        return params.rankEngineBing;
-      }
-      if ('both' === engine) {
-        return params.rankEngineBoth;
-      }
-      if ('google' === engine) {
-        return params.rankEngineGoogle;
-      }
-      return engine;
-    };
-
-    const showRankError = message => {
-      if (rankPollTimer) {
-        clearTimeout(rankPollTimer);
-        rankPollTimer = null;
-      }
-      rankSkeleton.hide();
-      rankContent.empty();
-      rankAddBtn.hide();
-      rankErrorBox.find('p').text(message || params.rankLoadError);
-      rankErrorBox.show();
-    };
-
-    // ---- Charts ----
-
-    const RANK_CHART_SVG_NS = 'http://www.w3.org/2000/svg';
-
-    const rankChartFormatThousands = n => {
-      const rounded = Math.round(Number(n) || 0);
-      const sign = rounded < 0 ? '-' : '';
-      return sign + Math.abs(rounded).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    };
-
-    const rankChartDefs = () => [
-      { key: 'visibility', title: params.rankChartVisibility, color: '#F59E0B', invert: false, format: v => Number(v) + '%' },
-      {
-        key: 'traffic',
-        title: params.rankChartTraffic,
-        color: '#2563EB',
-        invert: false,
-        format: v => rankChartFormatThousands(v) + ' /mo'
-      },
-      {
-        key: 'avg_position',
-        title: params.rankChartAvgPosition,
-        color: '#15803D',
-        invert: true,
-        format: v => '#' + Number(v)
-      }
-    ];
-
-    const rankChartSvgEl = (tag, attrs) => {
-      const el = document.createElementNS(RANK_CHART_SVG_NS, tag);
-      Object.keys(attrs || {}).forEach(name => {
-        el.setAttribute(name, String(attrs[name]));
-      });
-      return el;
-    };
-
-    const buildRankChartCard = (def, rawValues, dates) => {
-      const w = 300;
-      const h = 80;
-      const pad = 6;
-      const values = rawValues.map(v => Number(v));
-
-      const card = $('<div class="cbl-rank-chart-card"></div>');
-      const head = $('<div class="cbl-rank-chart-head"></div>');
-      head.append($('<span class="cbl-rank-chart-title"></span>').text(def.title));
-      head.append($('<span class="cbl-rank-chart-current"></span>').text(def.format(values[values.length - 1])));
-      card.append(head);
-
-      const svg = rankChartSvgEl('svg', {
-        viewBox: '0 0 ' + w + ' ' + h,
-        preserveAspectRatio: 'none',
-        class: 'cbl-rank-chart-svg',
-        role: 'img',
-        'aria-label': def.title
-      });
-
-      if (values.length === 1) {
-        // Single-point series: render a dot instead of a degenerate line.
-        svg.appendChild(rankChartSvgEl('circle', { cx: w / 2, cy: h / 2, r: 3, fill: def.color }));
-      } else {
-        let min = Math.min.apply(null, values);
-        let max = Math.max.apply(null, values);
-        if (max === min) {
-          // Division-by-zero guard: flat series renders as a centered line.
-          max = min + 1;
-        }
-        const points = values.map((value, i) => {
-          const x = (i * w) / (values.length - 1);
-          let norm = (value - min) / (max - min);
-          if (def.invert) {
-            // Average position: lower is better, so invert the mapping.
-            norm = 1 - norm;
-          }
-          const y = pad + (1 - norm) * (h - 2 * pad);
-          return Number(x.toFixed(1)) + ',' + Number(y.toFixed(1));
-        });
-        const lineStr = points.join(' ');
-        const areaStr = lineStr + ' ' + w + ',' + h + ' 0,' + h;
-
-        svg.appendChild(rankChartSvgEl('polygon', { points: areaStr, fill: def.color, opacity: '0.08' }));
-        svg.appendChild(
-          rankChartSvgEl('polyline', {
-            points: lineStr,
-            fill: 'none',
-            stroke: def.color,
-            'stroke-width': '2.5',
-            'stroke-linejoin': 'round',
-            'stroke-linecap': 'round',
-            'vector-effect': 'non-scaling-stroke'
-          })
-        );
-      }
-
-      card.append(svg);
-
-      const labels = $('<div class="cbl-rank-chart-labels"></div>');
-      labels.append($('<span></span>').text(dates[0] || ''));
-      labels.append($('<span></span>').text(dates.length > 1 ? dates[dates.length - 1] : ''));
-      card.append(labels);
-
-      return card;
-    };
-
-    function renderRankCharts(containerJq, charts) {
-      containerJq.empty();
-
-      if (!charts || !charts.dates || !charts.dates.length) {
-        containerJq.hide();
-        return;
-      }
-
-      let rendered = 0;
-      rankChartDefs().forEach(def => {
-        const values = charts[def.key];
-        if (!values || !values.length) {
-          return;
-        }
-        containerJq.append(buildRankChartCard(def, values, charts.dates));
-        rendered++;
-      });
-
-      containerJq.toggle(rendered > 0);
-    }
-
-    const scheduleRankPoll = () => {
-      if (rankPollTimer) {
-        clearTimeout(rankPollTimer);
-        rankPollTimer = null;
-      }
-      // Never schedule a poll while the settings view is open: a re-fetch
-      // and re-render 15s later would blow away half-typed settings input.
-      if ('settings' === rankView) {
-        return;
-      }
-      if (rankState && rankState.pending && rankPolls < 40) {
-        rankPollTimer = setTimeout(() => {
-          rankPolls++;
-          loadRank(true);
-        }, 15000);
-      }
-    };
-
-    const loadRank = fresh => {
-      rankPost('wpcbl_rank_state', fresh ? { fresh: '1' } : {})
-        .done(res => {
-          if (!res || !res.success) {
-            return showRankError(res && res.data ? res.data : params.rankLoadError);
-          }
-          rankState = res.data;
-          renderRank();
-          scheduleRankPoll();
-        })
-        .fail(jqXHR => {
-          showRankError(rankResponseError(jqXHR));
-        });
-    };
-
-    // ---- Table building ----
-
-    const buildRankTableHead = () => {
-      const thead = $('<thead></thead>');
-      const tr = $('<tr></tr>');
-      tr.append($('<th class="cbl-rank-col-check"></th>').append($('<input type="checkbox" id="wpcbl-rank-select-all" />')));
-      const cols = params.rankColumns || {};
-      ['keyword', 'position', 'change', 'best', 'volume', 'cpc', 'intent', 'competition', 'page', 'checked'].forEach(key => {
-        tr.append($('<th></th>').addClass('cbl-rank-col-' + key).text(cols[key] || key));
-      });
-      thead.append(tr);
-      return thead;
-    };
-
-    const buildRankRow = kw => {
-      const comboKey = rankActiveEngine + ':' + kw.device;
-      const check = (kw.checks && kw.checks[comboKey]) || null;
-      const tr = $('<tr></tr>').attr('data-wpcbl-rank-id', kw.id);
-
-      const tdCheck = $('<td class="cbl-rank-col-check"></td>');
-      tdCheck.append(
-        $('<input type="checkbox" class="cbl-rank-row-check" />').val(kw.id).prop('checked', rankSelected.has(kw.id))
-      );
-      tdCheck.append(
-        $('<button type="button" class="cbl-rank-row-delete"></button>')
-          .attr('aria-label', params.rankDeleteTitle)
-          .attr('title', params.rankDeleteTitle)
-          .text('×')
-      );
-      tr.append(tdCheck);
-
-      const tdKeyword = $('<td class="cbl-rank-col-keyword"></td>');
-      const marketEntry = (rankState.markets || []).find(market => market.key === kw.market);
-      const kwCountry = String(kw.market || '').split('-')[0].toLowerCase();
-      if (kwCountry && params.rankFlagsBase) {
-        tdKeyword.append(
-          $('<img class="cbl-rank-flag" alt="" width="18" height="14" />')
-            .attr('src', params.rankFlagsBase + encodeURIComponent(kwCountry) + '.svg')
-            .attr('title', marketEntry ? marketEntry.label : kw.market)
-            .on('error', function () {
-              $(this).hide();
-            })
-        );
-      }
-      tdKeyword.append(rankDeviceIcon(kw.device));
-      tdKeyword.append($('<span class="cbl-rank-keyword-text"></span>').text(kw.keyword));
-      tr.append(tdKeyword);
-
-      const tdPos = $('<td class="cbl-rank-col-position"></td>');
-      if (kw.pending) {
-        tdPos.append($('<span class="cbl-rank-pending"></span>').text('…'));
-      } else if (check && null !== check.position && undefined !== check.position) {
-        tdPos.append(
-          $('<span class="cbl-rank-pos"></span>').addClass('cbl-rank-pos-' + (check.position_color || 'bad')).text(check.position)
-        );
-      } else {
-        tdPos.append($('<span class="cbl-rank-pos cbl-rank-pos-bad"></span>').text('–'));
-      }
-      tr.append(tdPos);
-
-      const tdChange = $('<td class="cbl-rank-col-change"></td>');
-      const change = check ? check.change : null;
-      if (change > 0) {
-        tdChange.append($('<span class="cbl-rank-change-up"></span>').text('▲ ' + change));
-      } else if (change < 0) {
-        tdChange.append($('<span class="cbl-rank-change-down"></span>').text('▼ ' + Math.abs(change)));
-      } else {
-        tdChange.append($('<span class="cbl-rank-change-flat"></span>').text('–'));
-      }
-      tr.append(tdChange);
-
-      // Bing has its own search volume/CPC/competition metrics; fall back
-      // to the Google fields for every other engine (mirrors the SaaS
-      // dashboard's tool-rank-tracker.blade.php).
-      const isBing = 'bing' === rankActiveEngine;
-      const kwVolume = isBing ? kw.bing_search_volume : kw.search_volume;
-      const kwCpc = isBing ? kw.bing_cpc : kw.cpc;
-      const kwCompetition = isBing ? kw.bing_competition : kw.competition;
-
-      tr.append($('<td class="cbl-rank-col-best"></td>').text(check && (check.best || 0 === check.best) ? check.best : '–'));
-      tr.append($('<td class="cbl-rank-col-volume"></td>').text(kwVolume || 0 === kwVolume ? kwVolume : '–'));
-      tr.append($('<td class="cbl-rank-col-cpc"></td>').text(kwCpc ? kwCpc : '–'));
-
-      const tdIntent = $('<td class="cbl-rank-col-intent"></td>');
-      if (kw.intent) {
-        String(kw.intent).split(',').forEach(part => {
-          const value = part.trim();
-          if (!value) {
-            return;
-          }
-          tdIntent.append(
-            $('<span class="cbl-rank-intent-chip"></span>').attr('title', value).text(value.charAt(0).toUpperCase())
-          );
-        });
-      } else {
-        tdIntent.text('–');
-      }
-      tr.append(tdIntent);
-
-      const tdCompetition = $('<td class="cbl-rank-col-competition"></td>');
-      if (kwCompetition) {
-        tdCompetition.append($('<span class="cbl-rank-competition-pill"></span>').text(kwCompetition));
-      } else {
-        tdCompetition.text('–');
-      }
-      tr.append(tdCompetition);
-
-      const tdPage = $('<td class="cbl-rank-col-page"></td>');
-      if (check && check.found_url) {
-        let path = check.found_url;
-        try {
-          path = new URL(check.found_url).pathname;
-        } catch (e) {
-          path = check.found_url;
-        }
-        tdPage.append(
-          $('<a target="_blank" rel="noopener"></a>').attr('href', check.found_url).attr('title', check.found_url).text(path)
-        );
-      } else {
-        tdPage.text('–');
-      }
-      tr.append(tdPage);
-
-      tr.append($('<td class="cbl-rank-col-checked"></td>').text(check && check.checked_on ? check.checked_on : '–'));
-
-      return tr;
-    };
-
-    const updateBulkBar = () => {
-      const bar = $('#wpcbl-rank-bulkbar');
-      const count = rankSelected.size;
-      bar.find('.cbl-rank-bulk-count').text(count > 0 ? params.rankBulkSelected.replace('%1$s', count) : '');
-      bar.toggle(count > 0);
-    };
-
-    // ---- Renderers ----
-
-    const renderTrackerView = () => {
-      // Drop selections for keywords that no longer exist.
-      const currentIds = new Set((rankState.keywords || []).map(kw => kw.id));
-      rankSelected.forEach(id => {
-        if (!currentIds.has(id)) {
-          rankSelected.delete(id);
-        }
-      });
-
-      const quota = rankState.quota || { positions_used: 0, positions_limit: 0 };
-      const quotaFull = 'number' === typeof quota.positions_limit && quota.positions_limit > 0 && quota.positions_used >= quota.positions_limit;
-      rankAddBtn.toggle(!quotaFull);
-
-      const noKeywords = !rankState.keywords || !rankState.keywords.length;
-
-      // Header.
-      const head = $('<div class="cbl-card cbl-rank-head"></div>');
-      const headTop = $('<div class="cbl-rank-head-top"></div>');
-      headTop.append(
-        $('<span class="cbl-rank-badge"></span>').text(
-          params.rankQuotaText.replace('%1$s', quota.positions_used).replace('%2$s', quota.positions_limit)
-        )
-      );
-
-      if (rankState.next_check) {
-        headTop.append(
-          $('<span class="cbl-rank-next-check"></span>').text(
-            params.rankNextUpdate.replace('%1$s', rankState.next_check)
-          )
-        );
-      }
-
-      const headActions = $('<div class="cbl-rank-head-actions"></div>');
-      const refreshes = rankState.refreshes || { used: 0, limit: 0 };
-      const refreshBtn = $('<button type="button" id="wpcbl-rank-refresh" class="cbl-btn"></button>').text(params.rankRefreshNow);
-      const refreshDisabled = refreshes.used >= refreshes.limit || noKeywords;
-      refreshBtn.prop('disabled', refreshDisabled);
-      refreshBtn.attr(
-        'title',
-        params.rankRefreshesText.replace('%1$s', Math.max(0, refreshes.limit - refreshes.used)).replace('%2$s', refreshes.limit)
-      );
-      headActions.append(refreshBtn);
-      headActions.append($('<button type="button" id="wpcbl-rank-export" class="cbl-btn"></button>').text(params.rankExportCsv));
-      if (quotaFull && params.rankUpgradeUrl) {
-        headActions.append(
-          $('<a class="cbl-btn cbl-btn-primary"></a>')
-            .attr('href', params.rankUpgradeUrl)
-            .text(params.rankGetMore)
-        );
-      }
-      headTop.append(headActions);
-      head.append(headTop);
-      head.append($('<p id="wpcbl-rank-status" class="cbl-rank-status"></p>'));
-      rankContent.append(head);
-
-      // Engine tabs.
-      const engines = rankState.engines && rankState.engines.length ? rankState.engines : ['google'];
-      if (!rankActiveEngine || -1 === engines.indexOf(rankActiveEngine)) {
-        rankActiveEngine = engines[0];
-      }
-      if (engines.length > 1) {
-        const tabs = $('<div class="cbl-rank-tabs"></div>');
-        engines.forEach(engine => {
-          tabs.append(
-            $('<button type="button" class="cbl-rank-tab"></button>')
-              .toggleClass('is-active', engine === rankActiveEngine)
-              .attr('data-wpcbl-rank-engine', engine)
-              .text(rankEngineLabel(engine))
-          );
-        });
-        rankContent.append(tabs);
-      }
-
-      // Bulk bar.
-      const bulkBar = $('<div id="wpcbl-rank-bulkbar" class="cbl-rank-bulkbar" style="display:none;"></div>');
-      bulkBar.append($('<span class="cbl-rank-bulk-count"></span>'));
-      bulkBar.append(
-        $('<button type="button" id="wpcbl-rank-bulk-delete" class="cbl-btn cbl-btn-danger"></button>').text(params.rankDeleteSelected)
-      );
-      rankContent.append(bulkBar);
-
-      // Table or empty state.
-      if (noKeywords) {
-        const empty = $('<div class="cbl-card cbl-rank-empty"></div>');
-        empty.append($('<h2></h2>').text(params.rankEmptyTitle));
-        empty.append($('<p></p>').text(params.rankEmptyMessage));
-        empty.append(
-          $('<button type="button" id="wpcbl-rank-empty-add" class="cbl-btn cbl-btn-primary"></button>').text(params.rankAddButton)
-        );
-        rankContent.append(empty);
-      } else {
-        const wrap = $('<div class="cbl-rank-table-wrap"></div>');
-        const table = $('<table class="cbl-rank-table"></table>');
-        table.append(buildRankTableHead());
-        const tbody = $('<tbody></tbody>');
-        rankState.keywords.forEach(kw => tbody.append(buildRankRow(kw)));
-        table.append(tbody);
-        wrap.append(table);
-        rankContent.append(wrap);
-
-        if (rankState.keywords.some(kw => kw.pending)) {
-          rankContent.append($('<p class="cbl-rank-pending-note"></p>').text(params.rankPendingNote));
-        }
-      }
-
-      updateBulkBar();
-
-      // Charts.
-      const chartsWrap = $('<div id="wpcbl-rank-charts" class="cbl-rank-charts"></div>');
-      rankContent.append(chartsWrap);
-      if ('function' === typeof renderRankCharts) {
-        renderRankCharts(chartsWrap, rankState.charts);
-      }
-
-      // Daily upsell, pointing at the plugin's own Upgrade page so the
-      // purchase never requires a dashboard login.
-      if (!rankState.has_daily && params.rankUpgradeUrl) {
-        const upsell = $('<div class="cbl-card cbl-rank-upsell"></div>');
-        upsell.append($('<h2></h2>').text(params.rankDailyTitle));
-        upsell.append($('<p></p>').text(params.rankDailyMessage));
-        upsell.append(
-          $('<a class="cbl-btn cbl-btn-primary"></a>')
-            .attr('href', params.rankUpgradeUrl)
-            .text(params.rankDailyButton)
-        );
-        rankContent.append(upsell);
-      }
-    };
-
-    const renderSettingsView = () => {
-      const settings = rankState.settings || {};
-      const card = $('<div class="cbl-card cbl-rank-settings-card"></div>');
-      card.append($('<h2></h2>').text(params.rankSettingsTitle));
-      card.append($('<p id="wpcbl-rank-status" class="cbl-rank-status"></p>'));
-
-      const grid = $('<div class="cbl-rank-settings-grid"></div>');
-
-      // Device.
-      const deviceField = $('<div class="cbl-rank-settings-field"></div>');
-      deviceField.append($('<label for="wpcbl-rank-settings-device"></label>').text(params.rankSettingsDevice));
-      const deviceSelect = $('<select id="wpcbl-rank-settings-device"></select>');
-      [
-        ['desktop', params.rankDeviceDesktop],
-        ['mobile', params.rankDeviceMobile],
-        ['both', params.rankDeviceBoth]
-      ].forEach(pair => {
-        deviceSelect.append($('<option></option>').val(pair[0]).text(pair[1]));
-      });
-      deviceSelect.val(settings.device || 'desktop');
-      deviceField.append(deviceSelect);
-      grid.append(deviceField);
-
-      // Engine.
-      const engineField = $('<div class="cbl-rank-settings-field"></div>');
-      engineField.append($('<label for="wpcbl-rank-settings-engine"></label>').text(params.rankSettingsEngine));
-      const engineSelect = $('<select id="wpcbl-rank-settings-engine"></select>');
-      [
-        ['google', params.rankEngineGoogle],
-        ['bing', params.rankEngineBing],
-        ['both', params.rankEngineBoth]
-      ].forEach(pair => {
-        engineSelect.append($('<option></option>').val(pair[0]).text(pair[1]));
-      });
-      engineSelect.val(settings.engine || 'google');
-      engineField.append(engineSelect);
-      grid.append(engineField);
-
-      // Email.
-      const emailField = $('<div class="cbl-rank-settings-field"></div>');
-      const emailToggleLabel = $('<label class="cbl-rank-settings-toggle"></label>');
-      const emailToggle = $('<input type="checkbox" id="wpcbl-rank-settings-email" />').prop('checked', !!settings.email_enabled);
-      emailToggleLabel.append(emailToggle).append($('<span></span>').text(params.rankSettingsEmailLabel));
-      emailField.append(emailToggleLabel);
-      const emailRecipients = $('<input type="text" id="wpcbl-rank-settings-email-recipients" />')
-        .attr('placeholder', params.rankSettingsEmailPlaceholder)
-        .val(settings.email_recipients || '')
-        .prop('disabled', !settings.email_enabled);
-      emailField.append(emailRecipients);
-      grid.append(emailField);
-      emailToggle.on('change', function () {
-        emailRecipients.prop('disabled', !$(this).is(':checked'));
-      });
-
-      // Share.
-      const shareField = $('<div class="cbl-rank-settings-field cbl-rank-settings-share"></div>');
-      const shareToggleLabel = $('<label class="cbl-rank-settings-toggle"></label>');
-      const shareToggle = $('<input type="checkbox" id="wpcbl-rank-settings-share" />').prop('checked', !!settings.share_enabled);
-      shareToggleLabel.append(shareToggle).append($('<span></span>').text(params.rankSettingsShareLabel));
-      shareField.append(shareToggleLabel);
-
-      const sharePassword = $('<input type="password" id="wpcbl-rank-settings-share-password" autocomplete="new-password" />')
-        .attr('placeholder', settings.share_has_password ? '••••••••' : params.rankSettingsPasswordPlaceholder)
-        .prop('disabled', !settings.share_enabled);
-      shareField.append(sharePassword);
-      shareToggle.on('change', function () {
-        sharePassword.prop('disabled', !$(this).is(':checked'));
-      });
-
-      const shareUrlWrap = $('<div class="cbl-rank-settings-share-url"></div>');
-      const shareUrlInput = $('<input type="text" id="wpcbl-rank-settings-share-url" readonly="readonly" />').val(settings.share_url || '');
-      const shareCopyBtn = $('<button type="button" id="wpcbl-rank-settings-share-copy" class="cbl-btn"></button>').text(params.rankSettingsCopyLink);
-      shareUrlWrap.append(shareUrlInput).append(shareCopyBtn);
-      shareUrlWrap.toggle(!!settings.share_url);
-      shareField.append(shareUrlWrap);
-
-      const shareError = $('<p class="cbl-rank-settings-error" data-wpcbl-field="share"></p>').hide();
-      shareField.append(shareError);
-      grid.append(shareField);
-
-      card.append(grid);
-
-      const saveBtn = $('<button type="button" id="wpcbl-rank-settings-save" class="cbl-btn cbl-btn-primary"></button>').text(params.rankSettingsSave);
-      card.append(saveBtn);
-
-      rankContent.append(card);
-
-      const initialShareEnabled = !!settings.share_enabled;
-
-      saveBtn.on('click', function (event) {
-        event.preventDefault();
-        shareError.text('').hide();
-        saveBtn.prop('disabled', true);
-        rankPolls = 0;
-        rankClearStatus();
-
-        const shareEnabled = shareToggle.is(':checked');
-        const passwordVal = sharePassword.val();
-        const shareChanged = shareEnabled !== initialShareEnabled || !!passwordVal;
-
-        const finishSaveError = (message, field) => {
-          saveBtn.prop('disabled', false);
-          if ('share' === field) {
-            shareError.text(message || params.rankLoadError).show();
-          } else {
-            rankShowStatus(message || params.rankLoadError, true);
-          }
-        };
-
-        const finishSaveSuccess = () => {
-          saveBtn.prop('disabled', false);
-          rankShowStatus(params.rankSettingsSaved, false);
-          loadRank(true);
-        };
-
-        const doShareSave = () => {
-          if (!shareChanged) {
-            return finishSaveSuccess();
-          }
-          rankPost('wpcbl_rank_share', { sharing: shareEnabled ? 'on' : 'off', password: passwordVal || '' })
-            .done(shareRes => {
-              if (!shareRes || !shareRes.success) {
-                return finishSaveError(shareRes && shareRes.data ? shareRes.data : params.rankLoadError, 'share');
-              }
-              finishSaveSuccess();
-            })
-            .fail(jqXHR => {
-              finishSaveError(rankResponseError(jqXHR), 'share');
-            });
-        };
-
-        rankPost('wpcbl_rank_settings', {
-          device: deviceSelect.val(),
-          engine: engineSelect.val(),
-          email_enabled: emailToggle.is(':checked') ? '1' : '0',
-          email_recipients: emailRecipients.val()
-        })
-          .done(res => {
-            if (!res || !res.success) {
-              return finishSaveError(res && res.data ? res.data : params.rankLoadError, null);
-            }
-            doShareSave();
-          })
-          .fail(jqXHR => {
-            finishSaveError(rankResponseError(jqXHR), null);
-          });
-      });
-
-      shareCopyBtn.on('click', function (event) {
-        event.preventDefault();
-        const url = shareUrlInput.val();
-        if (!url) {
-          return;
-        }
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(url).then(() => {
-            rankShowStatus(params.rankShareCopied, false);
-          });
-        } else {
-          shareUrlInput.trigger('select');
-          document.execCommand('copy');
-          rankShowStatus(params.rankShareCopied, false);
-        }
-      });
-    };
-
-    const renderRank = () => {
-      rankSkeleton.hide();
-      rankErrorBox.hide();
-      rankContent.empty().show();
-      if ('settings' === rankView) {
-        rankAddBtn.hide();
-        renderSettingsView();
-      } else {
-        renderTrackerView();
-      }
-      // #wpcbl-rank-status is rebuilt by the view render above, which wipes
-      // out any message an action just showed. Re-apply the last message
-      // (if any) so it survives the loadRank(true) re-render that follows
-      // every action.
-      if (rankStatusMessage) {
-        rankShowStatus(rankStatusMessage, rankStatusWarning);
-      }
-    };
-
-    // ---- Add keywords modal ----
-    // cblModal() only supports a single text input + checkbox, not the
-    // textarea/select/radio-group form this needs, so this follows the
-    // same bespoke-overlay pattern as aiFixModal() above (reuses the
-    // .cbl-modal-overlay / .cbl-modal / .cbl-modal-actions classes).
-    const rankAddModal = () => {
-      return new Promise(resolve => {
-        const previousFocus = document.activeElement;
-        const overlay = $(
-          '<div class="cbl-modal-overlay" role="presentation">' +
-            '<div class="cbl-modal cbl-modal-rank-add" role="dialog" aria-modal="true" aria-labelledby="cbl-rank-add-title">' +
-              '<h2 class="cbl-modal-title" id="cbl-rank-add-title"></h2>' +
-              '<p class="cbl-modal-message"></p>' +
-              '<textarea class="cbl-rank-add-textarea" rows="5"></textarea>' +
-              '<select class="cbl-rank-add-market"></select>' +
-              '<div class="cbl-rank-add-devices"></div>' +
-              '<div class="cbl-modal-actions">' +
-                '<button type="button" class="cbl-btn cbl-modal-cancel"></button>' +
-                '<button type="button" class="cbl-btn cbl-btn-primary cbl-modal-confirm"></button>' +
-              '</div>' +
-            '</div>' +
-          '</div>'
-        );
-
-        overlay.find('.cbl-modal-title').text(params.rankAddTitle);
-        overlay.find('.cbl-modal-message').text(params.rankAddMessage);
-
-        const marketSelect = overlay.find('.cbl-rank-add-market');
-        (rankState.markets || []).forEach(market => {
-          marketSelect.append($('<option></option>').val(market.key).text(market.label));
-        });
-        const defaultMarket = (rankState.project && rankState.project.market) || '';
-        if (defaultMarket) {
-          marketSelect.val(defaultMarket);
-        }
-
-        const devicesWrap = overlay.find('.cbl-rank-add-devices');
-        const defaultDevice = (rankState.project && rankState.project.device) || 'desktop';
-        [
-          ['desktop', params.rankDeviceDesktop],
-          ['mobile', params.rankDeviceMobile],
-          ['both', params.rankDeviceBoth]
-        ].forEach(pair => {
-          const label = $('<label class="cbl-rank-add-device"></label>');
-          const radio = $('<input type="radio" name="cbl-rank-add-device" />').val(pair[0]).prop('checked', pair[0] === defaultDevice);
-          label.append(radio).append($('<span></span>').text(pair[1]));
-          devicesWrap.append(label);
-        });
-
-        overlay.find('.cbl-modal-cancel').text(params.modalCancel);
-        const confirmBtn = overlay.find('.cbl-modal-confirm').text(params.rankAddButton);
-
-        const close = confirmed => {
-          overlay.remove();
-          $(document).off('keydown.cblRankAdd');
-          if (previousFocus && previousFocus.focus) {
-            previousFocus.focus();
-          }
-          resolve({
-            confirmed: confirmed,
-            keywords: overlay.find('.cbl-rank-add-textarea').val(),
-            market: marketSelect.val(),
-            device: overlay.find('input[name="cbl-rank-add-device"]:checked').val()
-          });
-        };
-
-        overlay.on('click', function (event) {
-          if (event.target === this) {
-            close(false);
-          }
-        });
-        overlay.find('.cbl-modal-cancel').on('click', () => close(false));
-        confirmBtn.on('click', () => close(true));
-        $(document).on('keydown.cblRankAdd', event => {
-          if ('Escape' === event.key) {
-            close(false);
-          }
-        });
-
-        $('body').append(overlay);
-        overlay.find('.cbl-rank-add-textarea').trigger('focus');
-      });
-    };
-
-    // ---- Actions ----
-
-    $(document).on('click', '#wpcbl-rank-add, #wpcbl-rank-empty-add', function (event) {
-      event.preventDefault();
-      if (!rankState) {
-        return;
-      }
-      rankAddModal().then(choice => {
-        if (!choice.confirmed) {
-          return;
-        }
-        const keywords = (choice.keywords || '').trim();
-        if (!keywords) {
-          return;
-        }
-        rankPolls = 0;
-        rankClearStatus();
-        rankPost('wpcbl_rank_add_keywords', { keywords: keywords, market: choice.market || '', device: choice.device || '' })
-          .done(res => {
-            if (!res || !res.success) {
-              rankShowStatus(res && res.data ? res.data : params.rankLoadError, true);
-              return;
-            }
-            if (res.data && res.data.message) {
-              rankShowStatus(res.data.message, false);
-            }
-            loadRank(true);
-          })
-          .fail(jqXHR => {
-            rankShowStatus(rankResponseError(jqXHR), true);
-          });
-      });
-    });
-
-    $(document).on('click', '.cbl-rank-row-delete', function (event) {
-      event.preventDefault();
-      const id = $(this).closest('tr').data('wpcbl-rank-id');
-      cblModal({
-        title: params.rankDeleteTitle,
-        message: params.rankDeleteConfirm,
-        confirmText: params.rankDeleteTitle,
-        danger: true
-      }).then(modal => {
-        if (!modal.confirmed) {
-          return;
-        }
-        rankPolls = 0;
-        rankClearStatus();
-        rankSelected.delete(id);
-        rankPost('wpcbl_rank_delete', { id: id })
-          .done(res => {
-            if (!res || !res.success) {
-              rankShowStatus(res && res.data ? res.data : params.rankLoadError, true);
-            }
-          })
-          .fail(jqXHR => {
-            rankShowStatus(rankResponseError(jqXHR), true);
-          })
-          .always(() => {
-            loadRank(true);
-          });
-      });
-    });
-
-    $(document).on('click', '#wpcbl-rank-bulk-delete', function (event) {
-      event.preventDefault();
-      if (!rankSelected.size) {
-        return;
-      }
-      cblModal({
-        title: params.rankDeleteTitle,
-        message: params.rankDeleteConfirm,
-        confirmText: params.rankDeleteTitle,
-        danger: true
-      }).then(modal => {
-        if (!modal.confirmed) {
-          return;
-        }
-        const ids = Array.from(rankSelected);
-        rankPolls = 0;
-        rankClearStatus();
-        rankPost('wpcbl_rank_bulk_delete', { ids: ids })
-          .done(res => {
-            if (!res || !res.success) {
-              rankShowStatus(res && res.data ? res.data : params.rankLoadError, true);
-            }
-          })
-          .fail(jqXHR => {
-            rankShowStatus(rankResponseError(jqXHR), true);
-          })
-          .always(() => {
-            rankSelected.clear();
-            loadRank(true);
-          });
-      });
-    });
-
-    $(document).on('click', '#wpcbl-rank-refresh', function (event) {
-      event.preventDefault();
-      if ($(this).prop('disabled')) {
-        return;
-      }
-      const ids = rankSelected.size > 0 ? Array.from(rankSelected) : [];
-      rankPolls = 0;
-      rankClearStatus();
-      rankPost('wpcbl_rank_refresh', ids.length ? { ids: ids } : {})
-        .done(res => {
-          if (!res || !res.success) {
-            rankShowStatus(res && res.data ? res.data : params.rankLoadError, true);
-            return;
-          }
-          if (res.data && false === res.data.ok) {
-            rankShowStatus(res.data.message || '', true);
-          } else if (res.data && res.data.message) {
-            rankShowStatus(res.data.message, false);
-          }
-        })
-        .fail(jqXHR => {
-          rankShowStatus(rankResponseError(jqXHR), true);
-        })
-        .always(() => {
-          loadRank(true);
-        });
-    });
-
-    $(document).on('click', '#wpcbl-rank-export', function (event) {
-      event.preventDefault();
-      const ids = rankSelected.size > 0 ? Array.from(rankSelected) : [];
-      rankPost('wpcbl_rank_export', ids.length ? { ids: ids } : {})
-        .done(res => {
-          if (!res || !res.success || !res.data) {
-            rankShowStatus(res && res.data ? res.data : params.rankLoadError, true);
-            return;
-          }
-          const blob = new Blob([res.data.csv], { type: 'text/csv' });
-          const a = document.createElement('a');
-          const url = URL.createObjectURL(blob);
-          a.href = url;
-          a.download = res.data.filename;
-          document.body.appendChild(a);
-          a.click();
-          a.remove();
-          // Firefox/Safari need the object URL to stay alive until the
-          // download has actually started; revoking it synchronously can
-          // cancel the download in those browsers.
-          setTimeout(() => URL.revokeObjectURL(url), 0);
-        })
-        .fail(jqXHR => {
-          rankShowStatus(rankResponseError(jqXHR), true);
-        });
-    });
-
-    $(document).on('click', '.cbl-rank-tab', function (event) {
-      event.preventDefault();
-      rankActiveEngine = $(this).data('wpcbl-rank-engine');
-      renderRank();
-    });
-
-    $(document).on('change', '#wpcbl-rank-select-all', function () {
-      const checked = $(this).is(':checked');
-      $('.cbl-rank-row-check').each(function () {
-        const id = parseInt($(this).val(), 10);
-        $(this).prop('checked', checked);
-        if (checked) {
-          rankSelected.add(id);
-        } else {
-          rankSelected.delete(id);
-        }
-      });
-      updateBulkBar();
-    });
-
-    $(document).on('change', '.cbl-rank-row-check', function () {
-      const id = parseInt($(this).val(), 10);
-      if ($(this).is(':checked')) {
-        rankSelected.add(id);
-      } else {
-        rankSelected.delete(id);
-        $('#wpcbl-rank-select-all').prop('checked', false);
-      }
-      updateBulkBar();
-    });
-
-    $(document).on('click', '#wpcbl-rank-retry', function (event) {
-      event.preventDefault();
-      rankErrorBox.hide();
-      rankSkeleton.show();
-      loadRank(false);
-    });
-
-    loadRank(false);
-  }
+  // Rank Tracker lives in its own page script since 3.1.3: cbl-rank-tracker.js.
 
   // ===== Uptime Monitor =====
   const uptimeApp = $('#wpcbl-uptime-app');
@@ -3240,20 +2262,31 @@
     const auditSyncMode = () => {
       const page = $('#wpcbl-audit-mode').val() === 'page';
       $('#wpcbl-audit-url').toggle(page);
-      $('#wpcbl-audit-skipquery-wrap').toggle(!page);
+      $('#wpcbl-audit-params-wrap').toggle(!page);
     };
     auditSyncMode();
 
     $('#wpcbl-audit-mode').on('change', auditSyncMode);
 
     // The skip option renders as a bordered chip, so it reads as clickable.
-    // wp_kses strips <label> from the topbar, so bind the whole chip here.
-    $('#wpcbl-audit-skipquery-wrap').on('click', function (event) {
-      if (event.target.id === 'wpcbl-audit-skipquery') {
+    // Remove URL parameters is the Settings page option, saved as soon as
+    // it changes. wp_kses strips <label> from the topbar, so the whole chip
+    // toggles the box here. The info icon only explains.
+    function saveUrlParams(enabled) {
+      auditPost('wpcbl_save_url_params', { enabled: enabled ? 1 : 0 });
+    }
+
+    $('#wpcbl-audit-params-wrap').on('click', function (event) {
+      if (event.target.id === 'wpcbl-audit-params' || $(event.target).closest('.cbl-info').length) {
         return;
       }
-      const box = $('#wpcbl-audit-skipquery');
+      const box = $('#wpcbl-audit-params');
       box.prop('checked', !box.prop('checked'));
+      saveUrlParams(box.prop('checked'));
+    });
+
+    $('#wpcbl-audit-params').on('change', function () {
+      saveUrlParams($(this).prop('checked'));
     });
 
     $('#wpcbl-audit-run').on('click', function () {
@@ -3267,8 +2300,6 @@
           return;
         }
         data.url = url;
-      } else if ($('#wpcbl-audit-skipquery').is(':checked')) {
-        data.skip_query = 1;
       }
 
       auditNotice = null;
@@ -3476,21 +2507,97 @@
       $('#wpcbl-update-current').prop('disabled', !dirty);
     };
 
+    // Whole dollars stay whole, cents always show two digits. Mirrors
+    // $wpcbl_money in templates/admin/upgrade.php.
+    const planMoney = amount => {
+      const rounded = Math.round(amount * 100) / 100;
+      return rounded % 1 === 0
+        ? rounded.toLocaleString('en-US')
+        : rounded.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const optionAmount = (select, interval) =>
+      parseFloat(select.find('option:selected').attr('data-' + interval)) || 0;
+
+    // Daily updates are priced by keyword count, so the daily option's
+    // price follows the keyword pick.
+    const refreshDailyOption = card => {
+      const daily = card.find('.wpcbl-sel-daily');
+      const option = daily.find('option[value="1"]');
+      if (!option.length) {
+        return;
+      }
+      let prices = {};
+      try {
+        prices = JSON.parse(daily.attr('data-prices') || '{}') || {};
+      } catch (e) {
+        prices = {};
+      }
+      const kw = String(card.find('.wpcbl-sel-kw').val() || '0');
+      const price = prices[kw] || prices['0'] || { yearly: 0, monthly: 0 };
+      const isCurrent =
+        initialShape &&
+        '1' === card.attr('data-wpcbl-current') &&
+        '1' === initialShape.daily &&
+        kw === initialShape.kw;
+      const name = option.attr('data-name') || '';
+      const current = option.attr('data-current') || '';
+      option.attr('data-label-yearly', name + (isCurrent ? current : '+$' + planMoney(parseFloat(price.yearly) || 0) + '/yr'));
+      option.attr('data-label-monthly', name + (isCurrent ? current : '+$' + planMoney(parseFloat(price.monthly) || 0) + '/mo'));
+      option.attr('data-yearly', price.yearly);
+      option.attr('data-monthly', price.monthly);
+    };
+
+    // Headline price, billed line, keyword count and add-on hint for one
+    // card, from the base price plus every picked add-on.
+    const refreshCard = card => {
+      refreshDailyOption(card);
+      const kwSel = card.find('.wpcbl-sel-kw');
+      const dailySel = card.find('.wpcbl-sel-daily');
+      const aiSel = card.find('.wpcbl-sel-ai');
+      const dailyOn = '1' === String(dailySel.val() || '0');
+      const sum = interval =>
+        (parseFloat(card.attr('data-wpcbl-base-' + interval)) || 0) +
+        optionAmount(kwSel, interval) +
+        (dailyOn ? optionAmount(dailySel, interval) : 0) +
+        optionAmount(aiSel, interval);
+
+      const yearly = sum('yearly');
+      const monthly = sum('monthly');
+      const billed = card.find('.wpcbl-plan-billed');
+      if ('monthly' === planInterval) {
+        card.find('.wpcbl-plan-amount').text('$' + monthly.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        billed.text(billed.attr('data-text-monthly') || '');
+      } else {
+        card.find('.wpcbl-plan-amount').text('$' + (yearly / 12).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+        billed.text((billed.attr('data-tpl-yearly') || '').replace('%s', planMoney(yearly)));
+      }
+
+      const count = kwSel.find('option:selected').attr('data-count');
+      if (count) {
+        card.find('.wpcbl-kw-count').text(count);
+      }
+
+      const picked =
+        ('0' !== String(kwSel.val() || '0') ? 1 : 0) + (dailyOn ? 1 : 0) + ('0' !== String(aiSel.val() || '0') ? 1 : 0);
+      const hint = card.find('.wpcbl-addons-hint');
+      hint.text(picked ? (hint.attr('data-tpl-some') || '').replace('%s', picked) : hint.attr('data-text-none') || '');
+
+      card.find('option[data-label-yearly]').each(function () {
+        $(this).text($(this).attr('monthly' === planInterval ? 'data-label-monthly' : 'data-label-yearly'));
+      });
+    };
+
     const applyPlanInterval = interval => {
       planInterval = interval;
       planToggle.find('[data-wpcbl-interval]').each(function () {
-        $(this).toggleClass('is-active', $(this).data('wpcbl-interval') === interval);
-      });
-      $('.wpcbl-plan-amount, .wpcbl-plan-period, .wpcbl-daily-label, .cbl-plan-permonth').each(function () {
-        const value = $(this).attr('data-' + interval);
-        if (null !== value && undefined !== value) {
-          $(this).text(value);
-        }
-      });
-      $('option[data-label-yearly]').each(function () {
-        $(this).text($(this).attr('monthly' === interval ? 'data-label-monthly' : 'data-label-yearly'));
+        const on = $(this).data('wpcbl-interval') === interval;
+        $(this).toggleClass('is-active', on).attr('aria-pressed', on ? 'true' : 'false');
       });
       $('.wpcbl-interval-input').val(interval);
+      $('[data-wpcbl-plan-card]').each(function () {
+        refreshCard($(this));
+      });
       refreshDirtyState();
     };
 
@@ -3498,7 +2605,10 @@
       applyPlanInterval($(this).data('wpcbl-interval'));
     });
 
-    $(document).on('change', '.wpcbl-sel-kw, .wpcbl-sel-daily, .wpcbl-sel-ai', refreshDirtyState);
+    $(document).on('change', '.wpcbl-sel-kw, .wpcbl-sel-daily, .wpcbl-sel-ai', function () {
+      refreshCard($(this).closest('[data-wpcbl-plan-card]'));
+      refreshDirtyState();
+    });
 
     applyPlanInterval(planToggle.attr('data-wpcbl-initial-interval') || 'yearly');
 

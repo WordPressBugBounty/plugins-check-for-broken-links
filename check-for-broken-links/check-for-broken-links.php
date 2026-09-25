@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Check for Broken Links - Broken Link Checker & 404 Monitor
  * Description: Scan your site for broken links and 404 errors to improve SEO and user experience.
- * Version: 3.1.1
+ * Version: 3.1.3
  * Author: Norse Digital Group LLC
  * Author URI: https://brokenlinkchecker.io/
  * Requires at least: 6.0
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Globals constants.
  */
 define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_NAME', 'Check for Broken Links' );
-define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.1.1' );
+define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.1.3' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_PHP_VER', '7.2' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER', '6.0' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH', __DIR__ );
@@ -206,7 +206,10 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links' ) ) :
 
 			add_option( 'wpcbl_check_for_broken_links_settings', $settings );
 
-			// Schedule the event.
+			// Schedule the event. Activation runs after plugins_loaded, so
+			// includes() never ran and the helpers the schedule class calls
+			// (wpcbl_has_pro) are not loaded yet.
+			include_once WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/includes/functions.php';
 			include_once WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/includes/class-wpcbl-check-for-broken-links-schedule.php';
 
 			WPCBL_Check_Broken_Links_Schedule::update_scan_schedule( $settings );

@@ -5,7 +5,7 @@ Tags: broken link checker, rank tracker, uptime monitor, ai visibility, internal
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.1.1
+Stable tag: 3.1.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -218,6 +218,27 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.1.3 = 25 September 2026
+* New: Remove URL parameters on the Settings and SEO / AEO Audit pages. The crawler treats example.com/?a=1 and example.com/?a=2 as the same page, so audits skip duplicates. On by default.
+* New: Redesigned Upgrade page with plan cards, a full comparison table and a price that updates as you add keyword packs, daily ranking updates or AI Visibility credits. Paid sites see their current plan and available upgrades.
+* New: Redesigned Settings page with the connection at the top, tabs for each section and automatic saving.
+* New: Redesigned Rank Tracker with desktop and mobile positions side by side, change, best position and an 8-week trend.
+* Improvement: Add keywords shows how many keyword slots the keywords will use before you start.
+* Improvement: New sites in the Rank Tracker start with keyword ideas from the site itself.
+* Improvement: Rank Tracker settings save automatically, and email recipients are checked as you type.
+* Improvement: Connect this site now goes straight to brokenlinkchecker.io, and a failed connection explains why with a Try again link.
+* Improvement: Plugin pages use the full screen width on phones.
+* Change: Refresh now in the Rank Tracker is counted per week, in line with the plans on brokenlinkchecker.io.
+* Fix: Pro sites can save scan schedules and email alerts again. If you use Pro, check your schedule and alert address in Settings.
+* Fix: Connecting no longer fails when sign-up takes a while.
+* Fix: The refund answer on the Upgrade page now matches the brokenlinkchecker.io terms and links to them.
+* Fix: Saving Settings no longer resets post types in the Internal Link Optimizer.
+* Fix: Settings shows the correct plan after connecting on the free plan.
+* Fix: Several small fixes to tabs, menus and empty fields on the Settings page.
+
+= 3.1.2 = 25 September 2026
+* Fix: The plugin activates on a new site again. Since 3.1.0 activation stopped with a fatal error about wpcbl_has_pro().
 
 = 3.1.1 = 12 September 2026
 * Improvement: The Dashboard lists the SEO tools as one row each, name, status, one line on what it does and the next step, in place of the grid of cards. The three status cards share one white style, and the tip of the week is a banner under the tools.

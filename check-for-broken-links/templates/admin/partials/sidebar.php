@@ -62,7 +62,7 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 				</span>
 			<?php elseif ( $wpcbl_conn ) : ?>
 				<a class="cbl-conn-badge cbl-conn-badge-disconnected"
-					href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-settings' ) . '#cbl-connect' ); ?>">
+					href="<?php echo esc_url( wpcbl_connect_url() ); ?>">
 					<span class="cbl-conn-badge-dot"></span>
 					<?php
 					/* translators: %s: plugin version (e.g. v3.0.1). */

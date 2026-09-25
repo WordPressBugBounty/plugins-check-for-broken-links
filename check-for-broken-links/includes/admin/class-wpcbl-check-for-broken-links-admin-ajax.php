@@ -60,6 +60,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			add_action( 'wp_ajax_wpcbl_uptime_toggle', array( $this, 'uptime_toggle' ) );
 			add_action( 'wp_ajax_wpcbl_seo_audit_state', array( $this, 'seo_audit_state' ) );
 			add_action( 'wp_ajax_wpcbl_seo_audit_run', array( $this, 'seo_audit_run' ) );
+			add_action( 'wp_ajax_wpcbl_save_url_params', array( $this, 'save_url_params' ) );
 			add_action( 'wp_ajax_wpcbl_seo_audit_share', array( $this, 'seo_audit_share' ) );
 			add_action( 'wp_ajax_wpcbl_seo_audit_issue_pages', array( $this, 'seo_audit_issue_pages' ) );
 			add_action( 'wp_ajax_wpcbl_seo_audit_ai_fix', array( $this, 'seo_audit_ai_fix' ) );
@@ -824,7 +825,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			$mode = isset( $_POST['mode'] ) && 'page' === sanitize_text_field( wp_unslash( $_POST['mode'] ) ) ? 'page' : 'site';
 			$body = array(
 				'mode'       => $mode,
-				'skip_query' => ! empty( $_POST['skip_query'] ),
+				'skip_query' => wpcbl_remove_url_params(),
 			);
 
 			if ( 'page' === $mode ) {
@@ -837,6 +838,26 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			$connect->flush_seo_audit_state();
 
 			$this->send_rank_result( $result );
+		}
+
+		/**
+		 * Remove URL parameters, switched from the SEO / AEO Audit page. It
+		 * is the same setting as on the Settings page, and saving it pushes
+		 * the value to brokenlinkchecker.io (see the connect class).
+		 *
+		 * @since 3.1.3
+		 *
+		 * @return void
+		 */
+		public function save_url_params() {
+			$this->verify_link_action_request();
+
+			$settings                      = get_option( 'wpcbl_check_for_broken_links_settings', array() );
+			$settings                      = is_array( $settings ) ? $settings : array();
+			$settings['remove_url_params'] = ! empty( $_POST['enabled'] ) ? 'on' : 'off';
+			update_option( 'wpcbl_check_for_broken_links_settings', $settings );
+
+			wp_send_json_success( array( 'enabled' => wpcbl_remove_url_params() ) );
 		}
 
 		/**

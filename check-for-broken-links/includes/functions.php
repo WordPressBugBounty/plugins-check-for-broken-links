@@ -74,6 +74,42 @@ if ( ! function_exists( 'wpcbl_has_pro' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wpcbl_remove_url_params' ) ) {
+	/**
+	 * Whether brokenlinkchecker.io should drop URL parameters while it
+	 * crawls this site. On unless the admin switched it off.
+	 *
+	 * @since 3.1.3
+	 *
+	 * @return bool
+	 */
+	function wpcbl_remove_url_params() {
+		$settings = get_option( 'wpcbl_check_for_broken_links_settings', array() );
+
+		return ! ( is_array( $settings ) && isset( $settings['remove_url_params'] ) && 'off' === $settings['remove_url_params'] );
+	}
+}
+
+if ( ! function_exists( 'wpcbl_url_params_tip' ) ) {
+	/**
+	 * Tooltip for the Remove URL parameters switch, with this site's own
+	 * address in the example.
+	 *
+	 * @since 3.1.3
+	 *
+	 * @return string
+	 */
+	function wpcbl_url_params_tip() {
+		$domain = untrailingslashit( preg_replace( '#^https?://#i', '', home_url() ) );
+
+		return sprintf(
+			/* translators: %s: this site's address without https://, e.g. example.com. */
+			__( 'Enable this if you want URL parameters to be ignored during the crawl. For example, %1$s/?parameter1=value1 and %1$s/?parameter1=value2 URLs will be replaced by %1$s/.', 'check-for-broken-links' ),
+			$domain
+		);
+	}
+}
+
 if ( ! function_exists( 'wpcbl_get_option' ) ) {
 	/**
 	 * Get an option from the plugin settings.
@@ -818,5 +854,21 @@ if ( ! function_exists( 'wpcbl_auditable_post_types' ) ) {
 		 * @param array $types Post type names.
 		 */
 		return (array) apply_filters( 'wpcbl_auditable_post_types', $types );
+	}
+}
+
+if ( ! function_exists( 'wpcbl_connect_url' ) ) {
+	/**
+	 * Link that starts the connect handshake in one click.
+	 *
+	 * It points at the wpcbl_connect_start handler, which primes the
+	 * handshake nonce and redirects to brokenlinkchecker.io/connect.
+	 *
+	 * @since 3.1.3
+	 *
+	 * @return string
+	 */
+	function wpcbl_connect_url() {
+		return wp_nonce_url( admin_url( 'admin-post.php?action=wpcbl_connect_start' ), 'wpcbl_connect_start' );
 	}
 }
