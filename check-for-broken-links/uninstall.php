@@ -35,6 +35,7 @@ if ( defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	delete_option( 'wpcbl_connection' );
 	delete_option( 'wpcbl_entitlements_grace' );
 	delete_transient( 'wpcbl_entitlements' );
+	delete_transient( 'wpcbl_entitlements_backoff' );
 	delete_transient( 'wpcbl_connect_nonce' );
 
 	/*

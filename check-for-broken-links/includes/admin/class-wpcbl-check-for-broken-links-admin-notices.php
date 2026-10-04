@@ -112,7 +112,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Notices' ) ) :
 				if ( version_compare( $wp_version, WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER, '<' ) ) {
 					/* translators: 1) int version 2) int version */
 					$message = esc_html__( 'Check for Broken Links - The minimum WordPress version required for this plugin is %1$s. You are running %2$s.', 'check-for-broken-links' );
-					$this->add_admin_notice( 'wpver', 'notice notice-warning', sprintf( $message, WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER, WC_VERSION ), true );
+					$this->add_admin_notice( 'wpver', 'notice notice-warning', sprintf( $message, WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER, $wp_version ), true );
 				}
 			}
 		}

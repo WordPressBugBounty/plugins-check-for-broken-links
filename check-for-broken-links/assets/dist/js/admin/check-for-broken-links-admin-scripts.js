@@ -1867,16 +1867,16 @@
       // triage()'s named tones (those color the filled height instead).
       const blocks = triage.bars
         .map(b =>
-          '<div class="cbl-audit-block" style="flex:' + b.weight + ';background:' +
+          '<div class="cbl-audit-block" style="flex:' + (Number(b.weight) || 0) + ';background:' +
           (b.lost > 0 ? 'var(--cbl-red-bg)' : 'var(--cbl-bg-tertiary)') + '" title="' +
           esc(b.label + ' ' + b.score + '/100') + '">' +
-          '<div style="height:' + b.score + '%;background:' + TONE[b.tone] + '"></div></div>'
+          '<div style="height:' + (Number(b.score) || 0) + '%;background:' + TONE[b.tone] + '"></div></div>'
         )
         .join('');
 
       const labels = triage.bars
         .map(b =>
-          '<div class="cbl-audit-block-label" style="flex:' + b.weight + '">' +
+          '<div class="cbl-audit-block-label" style="flex:' + (Number(b.weight) || 0) + '">' +
           '<span>' + esc(b.label) + '</span>' +
           // The score reads directly. A loss figure made the reader infer
           // health from a negative, and a perfect category showed "0.0",
@@ -2002,7 +2002,7 @@
           esc(auditPlural(g.issues.length, params.auditIssueType, params.auditIssueTypes)) + '</span></div>' +
           '<div class="cbl-audit-group-score">' +
           '<em style="color:' + (RECOVER[g.recover_tone] || RECOVER.muted) + '">' + esc(fmt(params.auditRecover, [g.lost.toFixed(1)])) + '</em>' +
-          '<span class="cbl-audit-mini"><i style="width:' + g.score + '%;background:' + TONE[g.tone] + '"></i></span>' +
+          '<span class="cbl-audit-mini"><i style="width:' + (Number(g.score) || 0) + '%;background:' + TONE[g.tone] + '"></i></span>' +
           '<b style="color:' + TONE[g.tone] + '">' + esc(g.score) + '</b>' +
           '</div></div>' +
           g.issues.map(renderQueueIssue).join('') +

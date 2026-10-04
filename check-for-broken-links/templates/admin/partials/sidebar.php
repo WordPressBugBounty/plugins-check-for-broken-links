@@ -172,7 +172,6 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 		<a href="https://brokenlinkchecker.io/docs" target="_blank" rel="noopener" class="cbl-nav-item cbl-nav-item-top">
 			<span class="dashicons dashicons-book"></span>
 			<?php esc_html_e( 'Documentation', 'check-for-broken-links' ); ?>
-			<span class="cbl-soon-chip"><?php esc_html_e( 'SOON', 'check-for-broken-links' ); ?></span>
 			<span class="cbl-nav-ext" aria-hidden="true">&#8599;</span>
 		</a>
 

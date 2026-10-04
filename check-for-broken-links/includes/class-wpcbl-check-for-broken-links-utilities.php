@@ -299,7 +299,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 			delete_option( 'wpcbl_scan_job' );
 			update_option( 'wpcbl_completed_scans', (int) get_option( 'wpcbl_completed_scans', 0 ) + 1, false );
 
-			return update_option( 'wpcbl_check_for_broken_links_links', $results );
+			return update_option( 'wpcbl_check_for_broken_links_links', $results, false );
 		}
 
 		/**
@@ -822,7 +822,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 				$links['total'] = max( 0, (int) $links['total'] - $removed );
 			}
 
-			update_option( 'wpcbl_check_for_broken_links_links', $links );
+			update_option( 'wpcbl_check_for_broken_links_links', $links, false );
 
 			$summary = get_option( 'wpcbl_last_scan_summary' );
 			if ( is_array( $summary ) ) {
@@ -1808,94 +1808,20 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		}
 
 		/**
-		 * Register the loader image to the media library.
-		 *
-		 * @param string $path The path to the image.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @return integer|boolean
-		 */
-		public static function register_loader_image( $path ) {
-			$upload_dir = wp_upload_dir();
-			$full_path  = trailingslashit( WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/assets/dist/images/' ) . $path;
-
-			// Ensure the file exists.
-			if ( ! file_exists( $full_path ) ) {
-				return false;
-			}
-
-			// Check file type.
-			$file_type = wp_check_filetype( basename( $full_path ) );
-
-			// Check if the image is already registered.
-			$args = array(
-				'post_type'      => 'attachment',
-				'post_status'    => 'inherit',
-				'meta_query'     => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
-					array(
-						'key'     => '_wpcbl_loader',
-						'value'   => $path,
-						'compare' => '=',
-					),
-				),
-				'posts_per_page' => 1,
-			);
-
-			$query = new WP_Query( $args );
-			if ( $query->have_posts() ) {
-				return $query->posts[0]->ID;
-			}
-
-			// Copy the image to the uploads directory.
-			$destination_path = trailingslashit( $upload_dir['path'] ) . basename( $full_path );
-			if ( ! copy( $full_path, $destination_path ) ) {
-				return false;
-			}
-
-			// Create the attachment.
-			$attachment = array(
-				'guid'           => trailingslashit( $upload_dir['url'] ) . basename( $full_path ),
-				'post_mime_type' => $file_type['type'],
-				'post_title'     => sanitize_file_name( basename( $full_path ) ),
-				'post_status'    => 'inherit',
-			);
-
-			$attach_id = wp_insert_attachment( $attachment, $destination_path );
-			if ( ! is_wp_error( $attach_id ) ) {
-				require_once ABSPATH . 'wp-admin/includes/image.php';
-				wp_update_attachment_metadata( $attach_id, wp_generate_attachment_metadata( $attach_id, $destination_path ) );
-				update_post_meta( $attach_id, '_wpcbl_loader', $path );
-				return $attach_id;
-			}
-
-			return false;
-		}
-
-		/**
-		 * Get the loader image HTML.
+		 * Get the loader image HTML. Served straight from the plugin folder:
+		 * before 3.1.4 every scan view ran a meta query for a copy in the
+		 * Media Library and created that copy on first use.
 		 *
 		 * @since 1.0.0
 		 *
 		 * @return string
 		 */
 		public static function get_loader_image_html() {
-			$attachment_id = self::register_loader_image( 'loader.gif' );
-
-			if ( $attachment_id ) {
-				return wp_get_attachment_image(
-					$attachment_id,
-					array( 30, 30 ),
-					false,
-					array(
-						'class' => 'wpcbl_loader_margin',
-						'alt'   => __( 'Check for broken links loader', 'check-for-broken-links' ),
-					)
-				);
-			}
-
-			// Fallback to the URL -- added an empty string for now.
-			return '';
+			return sprintf(
+				'<img src="%1$s" width="30" height="30" class="wpcbl_loader_margin" alt="%2$s" />',
+				esc_url( WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . 'assets/dist/images/loader.gif' ),
+				esc_attr__( 'Check for broken links loader', 'check-for-broken-links' )
+			);
 		}
 	}
 }

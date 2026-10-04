@@ -396,7 +396,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Links_List_Table' ) ) :
 				),
 			);
 
-			return sprintf( '<strong><a href="%1$s" target="_blank">%2$s</a></strong> %3$s', wpcbl_get_post_or_comment_link( $item ), wpcbl_get_post_or_comment_title( $item ), $this->row_actions( $actions ) );
+			return sprintf( '<strong><a href="%1$s" target="_blank">%2$s</a></strong> %3$s', esc_url( wpcbl_get_post_or_comment_link( $item ) ), esc_html( wpcbl_get_post_or_comment_title( $item ) ), $this->row_actions( $actions ) );
 		}
 
 		/**

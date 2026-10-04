@@ -787,6 +787,14 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 				wp_enqueue_style( 'wpcbl_check_for_broken_links_settings', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $settings_rel, array( 'wpcbl_check_for_broken_links_admin_styles' ), $settings_ver, 'all' );
 			}
 
+			if ( 'wpcbl-check-for-broken-links' === $current_page ) {
+				$dashboard_rel = 'assets/dist/css/admin/cbl-dashboard.css';
+				$dashboard_abs = WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $dashboard_rel;
+				$dashboard_ver = file_exists( $dashboard_abs ) ? filemtime( $dashboard_abs ) : WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION;
+
+				wp_enqueue_style( 'wpcbl_check_for_broken_links_dashboard', WPCBL_CHECK_BROKEN_LINKS_ROOT_URL . $dashboard_rel, array( 'wpcbl_check_for_broken_links_admin_styles' ), $dashboard_ver, 'all' );
+			}
+
 			if ( 'wpcbl-check-for-broken-links-upgrade' === $current_page ) {
 				$upgrade_rel = 'assets/dist/css/admin/cbl-upgrade.css';
 				$upgrade_abs = WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH . '/' . $upgrade_rel;

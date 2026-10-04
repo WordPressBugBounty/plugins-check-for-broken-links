@@ -103,6 +103,20 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Remote_Apply' ) ) :
 					continue;
 				}
 
+				// The broken URL is matched as raw text in post content. A value
+				// with quotes, brackets or spaces could rewrite markup around a
+				// link instead of the link itself, so it never runs.
+				if ( preg_match( '/["\'<>\s]/', (string) $job['broken_url'] ) ) {
+					$connect->report_apply_job(
+						(string) $job['id'],
+						array(
+							'status'  => 'failed',
+							'message' => 'The broken URL is not a plain address.',
+						)
+					);
+					continue;
+				}
+
 				$outcome = 'replace' === $job['action']
 					? $this->apply_replace( $job['broken_url'], isset( $job['new_url'] ) ? (string) $job['new_url'] : '' )
 					: $this->apply_unlink( $job['broken_url'] );
@@ -125,6 +139,9 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Remote_Apply' ) ) :
 		 * @return array status, message, updated.
 		 */
 		private function apply_replace( $old_url, $new_url ) {
+			// The URL comes from the SaaS and is written into an href. Only
+			// a clean http(s) URL may land there.
+			$new_url = esc_url_raw( $new_url, array( 'http', 'https' ) );
 			if ( '' === $new_url ) {
 				return array(
 					'status'  => 'failed',
@@ -263,6 +280,11 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Remote_Apply' ) ) :
 				return $data;
 			};
 
+			// Jobs can run in the REST ping as no user at all, where kses
+			// would strip every iframe, script or form an admin saved in the
+			// post. The only change here is one escaped URL, so save the
+			// content as-is and put the filters back for the current user.
+			kses_remove_filters();
 			add_filter( 'wp_insert_post_data', $keep_modified, 10, 2 );
 			$result = wp_update_post(
 				array(
@@ -272,6 +294,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Remote_Apply' ) ) :
 				true
 			);
 			remove_filter( 'wp_insert_post_data', $keep_modified, 10 );
+			kses_init();
 
 			return ! is_wp_error( $result ) && $result;
 		}
@@ -303,7 +326,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Remote_Apply' ) ) :
 				$links[ $bucket ] = array_values( $links[ $bucket ] );
 			}
 
-			update_option( 'wpcbl_check_for_broken_links_links', $links );
+			update_option( 'wpcbl_check_for_broken_links_links', $links, false );
 
 			$summary = get_option( 'wpcbl_last_scan_summary' );
 			if ( is_array( $summary ) ) {

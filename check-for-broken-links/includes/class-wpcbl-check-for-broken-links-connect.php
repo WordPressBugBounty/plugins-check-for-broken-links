@@ -25,6 +25,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		const OPT_CONNECTION    = 'wpcbl_connection';
 		const OPT_GRACE         = 'wpcbl_entitlements_grace';
 		const TRANSIENT_ENT     = 'wpcbl_entitlements';
+		const TRANSIENT_ENT_OFF = 'wpcbl_entitlements_backoff';
 		const TRANSIENT_NONCE   = 'wpcbl_connect_nonce';
 		const TRANSIENT_RANK    = 'wpcbl_rank_state';
 		const TRANSIENT_UPTIME  = 'wpcbl_uptime_state';
@@ -115,8 +116,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 				exit;
 			}
 
-			delete_transient( self::TRANSIENT_ENT );
-			$this->poll_entitlements();
+			$this->poll_entitlements_now();
 
 			wp_safe_redirect( $this->settings_url( 'refreshed' ) );
 			exit;
@@ -212,6 +212,11 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		private function store_entitlements( $data ) {
 			set_transient( self::TRANSIENT_ENT, $data, self::ENT_TTL );
+
+			// A refused tool may be allowed now: drop the short-lived misses.
+			foreach ( array( self::TRANSIENT_RANK, self::TRANSIENT_UPTIME, self::TRANSIENT_ILO, self::TRANSIENT_AIV, self::TRANSIENT_AUDIT ) as $state_key ) {
+				delete_transient( $state_key . '_miss' );
+			}
 			update_option( self::OPT_GRACE, array( 'data' => $data, 'saved_at' => time() ), false );
 		}
 
@@ -276,19 +281,23 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			}
 
 			// The 12h transient doubles as the throttle: skip while it lives.
-			if ( false !== get_transient( self::TRANSIENT_ENT ) ) {
+			// A failed fetch sets nothing there, so a short back-off keeps an
+			// unreachable SaaS from costing a blocking call on every admin
+			// request (admin_init also fires for every admin-ajax poll).
+			if ( false !== get_transient( self::TRANSIENT_ENT ) || false !== get_transient( self::TRANSIENT_ENT_OFF ) ) {
 				return;
 			}
 
 			$response = wp_remote_get(
 				$this->app_url( '/api/v1/site/entitlements' ),
 				array(
-					'timeout' => 10,
+					'timeout' => 5,
 					'headers' => $this->api_headers(),
 				)
 			);
 
 			if ( is_wp_error( $response ) ) {
+				$this->back_off_entitlements();
 				return; // Offline — grace covers it.
 			}
 
@@ -300,12 +309,14 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			}
 
 			if ( 200 !== $code ) {
+				$this->back_off_entitlements();
 				return; // 5xx / unexpected — grace covers it.
 			}
 
 			$data = json_decode( wp_remote_retrieve_body( $response ), true );
 
 			if ( ! is_array( $data ) || ! isset( $data['plan'] ) ) {
+				$this->back_off_entitlements();
 				return;
 			}
 
@@ -757,16 +768,45 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 * @return array|WP_Error array{code:int, data:array} or the transport error.
 		 */
 		public function rank_state( $fresh = false ) {
+			return $this->cached_state( self::TRANSIENT_RANK, array( $this, 'rank_request' ), $fresh );
+		}
+
+		/**
+		 * Shared read-through cache for the tool state calls. A 200 is kept
+		 * for 5 minutes. A 4xx (a free plan refused a Pro tool) or a network
+		 * failure is kept for 2 minutes, so the Dashboard does not pay five
+		 * slow round trips on every load. A 5xx is never kept: it is usually
+		 * a blip and the next load should retry. $fresh skips both.
+		 *
+		 * @since 3.1.4
+		 *
+		 * @param string   $key     Transient key of the 200 cache.
+		 * @param callable $request Proxy method called with 'GET'.
+		 * @param bool     $fresh   Bypass the cache.
+		 *
+		 * @return array|WP_Error
+		 */
+		private function cached_state( $key, $request, $fresh ) {
 			if ( ! $fresh ) {
-				$cached = get_transient( self::TRANSIENT_RANK );
+				$cached = get_transient( $key );
 				if ( is_array( $cached ) ) {
 					return array( 'code' => 200, 'data' => $cached );
 				}
+
+				$miss = get_transient( $key . '_miss' );
+				if ( is_array( $miss ) ) {
+					return isset( $miss['error'] ) ? new WP_Error( 'wpcbl_state_unavailable', $miss['error'] ) : $miss;
+				}
 			}
 
-			$result = $this->rank_request( 'GET' );
-			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
-				set_transient( self::TRANSIENT_RANK, $result['data'], 5 * MINUTE_IN_SECONDS );
+			$result = call_user_func( $request, 'GET' );
+			if ( is_wp_error( $result ) ) {
+				set_transient( $key . '_miss', array( 'error' => $result->get_error_message() ), 2 * MINUTE_IN_SECONDS );
+			} elseif ( 200 === $result['code'] ) {
+				set_transient( $key, $result['data'], 5 * MINUTE_IN_SECONDS );
+				delete_transient( $key . '_miss' );
+			} elseif ( $result['code'] >= 400 && $result['code'] < 500 ) {
+				set_transient( $key . '_miss', $result, 2 * MINUTE_IN_SECONDS );
 			}
 
 			return $result;
@@ -781,6 +821,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		public function flush_rank_state() {
 			delete_transient( self::TRANSIENT_RANK );
+			delete_transient( self::TRANSIENT_RANK . '_miss' );
 		}
 
 		/**
@@ -846,19 +887,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 * @return array|WP_Error array{code:int, data:array} or the transport error.
 		 */
 		public function uptime_state( $fresh = false ) {
-			if ( ! $fresh ) {
-				$cached = get_transient( self::TRANSIENT_UPTIME );
-				if ( is_array( $cached ) ) {
-					return array( 'code' => 200, 'data' => $cached );
-				}
-			}
-
-			$result = $this->uptime_request( 'GET' );
-			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
-				set_transient( self::TRANSIENT_UPTIME, $result['data'], 5 * MINUTE_IN_SECONDS );
-			}
-
-			return $result;
+			return $this->cached_state( self::TRANSIENT_UPTIME, array( $this, 'uptime_request' ), $fresh );
 		}
 
 		/**
@@ -870,6 +899,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		public function flush_uptime_state() {
 			delete_transient( self::TRANSIENT_UPTIME );
+			delete_transient( self::TRANSIENT_UPTIME . '_miss' );
 		}
 
 		/**
@@ -955,19 +985,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 * @return array|WP_Error array{code:int, data:array} or the transport error.
 		 */
 		public function internal_links_state( $fresh = false ) {
-			if ( ! $fresh ) {
-				$cached = get_transient( self::TRANSIENT_ILO );
-				if ( is_array( $cached ) ) {
-					return array( 'code' => 200, 'data' => $cached );
-				}
-			}
-
-			$result = $this->internal_links_request( 'GET' );
-			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
-				set_transient( self::TRANSIENT_ILO, $result['data'], 5 * MINUTE_IN_SECONDS );
-			}
-
-			return $result;
+			return $this->cached_state( self::TRANSIENT_ILO, array( $this, 'internal_links_request' ), $fresh );
 		}
 
 		/**
@@ -979,6 +997,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		public function flush_internal_links_state() {
 			delete_transient( self::TRANSIENT_ILO );
+			delete_transient( self::TRANSIENT_ILO . '_miss' );
 		}
 
 		/**
@@ -1031,19 +1050,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 * @return array|WP_Error array{code:int, data:array} or the transport error.
 		 */
 		public function ai_visibility_state( $fresh = false ) {
-			if ( ! $fresh ) {
-				$cached = get_transient( self::TRANSIENT_AIV );
-				if ( is_array( $cached ) ) {
-					return array( 'code' => 200, 'data' => $cached );
-				}
-			}
-
-			$result = $this->ai_visibility_request( 'GET' );
-			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
-				set_transient( self::TRANSIENT_AIV, $result['data'], 5 * MINUTE_IN_SECONDS );
-			}
-
-			return $result;
+			return $this->cached_state( self::TRANSIENT_AIV, array( $this, 'ai_visibility_request' ), $fresh );
 		}
 
 		/**
@@ -1058,6 +1065,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		public function flush_ai_visibility_state() {
 			delete_transient( self::TRANSIENT_AIV );
+			delete_transient( self::TRANSIENT_AIV . '_miss' );
 		}
 
 		/**
@@ -1070,19 +1078,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 * @return array|WP_Error array{code:int, data:array} or the transport error.
 		 */
 		public function seo_audit_state( $fresh = false ) {
-			if ( ! $fresh ) {
-				$cached = get_transient( self::TRANSIENT_AUDIT );
-				if ( is_array( $cached ) ) {
-					return array( 'code' => 200, 'data' => $cached );
-				}
-			}
-
-			$result = $this->seo_audit_request( 'GET' );
-			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
-				set_transient( self::TRANSIENT_AUDIT, $result['data'], 5 * MINUTE_IN_SECONDS );
-			}
-
-			return $result;
+			return $this->cached_state( self::TRANSIENT_AUDIT, array( $this, 'seo_audit_request' ), $fresh );
 		}
 
 		/**
@@ -1152,6 +1148,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 
 		public function flush_seo_audit_state() {
 			delete_transient( self::TRANSIENT_AUDIT );
+			delete_transient( self::TRANSIENT_AUDIT . '_miss' );
 		}
 
 		/**
@@ -1203,6 +1200,11 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 				return $cached;
 			}
 
+			// A failed fetch is retried after a pause, not on every view.
+			if ( false !== get_transient( self::TRANSIENT_PLANS . '_off' ) ) {
+				return null;
+			}
+
 			$response = wp_remote_get(
 				$this->app_url( '/api/v1/plans' ),
 				array(
@@ -1212,11 +1214,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 			);
 
 			if ( is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
+				set_transient( self::TRANSIENT_PLANS . '_off', 1, 15 * MINUTE_IN_SECONDS );
 				return null;
 			}
 
 			$data = json_decode( wp_remote_retrieve_body( $response ), true );
 			if ( ! isset( $data['plans'] ) || ! is_array( $data['plans'] ) ) {
+				set_transient( self::TRANSIENT_PLANS . '_off', 1, 15 * MINUTE_IN_SECONDS );
 				return null;
 			}
 
@@ -1352,7 +1356,19 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		 */
 		private function poll_entitlements_now() {
 			delete_transient( self::TRANSIENT_ENT );
+			delete_transient( self::TRANSIENT_ENT_OFF );
 			$this->poll_entitlements();
+		}
+
+		/**
+		 * Pause the background entitlements poll after a failed fetch.
+		 *
+		 * @since 3.1.4
+		 *
+		 * @return void
+		 */
+		private function back_off_entitlements() {
+			set_transient( self::TRANSIENT_ENT_OFF, 1, 15 * MINUTE_IN_SECONDS );
 		}
 	}
 

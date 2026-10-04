@@ -5,7 +5,7 @@ Tags: broken link checker, rank tracker, uptime monitor, ai visibility, internal
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -218,6 +218,20 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.1.4 = 4 October 2026
+* New: Redesigned Dashboard. Site link health shows as a score ring next to your scan schedule, each SEO tool has its own card with its status and latest figure, and a counter shows how many of the five tools are set up.
+* Security: Fix redirect now only writes a clean http or https address into your post. A redirect header from a remote server could carry HTML that ended up in the link.
+* Security: Fixes sent from your brokenlinkchecker.io dashboard only write clean http or https addresses into your posts.
+* Fix: Fixes sent from your brokenlinkchecker.io dashboard no longer remove embeds, iframes or forms from the post they change.
+* Improvement: Choosing a plan while signed in to brokenlinkchecker.io with a different account now says the site is connected to another account. You can move it to your plan or switch account.
+* Improvement: Admin pages stay fast when brokenlinkchecker.io cannot be reached. The plugin waits 15 minutes before it asks again, where it used to ask on every admin page.
+* Improvement: The Dashboard loads faster on the free plan. It remembers for 2 minutes which Pro tools are not on your plan.
+* Improvement: From the next scan, scan results are no longer loaded on every page of your site.
+* Improvement: The scan loader image comes straight from the plugin. It no longer adds a copy to your Media Library.
+* Fix: The Found in column on the results page escapes post titles and links.
+* Fix: The notice for an old WordPress version no longer stops with a fatal error on sites without WooCommerce.
+* Improvement: Documentation in the plugin menu opens the live guides on brokenlinkchecker.io.
 
 = 3.1.3 = 25 September 2026
 * New: Remove URL parameters on the Settings and SEO / AEO Audit pages. The crawler treats example.com/?a=1 and example.com/?a=2 as the same page, so audits skip duplicates. On by default.

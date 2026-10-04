@@ -131,10 +131,21 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 				}
 				$code     = (int) wp_remote_retrieve_response_code( $response );
 				$location = wp_remote_retrieve_header( $response, 'location' );
+				if ( is_array( $location ) ) {
+					$location = end( $location );
+				}
 				if ( ! in_array( $code, array( 301, 308 ), true ) || empty( $location ) ) {
 					break;
 				}
-				$destination = $location;
+				// The header comes from a remote server and lands in post
+				// content: resolve relative hops and keep only a clean
+				// http(s) URL, so a crafted Location can never break out of
+				// the href it is written into.
+				$next = esc_url_raw( WP_Http::make_absolute_url( $location, $destination ), array( 'http', 'https' ) );
+				if ( '' === $next ) {
+					break;
+				}
+				$destination = $next;
 			}
 
 			if ( $destination === $url ) {
@@ -1887,6 +1898,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 
 			if ( ! is_wp_error( $result ) && 200 === $result['code'] && ! empty( $result['data']['ok'] ) ) {
 				delete_transient( WPCBL_Check_Broken_Links_Connect::TRANSIENT_ENT );
+				delete_transient( WPCBL_Check_Broken_Links_Connect::TRANSIENT_ENT_OFF );
 				$connect->flush_rank_state();
 				$connect->flush_billing_shape();
 			}
@@ -1984,7 +1996,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 				$links[ $bucket ] = array_values( $links[ $bucket ] );
 			}
 
-			update_option( 'wpcbl_check_for_broken_links_links', $links );
+			update_option( 'wpcbl_check_for_broken_links_links', $links, false );
 			$this->refresh_summary_counts( $links );
 		}
 
@@ -2023,7 +2035,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			}
 			$links[ $bucket ][] = $entry;
 
-			update_option( 'wpcbl_check_for_broken_links_links', $links );
+			update_option( 'wpcbl_check_for_broken_links_links', $links, false );
 			$this->refresh_summary_counts( $links );
 		}
 
