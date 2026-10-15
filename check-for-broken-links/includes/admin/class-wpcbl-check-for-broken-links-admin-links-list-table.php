@@ -533,10 +533,12 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Links_List_Table' ) ) :
 			} elseif ( in_array( $code, array( 495, 496, 497, 525, 526 ), true ) ) {
 				$reason = __( 'SSL', 'check-for-broken-links' );
 			} elseif ( 0 === $code ) {
-				if ( false !== stripos( $text, 'ssl' ) || false !== stripos( $text, 'certificate' ) ) {
-					$reason = __( 'SSL', 'check-for-broken-links' );
+				if ( wpcbl_is_dns_error( $text ) ) {
+					$reason = __( 'DNS', 'check-for-broken-links' );
 				} elseif ( false !== stripos( $text, 'time' ) ) {
 					$reason = __( 'Timeout', 'check-for-broken-links' );
+				} elseif ( false !== stripos( $text, 'ssl' ) || false !== stripos( $text, 'certificate' ) ) {
+					$reason = __( 'SSL', 'check-for-broken-links' );
 				} else {
 					$reason = __( 'Error', 'check-for-broken-links' );
 				}

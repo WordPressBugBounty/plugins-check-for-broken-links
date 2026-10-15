@@ -44,6 +44,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 			add_action( 'admin_init', array( $this, 'redirect_legacy_tabs' ) );
 			add_action( 'admin_post_wpcbl_enable_ai_fix', array( $this, 'handle_enable_ai_fix' ) );
 			add_action( 'admin_post_wpcbl_review_dismiss', array( $this, 'handle_review_dismiss' ) );
+			add_action( 'admin_post_wpcbl_connect_nudge_dismiss', array( $this, 'handle_connect_nudge_dismiss' ) );
 			add_action( 'admin_bar_menu', array( $this, 'admin_bar_link' ), 90 );
 
 			// Filters.
@@ -753,6 +754,25 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 
 			set_transient( 'wpcbl_review_later', 1, 30 * DAY_IN_SECONDS );
 			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links' ) );
+			exit;
+		}
+
+		/**
+		 * "Not now" on the connect prompt under a finished scan. Hides it
+		 * for 30 days, then it asks once more after the next scan.
+		 *
+		 * @since 3.1.5
+		 *
+		 * @return void
+		 */
+		public function handle_connect_nudge_dismiss() {
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_die( esc_html__( 'You are not allowed to do this.', 'check-for-broken-links' ), '', array( 'response' => 403 ) );
+			}
+			check_admin_referer( 'wpcbl_connect_nudge_dismiss' );
+
+			set_transient( 'wpcbl_connect_nudge_later', 1, 30 * DAY_IN_SECONDS );
+			wp_safe_redirect( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-scan' ) );
 			exit;
 		}
 

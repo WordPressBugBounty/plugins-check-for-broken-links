@@ -125,6 +125,39 @@ require WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/partials/layout-open.ph
 	</section>
 <?php endif; ?>
 
+<?php
+// Connect prompt, shown right after a scan on a site that is not connected.
+// The scan just showed what the plugin does, so this is where the free
+// tools on brokenlinkchecker.io read as the next step, not as an ad.
+// Connected sites never see it (the Roxi rule). "Not now" hides it for
+// 30 days, see handle_connect_nudge_dismiss().
+$wpcbl_connect_obj  = wpcbl_connect();
+$wpcbl_show_connect = $wpcbl_has_scan
+	&& ! ( $wpcbl_connect_obj && $wpcbl_connect_obj->is_connected() )
+	&& ! get_transient( 'wpcbl_connect_nudge_later' );
+if ( $wpcbl_show_connect ) :
+	$wpcbl_connect_later_url = wp_nonce_url( admin_url( 'admin-post.php?action=wpcbl_connect_nudge_dismiss' ), 'wpcbl_connect_nudge_dismiss' );
+	?>
+	<section class="cbl-connect-nudge" id="wpcbl-connect-nudge">
+		<span class="cbl-connect-nudge-icon" aria-hidden="true">
+			<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+		</span>
+		<div class="cbl-connect-nudge-text">
+			<h2 class="cbl-connect-nudge-title"><?php esc_html_e( 'Your links are checked. Now watch the rest of your site.', 'check-for-broken-links' ); ?></h2>
+			<p class="cbl-connect-nudge-body"><?php esc_html_e( 'Connect this site to brokenlinkchecker.io for free. Uptime alerts, an SEO / AEO audit, rank tracking and internal link suggestions then run right here in wp-admin.', 'check-for-broken-links' ); ?></p>
+			<ul class="cbl-connect-nudge-chips">
+				<li><?php esc_html_e( 'No credit card', 'check-for-broken-links' ); ?></li>
+				<li><?php esc_html_e( 'Takes a minute', 'check-for-broken-links' ); ?></li>
+				<li><?php esc_html_e( 'Disconnect any time', 'check-for-broken-links' ); ?></li>
+			</ul>
+		</div>
+		<div class="cbl-connect-nudge-actions">
+			<a href="<?php echo esc_url( $wpcbl_connect_later_url ); ?>" class="cbl-connect-nudge-later"><?php esc_html_e( 'Not now', 'check-for-broken-links' ); ?></a>
+			<a href="<?php echo esc_url( wpcbl_connect_url() ); ?>" class="cbl-btn cbl-btn-primary cbl-connect-nudge-cta"><?php esc_html_e( 'Connect site for free', 'check-for-broken-links' ); ?></a>
+		</div>
+	</section>
+<?php endif; ?>
+
 <?php if ( ! $wpcbl_has_scan ) : ?>
 
 	<div class="cbl-results-empty" id="wpcbl-results-empty-state">

@@ -136,6 +136,31 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		}
 
 		/**
+		 * Redirect to brokenlinkchecker.io with wp_safe_redirect(). The app
+		 * host is allowed for this one redirect only, so no other external
+		 * host can ride along.
+		 *
+		 * @param string $url An app_url() address.
+		 *
+		 * @since 3.1.5
+		 *
+		 * @return void
+		 */
+		private function redirect_to_app( $url ) {
+			$app_host = wp_parse_url( self::APP_BASE, PHP_URL_HOST );
+			add_filter(
+				'allowed_redirect_hosts',
+				static function ( $hosts ) use ( $app_host ) {
+					$hosts[] = $app_host;
+					return $hosts;
+				}
+			);
+
+			wp_safe_redirect( $url );
+			exit;
+		}
+
+		/**
 		 * Whether this site holds a token.
 		 *
 		 * @since 3.1.0
@@ -414,8 +439,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 				$this->app_url( '/connect' )
 			);
 
-			wp_redirect( $url );
-			exit;
+			$this->redirect_to_app( $url );
 		}
 
 		/**
@@ -468,8 +492,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 
 			$url = add_query_arg( $args, $this->app_url( '/checkout/' . $plan ) );
 
-			wp_redirect( $url );
-			exit;
+			$this->redirect_to_app( $url );
 		}
 
 		/**

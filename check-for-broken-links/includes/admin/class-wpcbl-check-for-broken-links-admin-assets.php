@@ -318,6 +318,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Assets' ) ) :
 					'auditFixApply'    => esc_html__( 'Apply', 'check-for-broken-links' ),
 					'auditFixDismiss'  => esc_html__( 'Skip', 'check-for-broken-links' ),
 					'auditFixApplied'  => esc_html__( 'Saved.', 'check-for-broken-links' ),
+					/* translators: %1$s: number of pages in the audit. */
 					'auditShowAllPages' => esc_html__( 'Show all %1$s', 'check-for-broken-links' ),
 					'auditPagesSample' => esc_html__( 'This audit stored a sample. Run a new audit to capture every page.', 'check-for-broken-links' ),
 					/* translators: %1$d: additional pages beyond the ones already listed. */

@@ -10,6 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
+require_once __DIR__ . '/link-classification.php';
+
 if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 	/**
 	 * Utilities.
@@ -1494,18 +1496,9 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 				999 => 'Scanning Not Permitted',
 			);
 
-			// Bad links: 404/410 (and the invalid-URL marker) are broken.
-			if ( in_array( $code, self::get_bad_status_codes() ) ) {
-				$type = 'broken';
-
-				// Warnings: timeouts, bot blocks, SSL errors, and all server errors.
-			} elseif ( in_array( $code, self::get_warning_status_codes() ) || (int) $code >= 500 ) {
-				$type = 'warning';
-
-				// Good links.
-			} else {
-				$type = 'good';
-			}
+			// Broken, warning or good, by the rule brokenlinkchecker.io uses.
+			// See includes/link-classification.php.
+			$type = wpcbl_classify_link_status( $code, $error, self::get_bad_status_codes(), self::get_warning_status_codes() );
 
 			// Filter status.
 			$status = apply_filters(
@@ -1629,8 +1622,11 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		 * @return array
 		 */
 		public static function get_bad_status_codes() {
-			// 404/410 are genuinely gone; 666 is the plugin's invalid-URL marker.
-			$default_codes = array( 404, 410, 666 );
+			// Always broken, whatever else the rule says. 404/410 are gone,
+			// 666 is the plugin's invalid-URL marker, 495-497 and the
+			// Cloudflare 525/526 are certificate errors visitors hit too.
+			// Every other 4xx is broken as well, see wpcbl_classify_link_status().
+			$default_codes = array( 404, 410, 666, 495, 496, 497, 525, 526 );
 			return filter_var_array( apply_filters( 'wpcbl_bad_status_codes', $default_codes ), FILTER_SANITIZE_NUMBER_INT );
 		}
 
@@ -1642,10 +1638,12 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		 * @return array
 		 */
 		public static function get_warning_status_codes() {
-			// 0 covers wp_error results (timeouts, SSL failures, DNS). 403/429 are
-			// usually bot blocks, 408 is a timeout, 495-497 are SSL problems.
-			// Every 5xx code is added as a warning in check_url_status_code().
-			$default_codes = array( 0, 403, 408, 429, 495, 496, 497 );
+			// 0 covers request errors that got no answer (timeouts, refused
+			// connections). DNS and SSL errors are broken before this list is
+			// read. 401/403/429 refuse the checker, 999 is LinkedIn's bot
+			// wall, 408 is a timeout. Every other 5xx is a warning as well,
+			// see wpcbl_classify_link_status().
+			$default_codes = array( 0, 401, 403, 408, 429, 999 );
 			$default_codes = filter_var_array( apply_filters( 'wpcbl_warning_status_codes', $default_codes ), FILTER_SANITIZE_NUMBER_INT );
 
 			return $default_codes;

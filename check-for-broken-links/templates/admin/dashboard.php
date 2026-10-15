@@ -42,18 +42,17 @@ if ( ! is_array( $wpcbl_history ) ) {
 	$wpcbl_history = array();
 }
 
-// 404 / 5xx breakdown of the broken bucket; redirect warnings are the
-// separate warning bucket the checker already keeps (see column_type()).
+// Breakdown of the broken bucket: gone pages (404/410) and everything else
+// broken (other 4xx, DNS, SSL, invalid URLs). Server errors are warnings,
+// see includes/link-classification.php, so they sit in the warning count.
 $wpcbl_404_count = 0;
-$wpcbl_5xx_count = 0;
 foreach ( $wpcbl_broken_links as $wpcbl_broken_link ) {
 	$wpcbl_code = isset( $wpcbl_broken_link['code'] ) ? (int) $wpcbl_broken_link['code'] : 0;
-	if ( 404 === $wpcbl_code ) {
+	if ( 404 === $wpcbl_code || 410 === $wpcbl_code ) {
 		++$wpcbl_404_count;
-	} elseif ( $wpcbl_code >= 500 && $wpcbl_code < 600 ) {
-		++$wpcbl_5xx_count;
 	}
 }
+$wpcbl_other_broken_count = max( 0, $wpcbl_broken_count - $wpcbl_404_count );
 
 // Health score: round(100 * healthy / total) over the last scan's links.
 // See wpcbl_dashboard_health_score() for why "healthy" means "not broken".
@@ -458,10 +457,10 @@ if ( $wpcbl_show_review ) :
 						<span class="cbl-dv2-muted">
 							<?php
 							printf(
-								/* translators: 1: number of 404 errors, 2: number of 5xx errors, 3: number of redirect warnings. */
-								esc_html__( '404 not found: %1$s · Server error (5xx): %2$s · Redirect warnings: %3$s', 'check-for-broken-links' ),
+								/* translators: 1: number of 404 and 410 errors, 2: number of other broken links, 3: number of warnings. */
+								esc_html__( 'Not found: %1$s · Other broken: %2$s · Warnings: %3$s', 'check-for-broken-links' ),
 								esc_html( number_format_i18n( $wpcbl_404_count ) ),
-								esc_html( number_format_i18n( $wpcbl_5xx_count ) ),
+								esc_html( number_format_i18n( $wpcbl_other_broken_count ) ),
 								esc_html( number_format_i18n( $wpcbl_warning_count ) )
 							);
 							?>

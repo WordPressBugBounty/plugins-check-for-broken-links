@@ -1396,8 +1396,11 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			$target   = isset( $_POST['target_url'] ) ? esc_url_raw( wp_unslash( $_POST['target_url'] ) ) : '';
 			$anchor   = isset( $_POST['anchor_text'] ) ? wp_kses_post( wp_unslash( $_POST['anchor_text'] ) ) : '';
 			$method   = isset( $_POST['method'] ) ? sanitize_text_field( wp_unslash( $_POST['method'] ) ) : '';
-			$exist    = isset( $_POST['existing_text'] ) ? wp_unslash( $_POST['existing_text'] ) : '';
-			$after    = isset( $_POST['insert_after'] ) ? wp_unslash( $_POST['insert_after'] ) : '';
+			// existing_text and insert_after are exact-match needles against
+			// post_content. Sanitizing them would change the bytes and the
+			// match would fail. They are only searched for, never written.
+			$exist    = isset( $_POST['existing_text'] ) ? wp_unslash( $_POST['existing_text'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Exact-match needle, see above.
+			$after    = isset( $_POST['insert_after'] ) ? wp_unslash( $_POST['insert_after'] ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Exact-match needle, see above.
 			$sentence = isset( $_POST['insert_sentence'] ) ? wp_kses_post( wp_unslash( $_POST['insert_sentence'] ) ) : '';
 			$source   = isset( $_POST['source_url'] ) ? esc_url_raw( wp_unslash( $_POST['source_url'] ) ) : '';
 
@@ -1862,10 +1865,10 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			$fields = array();
 
 			foreach ( $keys as $key ) {
-				if ( ! isset( $_POST[ $key ] ) ) {
+				if ( ! isset( $_POST[ $key ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Callers verify the nonce first.
 					continue;
 				}
-				$fields[ $key ] = wp_unslash( $_POST[ $key ] );
+				$fields[ $key ] = wp_unslash( $_POST[ $key ] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Callers verify the nonce, wpcbl_uptime_sanitize_payload() sanitizes.
 			}
 
 			return $fields;

@@ -5,7 +5,7 @@ Tags: broken link checker, rank tracker, uptime monitor, ai visibility, internal
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.1.4
+Stable tag: 3.1.5
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -218,6 +218,14 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.1.5 = 15 October 2026
+* Change: The plugin and brokenlinkchecker.io now count the same links as broken. Server errors (5xx), 401 and 408 answers are warnings, since they are often temporary or refuse the checker. Every other 4xx answer is broken, and so are hosts that do not resolve and certificate errors. Your counts update on the next scan.
+* New: After a scan, a site that is not connected sees how to turn on the free SEO tools. Not now hides the card for 30 days.
+* Improvement: The line under Site link health reads Not found, Other broken and Warnings. The old Server error figure always showed 0.
+* Improvement: The results table labels a host that does not resolve as DNS.
+* Fix: Connect and checkout use the WordPress safe redirect to reach brokenlinkchecker.io.
+* Fix: The plugin name in your Plugins list matches the WordPress.org listing.
 
 = 3.1.4 = 4 October 2026
 * New: Redesigned Dashboard. Site link health shows as a score ring next to your scan schedule, each SEO tool has its own card with its status and latest figure, and a counter shows how many of the five tools are set up.
