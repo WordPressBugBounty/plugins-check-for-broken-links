@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Check for Broken Links - Broken Link Checker & SEO Suite
  * Description: Scan your site for broken links and 404 errors to improve SEO and user experience.
- * Version: 3.1.5
+ * Version: 3.1.6
  * Author: Norse Digital Group LLC
  * Author URI: https://brokenlinkchecker.io/
  * Requires at least: 6.0
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Globals constants.
  */
 define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_NAME', 'Check for Broken Links' );
-define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.1.5' );
+define( 'WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION', '3.1.6' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_PHP_VER', '7.2' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_MIN_WP_VER', '6.0' );
 define( 'WPCBL_CHECK_BROKEN_LINKS_ROOT_PATH', __DIR__ );
@@ -159,6 +159,14 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links' ) ) :
 				// Prune stored results that hit the built-in exclusion list
 				// (cart, admin, login URLs) added after the stored version.
 				WPCBL_Check_Broken_Links_Utilities::purge_default_excluded_results();
+			}
+
+			// The results are only read on the plugin's own screens, so they must
+			// not ride along in the autoloaded options on every request. Rows
+			// written by older versions can still carry the autoload flag, and
+			// update_option() leaves it alone when the value is unchanged.
+			if ( function_exists( 'wp_set_option_autoload_values' ) ) {
+				wp_set_option_autoload_values( array( 'wpcbl_check_for_broken_links_links' => false ) );
 			}
 
 			update_option( 'wpcbl_check_for_broken_links_version', WPCBL_CHECK_BROKEN_LINKS_PLUGIN_VERSION, false );

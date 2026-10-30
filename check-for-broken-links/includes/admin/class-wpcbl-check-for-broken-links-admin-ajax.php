@@ -2259,10 +2259,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 		 * @return void
 		 */
 		public function dismiss_ttswp_banner() {
-			// Check for nonce security.
-			if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'wpcbl_check_for_broken_links' ) ) {
-				wp_die( esc_html__( 'Cheatin&#8217; huh?', 'check-for-broken-links' ) );
-			}
+			$this->verify_link_action_request();
 
 			update_user_meta( get_current_user_id(), 'wpcbl_ttswp_banner_dismissed', 1 );
 

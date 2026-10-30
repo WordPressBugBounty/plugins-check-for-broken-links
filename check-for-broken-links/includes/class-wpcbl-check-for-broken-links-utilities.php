@@ -66,10 +66,7 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 
 			// Posts are stored by id, comments by id too, and reloaded per
 			// step: the job has to fit in one option row.
-			$items = array();
-			foreach ( self::get_data_to_scan( $settings ) as $single ) {
-				$items[] = is_object( $single ) ? array( 'comment', (int) $single->comment_ID ) : array( 'post', (int) $single );
-			}
+			$items = self::get_data_to_scan( $settings );
 
 			// A fresh scan resets Dismiss-ed entries (the Not broken whitelist is kept).
 			delete_option( 'wpcbl_session_dismissed' );
@@ -305,13 +302,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 		}
 
 		/**
-		 * Get the data to scan.
+		 * Get the content to scan, as scan job items.
 		 *
 		 * @param array $settings Default empty array.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @return array
+		 * @return array[] Items shaped array( 'post'|'comment', id ).
 		 */
 		public static function get_data_to_scan( $settings = array() ) {
 			$data_to_scan = array();
@@ -338,13 +335,18 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Utilities' ) ) {
 			);
 
 			$post_ids = get_posts( $args );
-			$data_to_scan = array_merge( $data_to_scan, $post_ids );
+			foreach ( $post_ids as $post_id ) {
+				$data_to_scan[] = array( 'post', (int) $post_id );
+			}
 
 			// Comment scanning is a Pro feature.
 			$scan_comments = isset( $settings['scan_comments'] ) ? $settings['scan_comments'] : '';
 			if ( wpcbl_has_pro() && 'on' === $scan_comments ) {
-				$comments     = get_comments( array( 'status' => 'approve' ) );
-				$data_to_scan = array_merge( $data_to_scan, $comments );
+				// Ids only: the scan reloads each comment when its turn comes.
+				$comment_ids = get_comments( array( 'status' => 'approve', 'fields' => 'ids' ) );
+				foreach ( $comment_ids as $comment_id ) {
+					$data_to_scan[] = array( 'comment', (int) $comment_id );
+				}
 			}
 
 			return $data_to_scan;
