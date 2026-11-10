@@ -5,7 +5,7 @@ Tags: broken link checker, rank tracker, uptime monitor, ai visibility, internal
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 3.1.6
+Stable tag: 3.1.8
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -218,6 +218,17 @@ Yes, you can cancel anytime from your account dashboard. You keep access until t
 3. Settings – choose which content types and link types to scan, set timeouts and exclusions, and connect your account to unlock the full SEO Suite.
 
 == Changelog ==
+
+= 3.1.8 = 10 November 2026
+* New: Rank Tracker settings has a Default location and language. Pick the country and language your rankings are checked in, without leaving wp-admin.
+* New: The first keywords you track can be set to a location and language right where you enter them.
+
+= 3.1.7 = 10 November 2026
+* New: Premium Guest Posts page under Link Building. Pick a package, enter the pages the posts link to and pay on Stripe, all from wp-admin.
+* New: A site that is not connected yet connects first and continues straight to checkout, with the order still filled in.
+* New: Your paid guest post orders show on the same page, with status, due date and live URLs as they land.
+* Improvement: Plugin pages load faster. Each page now loads only its own script and texts. Before, every page loaded the scan, Uptime Monitor, SEO / AEO Audit and plans code together.
+* Fix: Update subscription on the Plans & upgrades page works again. It stopped with a script error before it could ask you to confirm.
 
 = 3.1.6 = 30 October 2026
 * Security: Dismissing the connect banner now checks that you can manage the plugin, like every other action.

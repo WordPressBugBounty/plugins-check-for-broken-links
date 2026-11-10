@@ -779,6 +779,116 @@ if ( ! function_exists( 'wpcbl_go_url' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wpcbl_guest_posts_clean_catalog' ) ) {
+	/**
+	 * Reduce a guest post catalog response to the shape the page renders,
+	 * or null when it is not usable. Everything here ends up in wp-admin
+	 * markup and in a cached transient, so nothing is kept as it arrived.
+	 *
+	 * @since 3.1.7
+	 *
+	 * @param mixed $data Decoded /api/v1/guest-posts response.
+	 *
+	 * @return array|null array{packages:array, features:array, guarantees:array}
+	 */
+	function wpcbl_guest_posts_clean_catalog( $data ) {
+		if ( ! is_array( $data ) || empty( $data['packages'] ) || ! is_array( $data['packages'] ) ) {
+			return null;
+		}
+
+		$packages = array();
+		foreach ( $data['packages'] as $package ) {
+			if ( ! is_array( $package ) || empty( $package['key'] ) ) {
+				continue;
+			}
+
+			$key   = sanitize_key( $package['key'] );
+			$posts = isset( $package['posts'] ) ? absint( $package['posts'] ) : 0;
+			$price = isset( $package['price'] ) ? absint( $package['price'] ) : 0;
+
+			// A package without a price or a post count cannot be sold.
+			if ( '' === $key || ! $posts || ! $price ) {
+				continue;
+			}
+
+			$packages[] = array(
+				'key'           => $key,
+				'name'          => isset( $package['name'] ) ? sanitize_text_field( $package['name'] ) : ucfirst( $key ),
+				'posts'         => $posts,
+				'price'         => $price,
+				'delivery_days' => isset( $package['delivery_days'] ) ? absint( $package['delivery_days'] ) : 0,
+				'popular'       => ! empty( $package['popular'] ),
+			);
+		}
+
+		if ( ! $packages ) {
+			return null;
+		}
+
+		$lines = static function ( $list ) {
+			return is_array( $list ) ? array_values( array_filter( array_map( 'sanitize_text_field', array_filter( $list, 'is_string' ) ) ) ) : array();
+		};
+
+		return array(
+			'packages'   => $packages,
+			'features'   => $lines( isset( $data['features'] ) ? $data['features'] : array() ),
+			'guarantees' => $lines( isset( $data['guarantees'] ) ? $data['guarantees'] : array() ),
+		);
+	}
+}
+
+if ( ! function_exists( 'wpcbl_guest_posts_sanitize_order' ) ) {
+	/**
+	 * Sanitize a raw (already wp_unslash()ed) guest post order into the
+	 * body the site API accepts. The SaaS validates again and decides the
+	 * price from the package key alone, so nothing here can change what is
+	 * charged. This only keeps junk out of the request.
+	 *
+	 * @since 3.1.7
+	 *
+	 * @param array $input Raw order: package, targets[][url|keyword], notes.
+	 *
+	 * @return array array{package:string, targets:array, notes:string}
+	 */
+	function wpcbl_guest_posts_sanitize_order( array $input ) {
+		$targets = array();
+		$seen    = array();
+		$raw     = isset( $input['targets'] ) && is_array( $input['targets'] ) ? $input['targets'] : array();
+
+		foreach ( $raw as $target ) {
+			if ( ! is_array( $target ) || ! isset( $target['url'] ) || ! is_string( $target['url'] ) ) {
+				continue;
+			}
+
+			$url = esc_url_raw( trim( $target['url'] ), array( 'http', 'https' ) );
+			if ( '' === $url || isset( $seen[ $url ] ) ) {
+				continue;
+			}
+			$seen[ $url ] = true;
+
+			$keyword = isset( $target['keyword'] ) && is_string( $target['keyword'] ) ? sanitize_text_field( $target['keyword'] ) : '';
+
+			$targets[] = array(
+				'url'     => $url,
+				'keyword' => function_exists( 'mb_substr' ) ? mb_substr( $keyword, 0, 120 ) : substr( $keyword, 0, 120 ),
+			);
+
+			// The largest package carries 12 posts, and the API refuses more.
+			if ( 12 === count( $targets ) ) {
+				break;
+			}
+		}
+
+		$notes = isset( $input['notes'] ) && is_string( $input['notes'] ) ? sanitize_textarea_field( $input['notes'] ) : '';
+
+		return array(
+			'package' => isset( $input['package'] ) && is_string( $input['package'] ) ? sanitize_key( $input['package'] ) : '',
+			'targets' => $targets,
+			'notes'   => function_exists( 'mb_substr' ) ? mb_substr( $notes, 0, 2000 ) : substr( $notes, 0, 2000 ),
+		);
+	}
+}
+
 if ( ! function_exists( 'wpcbl_auditable_post_types' ) ) {
 	/**
 	 * Content types worth auditing.

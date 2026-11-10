@@ -34,6 +34,8 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		const TRANSIENT_AUDIT   = 'wpcbl_seo_audit_state';
 		const TRANSIENT_ILO     = 'wpcbl_ilo_state';
 		const TRANSIENT_AIV     = 'wpcbl_ai_visibility_state';
+		const TRANSIENT_GP      = 'wpcbl_guest_posts_catalog';
+		const TRANSIENT_NEXT    = 'wpcbl_connect_next';
 		const ENT_TTL           = 12 * HOUR_IN_SECONDS;
 		const GRACE_TTL         = 14 * DAY_IN_SECONDS;
 		const NONCE_TTL         = 30 * MINUTE_IN_SECONDS;
@@ -428,6 +430,17 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 		public function handle_connect_start() {
 			$this->authorize( 'wpcbl_connect_start' );
 
+			// A page that needs a connection to finish what the user started
+			// (ordering guest posts) asks to get them back afterwards. Only
+			// known targets are kept, and a plain Connect click clears any
+			// older one so it cannot hijack a later handshake.
+			$next = isset( $_GET['next'] ) ? sanitize_key( wp_unslash( $_GET['next'] ) ) : '';
+			if ( 'guest-posts' === $next ) {
+				set_transient( self::TRANSIENT_NEXT, $next, self::NONCE_TTL );
+			} else {
+				delete_transient( self::TRANSIENT_NEXT );
+			}
+
 			$nonce = $this->prime_handshake_nonce();
 
 			$url = add_query_arg(
@@ -562,6 +575,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 
 			$this->store_token( $data['token'], $data );
 			$this->poll_entitlements_now();
+
+			$next = get_transient( self::TRANSIENT_NEXT );
+			delete_transient( self::TRANSIENT_NEXT );
+			if ( 'guest-posts' === $next ) {
+				wp_safe_redirect( add_query_arg( 'wpcbl_gp', 'connected', $this->guest_posts_url() ) );
+				exit;
+			}
 
 			wp_safe_redirect( $this->settings_url( 'connected' ) );
 			exit;
@@ -1206,6 +1226,95 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Connect' ) ) :
 				// admin-post handler prefers this over inventing one.
 				'disposition' => wp_remote_retrieve_header( $response, 'content-disposition' ),
 			);
+		}
+
+		/**
+		 * The Premium Guest Posts admin page. Stripe sends the browser back
+		 * here after payment, and so does a connect started from that page.
+		 *
+		 * @since 3.1.7
+		 *
+		 * @return string
+		 */
+		public function guest_posts_url() {
+			return admin_url( 'admin.php?page=wpcbl-check-for-broken-links-guest-posts' );
+		}
+
+		/**
+		 * Public guest post catalog (packages, features, guarantees), cached
+		 * 12 hours. Served from the config brokenlinkchecker.io charges
+		 * from, so a price in wp-admin can never differ from the bill.
+		 *
+		 * @since 3.1.7
+		 *
+		 * @return array|null Catalog, or null when unreachable.
+		 */
+		public function fetch_guest_posts_catalog() {
+			$cached = get_transient( self::TRANSIENT_GP );
+			if ( is_array( $cached ) ) {
+				return $cached;
+			}
+
+			// A failed fetch is retried after a short pause, not on every view.
+			if ( false !== get_transient( self::TRANSIENT_GP . '_off' ) ) {
+				return null;
+			}
+
+			$response = wp_remote_get(
+				$this->app_url( '/api/v1/guest-posts' ),
+				array(
+					'timeout' => 10,
+					'headers' => array( 'Accept' => 'application/json' ),
+				)
+			);
+
+			$data = is_wp_error( $response ) || 200 !== (int) wp_remote_retrieve_response_code( $response )
+				? null
+				: json_decode( wp_remote_retrieve_body( $response ), true );
+
+			$catalog = function_exists( 'wpcbl_guest_posts_clean_catalog' ) ? wpcbl_guest_posts_clean_catalog( $data ) : null;
+
+			if ( null === $catalog ) {
+				set_transient( self::TRANSIENT_GP . '_off', 1, 2 * MINUTE_IN_SECONDS );
+				return null;
+			}
+
+			set_transient( self::TRANSIENT_GP, $catalog, 12 * HOUR_IN_SECONDS );
+
+			return $catalog;
+		}
+
+		/**
+		 * Proxy one call to the site-token guest post API. JSON body, and
+		 * `{}` on a bodyless POST, for the reasons uptime_request() gives.
+		 *
+		 * @since 3.1.7
+		 *
+		 * @param string     $method HTTP method.
+		 * @param string     $path   Sub-path appended to /api/v1/site/guest-posts.
+		 * @param array|null $body   Request body, or null.
+		 *
+		 * @return array|WP_Error array{code:int, data:array} or the transport error.
+		 */
+		public function guest_posts_request( $method, $path = '', $body = null ) {
+			$args = array(
+				'method'  => $method,
+				// Checkout waits on Stripe creating the session.
+				'timeout' => 30,
+				'headers' => $this->api_headers(),
+			);
+
+			if ( null !== $body ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = wp_json_encode( $body );
+			} elseif ( 'GET' !== strtoupper( $method ) ) {
+				$args['headers']['Content-Type'] = 'application/json';
+				$args['body']                    = '{}';
+			}
+
+			$response = wp_remote_request( $this->app_url( '/api/v1/site/guest-posts' . $path ), $args );
+
+			return $this->ai_fix_response( $response );
 		}
 
 		/**

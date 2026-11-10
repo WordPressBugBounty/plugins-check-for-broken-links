@@ -955,6 +955,13 @@
 .cbl-rt-set-row .cbl-rt-seg {
   align-self: flex-start;
 }
+.cbl-rt-set-row .cbl-rt-select,
+.cbl-rt-first-market .cbl-rt-select {
+  max-width: 360px !important;
+}
+label.cbl-rt-set-name {
+  display: block;
+}
 .cbl-rt-choice-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));

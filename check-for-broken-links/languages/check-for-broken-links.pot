@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: Check for Broken Links - Broken Link Checker & SEO Suite 3.1.6\n"
+"Project-Id-Version: Check for Broken Links - Broken Link Checker & SEO Suite 3.1.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/check-for-broken-links\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-30T03:29:05+01:00\n"
+"POT-Creation-Date: 2026-11-10T07:09:51+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: check-for-broken-links\n"
@@ -40,418 +40,428 @@ msgstr ""
 msgid "Leave a review"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:115
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:117
 msgid "Fixing redirects is a Pro feature."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:122
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:124
 msgid "Missing data for the redirect fix."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:152
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:154
 msgid "No permanent redirect found for this URL."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:157
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:159
 msgid "The URL was not found in the post content."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:161
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2114
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2155
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:163
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2186
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2227
 msgid "Could not update the post."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:182
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:184
 msgid "Wayback suggestions are a Pro feature."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:187
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2176
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2203
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:189
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2248
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2275
 msgid "Missing URL."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:193
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:195
 msgid "The Wayback Machine did not respond. Try again later."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:200
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:202
 msgid "No archived version found for this URL."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:217
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:295
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:219
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:297
 msgid "Fix with AI is a Pro feature."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:225
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:227
 msgid "Missing data for the AI fix."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:230
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2066
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:232
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2138
 msgid "The URL was not found in the post content. It may live in a builder or slider field."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:235
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:300
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:237
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:302
 msgid "Connect this site to brokenlinkchecker.io first, from Settings."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:256
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:345
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:408
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:258
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:347
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:410
 msgid "Could not reach brokenlinkchecker.io. Check the connection and try again."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:260
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:349
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:262
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:351
 msgid "The site connection expired. Reconnect from Settings."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:264
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:353
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:266
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:355
 msgid "Fix with AI is not included in this plan."
 msgstr ""
 
 #. translators: 1: AI fixes used this month, 2: monthly limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:272
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:274
 #, php-format
 msgid "You reached this month's AI fix limit, %1$d of %2$d used. The counter resets on the first of the month."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:280
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:357
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:429
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:282
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:359
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:431
 msgid "The AI service did not answer. Try again in a moment."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:333
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:335
 msgid "No broken links to fix. Run a scan first."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:339
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:341
 msgid "None of these links can be fixed automatically. They live in builder, slider or comment content."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:472
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:686
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:806
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:182
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:474
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:695
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:878
 msgid "Connect this site to brokenlinkchecker.io first."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:492
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1824
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:494
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1896
 msgid "brokenlinkchecker.io is not reachable right now. Try again in a minute."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:502
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1849
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:104
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:389
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:501
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:680
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:504
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:834
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1921
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:70
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:124
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:417
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:529
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:725
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:806
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:535
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:537
 msgid "Enter at least one keyword."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:562
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:564
 msgid "Missing keyword."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:581
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:583
 msgid "Select at least one keyword."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:661
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:670
 msgid "Invalid sharing option."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:724
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:733
 msgid "Choose a monitor type."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:743
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:766
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:785
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:752
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:775
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:794
 msgid "Missing monitor."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:886
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:819
+msgid "Choose a package."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:822
+msgid "Enter at least one target URL, starting with https://."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:958
 msgid "No audit to share."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:910
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:930
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:982
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1002
 msgid "That issue is not available."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:961
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1033
 msgid "That fix is not available."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:992
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:743
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:770
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1064
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:763
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:790
-#: includes/class-wpcbl-check-for-broken-links-connect.php:415
-#: includes/class-wpcbl-check-for-broken-links-connect.php:508
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:810
+#: includes/class-wpcbl-check-for-broken-links-connect.php:417
+#: includes/class-wpcbl-check-for-broken-links-connect.php:521
 msgid "You are not allowed to do this."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1001
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1073
 msgid "That audit is not available."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1008
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1080
 msgid "The PDF could not be downloaded. Try the share link instead."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1103
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1215
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1175
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1287
 msgid "The upload could not be found. Start the analysis again."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1200
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1272
 msgid "No published pages were found to analyse."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1337
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1409
 msgid "One or more of those post types are not available on this site."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1361
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1433
 msgid "That suggestion could not be updated."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1408
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1480
 msgid "This suggestion does not point at a page on this site. Open it on your dashboard instead."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1414
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1486
 msgid "That page no longer exists on this site."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1426
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1498
 msgid "That suggestion was written for a different page, so this one was left alone. Open it on your dashboard instead."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1430
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1502
 msgid "That page is not published, so it was left alone."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1434
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1515
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1506
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1587
 msgid "You cannot edit that page."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1465
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1534
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1537
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1606
 msgid "The page could not be saved. Please try again."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1511
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1522
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1583
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1594
 msgid "There is nothing to undo here."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1545
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1617
 msgid "Link removed and the page put back."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1546
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1618
 msgid "Link removed and the page put back. Your dashboard could not be updated, so it still shows this suggestion as applied."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1599
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1671
 msgid "Link added. WordPress kept a revision of the page."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1600
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1672
 msgid "Link added and WordPress kept a revision of the page. Your dashboard could not be updated, so it still shows this suggestion as open."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1604
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1676
 msgid "Link added. You can undo it from this page."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1605
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1677
 msgid "Link added. You can undo it from this page. Your dashboard could not be updated, so it still shows this suggestion as open."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1630
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1702
 msgid "This page changed since the link was added. Use the revision browser in the editor to put it back."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1633
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1705
 msgid "This page changed since the link was added. The automatic undo cannot be applied, so edit the page directly to remove the link."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1711
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1783
 msgid "That text already links to this page. Nothing to do."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1715
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1787
 msgid "That text already links somewhere else, so it was left alone."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1719
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1791
 msgid "The suggested sentence does not contain the anchor text. Add this link in the editor."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1722
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1794
 msgid "That text was not found where the plugin can safely edit it. Add this link in the editor instead."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1771
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:739
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1843
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:865
 msgid "Enter at least one prompt."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1793
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1865
 msgid "Missing prompt."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1837
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1909
 msgid "Checking now. New results arrive in a few minutes."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1842
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1914
 msgid "You already ran a check today. The next manual check is available tomorrow."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1846
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1918
 msgid "Run check now is not available for this account yet."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1897
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1969
 msgid "Invalid plan selection."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1921
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2242
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2282
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2306
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2386
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1993
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2314
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2354
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2378
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2458
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-export.php:281
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:57
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:604
 msgid "Cheatin&#8217; huh?"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1925
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:1997
 msgid "You do not have permission to manage links."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2061
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2133
 msgid "Missing data for the URL update."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2134
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2206
 msgid "Missing data for the unlink action."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2139
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2211
 msgid "Post not found."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2144
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2151
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2216
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2223
 msgid "The link was not found in the post content. It may live in a builder or slider field."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2286
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2358
 msgid "You do not have permission to clear scan results."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2311
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2391
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2383
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2463
 msgid "You do not have permission to run a scan."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2367
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-ajax.php:2439
 msgid "No scan is running. Start a new scan."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:93
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:113
 msgid "Clear the current scan results? Settings are kept. Run a new scan anytime to check your links again."
 msgstr ""
 
 #. translators: 1: items scanned so far, 2: total items, 3: links checked so far.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:95
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:115
 #, php-format
 msgid "Checking item %1$s of %2$s. %3$s links checked so far."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:96
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:116
 msgid "Every occurrence of the old URL in this post is replaced."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:97
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:117
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:438
 msgid "Edit URL"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:98
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:118
 msgid "Fix all similar: replace this URL in every post where it appears"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:99
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:119
 msgid "The link is removed but its text stays in the post."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:100
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:120
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:445
 msgid "Unlink"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:101
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:121
 msgid "Clear all cached link statuses and run a fresh scan now? Links you marked as Not broken stay skipped."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:102
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:122
 #: templates/admin/settings.php:116
 msgid "Re-check all links"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:103
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:123
 #: templates/admin/scan-results.php:65
 msgid "Clear Results"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:105
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:125
 msgid "Action failed"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:106
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:126
 msgid "Confirm"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:107
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:236
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:571
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:127
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:229
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:599
 msgid "Cancel"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:108
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:128
 msgid "Save URL"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:109
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:129
 msgid "OK"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:110
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:130
 msgid "Scanning…"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:111
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:313
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:131
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:317
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:456
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:468
 #: templates/admin/scan-results.php:181
@@ -460,1699 +470,1717 @@ msgstr ""
 msgid "Fix with AI"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:112
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:132
 msgid "Analyzing…"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:113
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:133
 msgid "Pick the replacement to apply. Every option was checked live before it reached you."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:114
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:134
 msgid "No working replacement was found. You can remove the link and keep its text."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:115
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:135
 msgid "Apply fix"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:116
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:136
 msgid "Remove link"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:117
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:137
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:484
 msgid "View archived version"
 msgstr ""
 
 #. translators: 1: AI fixes used this month, 2: monthly limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:119
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:139
 #, php-format
 msgid "%1$s of %2$s AI fixes used this month."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:120
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:140
 #: templates/admin/scan-results.php:185
 #: templates/admin/scan-results.php:193
 msgid "Fix all with AI"
 msgstr ""
 
 #. translators: %1$s: number of broken links.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:122
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:142
 #, php-format
 msgid "Analyze up to %1$s broken links with AI? Dismissed links are left out. This uses your monthly AI fix allowance, one per link."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:123
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:143
 msgid "Start analysis"
 msgstr ""
 
 #. translators: 1: analyzed links so far, 2: total queued links.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:125
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:145
 #, php-format
 msgid "%1$s of %2$s checked"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:126
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:146
 msgid "Analyzing broken links"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:127
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:147
 msgid "Review AI fixes"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:128
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:318
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:436
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:148
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:322
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:464
 msgid "Apply"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:129
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:149
 msgid "Apply all suggestions"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:130
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:319
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:435
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:150
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:323
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:463
 msgid "Skip"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:131
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:443
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:151
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:471
 msgid "Applied"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:132
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:442
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:152
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:470
 msgid "Skipped"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:133
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:153
 msgid "Remove link, keep its text"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:134
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:154
 msgid "Could not analyze this link. Try the row action instead."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:135
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:155
 msgid "Cannot fix automatically. Edit the post directly."
 msgstr ""
 
 #. translators: %1$s: number of links beyond one batch.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:137
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:157
 #, php-format
 msgid "One batch covers 500 links. Run Fix all with AI again for the other %1$s."
 msgstr ""
 
 #. translators: %1$s: number of links past the monthly limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:139
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:159
 #, php-format
 msgid "Monthly AI fix limit reached for %1$s links. The counter resets on the first of the month."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:140
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:160
 msgid "Get a bigger plan"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:141
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:161
 msgid "Close review"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:142
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:162
 msgid "All done. Reloading the results…"
 msgstr ""
 
 #. translators: %1$s: number of fixes that failed.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:144
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:164
 #, php-format
 msgid "%1$s fixes did not apply. The rows stay in the list so you can retry them."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:148
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:228
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:229
-#: templates/admin/rank-tracker.php:28
-msgid "Rank Tracker"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:149
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:591
-#: templates/admin/dashboard.php:548
-msgid "Add keywords"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:150
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:592
-msgid "One keyword per line, or separate them with commas."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:151
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:515
-msgid "Start tracking"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:152
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:506
-msgid "Desktop"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:153
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:507
-msgid "Mobile"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:154
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:508
-msgid "Desktop and mobile"
-msgstr ""
-
-#. translators: 1: positions used, 2: positions limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:156
-#, php-format
-msgid "%1$s of %2$s positions used"
-msgstr ""
-
-#. translators: 1: refreshes used, 2: monthly refresh limit.
-#. translators: 1: refreshes left, 2: weekly refresh allowance.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:158
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:549
-#, php-format
-msgid "%1$s of %2$s refreshes left this week"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:159
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:546
-msgid "Refresh now"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:160
-#: templates/admin/rank-tracker.php:48
-msgid "Export CSV"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:161
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:239
-msgid "Delete"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:162
-msgid "Remove keywords"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:163
-msgid "Stop tracking the selected keywords? Their history is deleted."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:164
-msgid "First positions arrive in a few minutes."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:165
-#: templates/admin/dashboard.php:538
-msgid "No keywords yet"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:166
-msgid "Add the searches you want to rank for and positions arrive within minutes."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:168
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:533
-msgid "Keyword"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:169
-msgid "Position"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:170
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:509
-msgid "Change"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:171
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:575
-msgid "Best"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:172
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:577
-msgid "Volume"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:173
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:578
-msgid "CPC"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:174
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:579
-msgid "Intent"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:175
-msgid "Competition"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:176
-#: includes/functions.php:237
-msgid "Page"
-msgstr ""
-
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:177
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:747
-msgid "Checked"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:179
-msgid "Tracker settings"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:180
-#: templates/admin/settings.php:124
-msgid "Settings saved."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:181
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:257
-msgid "Link copied."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:183
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:500
-msgid "Could not load rankings. brokenlinkchecker.io might be briefly unavailable."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:184
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:368
-#: templates/admin/rank-tracker.php:87
-msgid "Try again"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:185
-msgid "Get more positions"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:186
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:587
-msgid "Daily ranking updates"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:187
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:588
-msgid "Positions update weekly on your plan. The Daily add-on re-checks every keyword every morning."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:188
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:589
-msgid "Get daily updates"
-msgstr ""
-
-#. translators: %1$s: date of the next scheduled ranking check.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:192
-#, php-format
-msgid "Next ranking update: %1$s"
-msgstr ""
-
-#. translators: %1$s: plan name.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:194
-#, php-format
-msgid "Switch to the %1$s plan? Upgrades are charged prorated to your card right away, downgrades are credited to your next invoice."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:195
-msgid "One moment…"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:196
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:502
-msgid "Google"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:197
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:503
-msgid "Bing"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:198
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:504
-msgid "Google and Bing"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:199
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:625
-msgid "Default device"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:200
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:599
-msgid "Search engine"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:201
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:627
-msgid "Email reports"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:202
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:248
-msgid "name@example.com, name2@example.com"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:203
-msgid "Public share link"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:204
-msgid "Optional password"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:205
-msgid "Save settings"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:206
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:256
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:286
-msgid "Copy link"
-msgstr ""
-
-#. translators: %1$s: number of keywords selected.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:208
-#, php-format
-msgid "%1$s selected"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:209
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:560
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:746
-msgid "Visibility"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:210
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:561
-msgid "Estimated traffic"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:211
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:562
-msgid "Average position"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:212
-msgid "Could not load your uptime monitors. brokenlinkchecker.io might be briefly unavailable."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:213
-msgid "Monitor this site"
-msgstr ""
-
-#. translators: 1: monitors used, 2: monitor limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:215
-#, php-format
-msgid "%1$s of %2$s monitors used"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:216
-msgid "Get more monitors"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:218
-msgid "Website"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:219
-msgid "WP-Cron"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:220
-msgid "SSL expiry"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:221
-msgid "Domain expiry"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:222
-msgid "Checking expiry"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:223
-msgid "Up"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:224
-msgid "Down"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:225
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:583
-msgid "Checking"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:226
-msgid "Paused"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:228
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:262
-msgid "Monitor"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:229
-msgid "24h uptime"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:230
-msgid "30d uptime"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:231
-msgid "Avg response"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:232
-msgid "Last check"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:234
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:390
-msgid "Edit"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:235
-msgid "Save"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:237
-msgid "Pause"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:238
-msgid "Resume"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:240
-msgid "Delete monitor"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:241
-msgid "Delete this monitor? Its check history is gone too."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:242
-msgid "Name"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:243
-msgid "URL"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:244
-msgid "Check interval"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:245
-msgid "Alert after"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:246
-msgid "failed checks"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:247
-msgid "Alert emails"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:249
-msgid "No monitors yet"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:250
-msgid "Add your site and know the moment it goes down."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:251
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:253
-msgid "Watch WP-Cron"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:252
-msgid "Get an alert when scheduled WordPress tasks stop running."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:254
-msgid "WP cron"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:255
-msgid "Paste this in a site-specific plugin or your theme functions.php file."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:258
-msgid "Recent incidents"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:259
-msgid "No incidents recorded yet."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:260
-msgid "Ongoing"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:261
-msgid "Started"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:263
-msgid "Cause"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:264
-#: templates/admin/reports.php:60
-msgid "Duration"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:265
-msgid "second"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:266
-#: templates/admin/settings.php:271
-msgid "seconds"
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:267
 msgid "minute"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:268
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:178
 msgid "minutes"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:269
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:179
 msgid "hour"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:270
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:180
 msgid "hours"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:271
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:181
 msgid "day"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:272
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:711
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:182
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:837
 msgid "days"
 msgstr ""
 
 #. translators: %1$s: how long ago, for example "5 minutes".
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:274
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:184
 #, php-format
 msgid "%1$s ago"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:275
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:185
 msgid "Just now"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:276
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:205
+msgid "Could not load your uptime monitors. brokenlinkchecker.io might be briefly unavailable."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:206
+msgid "Monitor this site"
+msgstr ""
+
+#. translators: 1: monitors used, 2: monitor limit.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:208
+#, php-format
+msgid "%1$s of %2$s monitors used"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:209
+msgid "Get more monitors"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:211
+msgid "Website"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:212
+msgid "WP-Cron"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:213
+msgid "SSL expiry"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:214
+msgid "Domain expiry"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:215
+msgid "Checking expiry"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:216
+msgid "Up"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:217
+msgid "Down"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:218
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:611
+msgid "Checking"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:219
+msgid "Paused"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:221
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:255
+msgid "Monitor"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:222
+msgid "24h uptime"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:223
+msgid "30d uptime"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:224
+msgid "Avg response"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:225
+msgid "Last check"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:227
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:390
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:228
+msgid "Save"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:230
+msgid "Pause"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:231
+msgid "Resume"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:232
+msgid "Delete"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:233
+msgid "Delete monitor"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:234
+msgid "Delete this monitor? Its check history is gone too."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:235
+msgid "Name"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:236
+msgid "URL"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:237
+msgid "Check interval"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:238
+msgid "Alert after"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:239
+msgid "failed checks"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:240
+msgid "Alert emails"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:241
+msgid "name@example.com, name2@example.com"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:242
+msgid "No monitors yet"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:243
+msgid "Add your site and know the moment it goes down."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:244
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:246
+msgid "Watch WP-Cron"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:245
+msgid "Get an alert when scheduled WordPress tasks stop running."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:247
+msgid "WP cron"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:248
+msgid "Paste this in a site-specific plugin or your theme functions.php file."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:249
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:290
+msgid "Copy link"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:250
+msgid "Link copied."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:251
+msgid "Recent incidents"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:252
+msgid "No incidents recorded yet."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:253
+msgid "Ongoing"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:254
+msgid "Started"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:256
+msgid "Cause"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:257
+#: templates/admin/reports.php:60
+msgid "Duration"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:258
+msgid "second"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:259
+#: templates/admin/settings.php:271
+msgid "seconds"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:260
 msgid "Not checked yet"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:277
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:281
 msgid "Could not load your audit. brokenlinkchecker.io might be briefly unavailable."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:278
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:282
 msgid "Audit running"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:279
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:406
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:283
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:434
 msgid "Checking your pages now. Results appear here automatically when it finishes."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:280
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:284
 msgid "No audits yet. Run the first one to see what to fix."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:281
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:285
 msgid "The last audit could not read any pages. Try again in a minute."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:282
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:286
 #: templates/admin/seo-audit.php:40
 msgid "Run audit"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:283
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:392
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:287
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:420
 msgid "Running"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:284
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:288
 msgid "Share report"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:285
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:289
 msgid "Stop sharing"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:287
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:557
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:291
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:585
 msgid "Copied"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:288
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:292
 msgid "Download PDF"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:289
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:293
 msgid "Audit history"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:290
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:411
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:684
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:294
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:439
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:810
 msgid "See plans"
 msgstr ""
 
 #. translators: 1: pages covered by the plan, 2: total pages the site publishes.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:292
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:296
 #, php-format
 msgid "Your plan covered %1$d of the %2$d pages this site publishes."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:293
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:297
 msgid "Biggest lever"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:294
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:298
 msgid "Score"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:295
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:299
 msgid "This site passes every weighted check in this audit."
 msgstr ""
 
 #. translators: 1: category label, 2: points lost to that category, 3: total points lost.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:297
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:301
 #, php-format
 msgid "%1$s is costing you %2$s of the %3$s points you lost"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:298
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:302
 msgid "Where the points went"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:299
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:303
 msgid "Each block is that category's share of the 100-point score. Red is unearned."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:300
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:304
 msgid "Fix queue"
 msgstr ""
 
 #. translators: 1: issue-type count phrase, for example "3 issue types". 2: pages phrase, for example "12 pages".
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:302
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:306
 #, php-format
 msgid "Grouped by recoverable points · %1$s across %2$s"
 msgstr ""
 
 #. translators: %1$s: recoverable points for this category.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:304
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:308
 #, php-format
 msgid "+%1$s pts recoverable"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:305
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:309
 msgid "issue type"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:306
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:310
 msgid "issue types"
 msgstr ""
 
 #. translators: %1$d: number of checks passed.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:308
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:312
 #, php-format
 msgid "%1$d checks passed"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:309
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:313
 msgid "Show all"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:310
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:314
 #: templates/admin/upgrade.php:446
 #: templates/admin/upgrade.php:591
 msgid "Hide"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:311
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:315
 msgid "Authority and speed · live data"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:312
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:316
 msgid "Copy URLs"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:314
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:318
 msgid "Working"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:315
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:319
 msgid "Review before anything is saved"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:316
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:432
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:320
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:460
 msgid "Now"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:317
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:321
 msgid "Suggested"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:320
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:324
 msgid "Saved."
 msgstr ""
 
 #. translators: %1$s: number of pages in the audit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:322
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:326
 #, php-format
 msgid "Show all %1$s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:323
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:327
 msgid "This audit stored a sample. Run a new audit to capture every page."
 msgstr ""
 
 #. translators: %1$d: additional pages beyond the ones already listed.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:325
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:329
 #, php-format
 msgid "and %1$d more"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:326
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:330
 msgid "of 100"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:327
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:331
 msgid "checks passed"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:328
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:332
 msgid "Referring domains"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:329
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:333
 msgid "Backlinks"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:330
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:334
 msgid "Domain rank"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:331
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:335
 msgid "Ranking keywords"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:332
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:336
 msgid "Est. monthly visits"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:333
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:337
 msgid "Lighthouse mobile"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:334
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:338
 msgid "Largest paint"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:335
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:339
 msgid "Layout shift"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:336
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:340
 msgid "audits used this month"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:337
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:341
 msgid "pages checked"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:338
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:342
 msgid "last audit"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:339
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:343
 msgid "page"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:340
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:344
 #: templates/admin/partials/tool-empty.php:83
 msgid "pages"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:345
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:349
 msgid "month"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:346
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:350
 msgid "months"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:347
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:351
 msgid "year"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:348
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:352
 msgid "years"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:390
+#. translators: %1$s: plan name.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:374
+#, php-format
+msgid "Switch to the %1$s plan? Upgrades are charged prorated to your card right away, downgrades are credited to your next invoice."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:375
+msgid "One moment…"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:418
 msgid "Could not load your analysis. brokenlinkchecker.io might be briefly unavailable."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:391
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:419
 #: templates/admin/internal-links.php:26
 msgid "Run analysis"
 msgstr ""
 
 #. translators: %1$s: number of pages uploaded so far.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:394
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:422
 #, php-format
 msgid "Uploading pages, %1$s so far"
 msgstr ""
 
 #. translators: 1: pages analysed, 2: the plan's page cap. Shown only when the two differ.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:396
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:424
 #, php-format
 msgid "This analysis covers %1$s pages of your site. Your plan reads up to %2$s pages in one analysis."
 msgstr ""
 
 #. translators: %1$s: pages analysed, equal to the plan's page cap.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:398
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:426
 #, php-format
 msgid "This analysis covers %1$s pages of your site, the most your plan reads in one analysis."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:399
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:427
 msgid "Post types to read"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:400
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:428
 msgid "These are the post types the optimizer reads when it maps your links."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:401
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:429
 msgid "Save selection"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:402
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:430
 msgid "Saved. This applies to your next analysis."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:403
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:431
 msgid "No analysis yet. Run one to see the internal links your pages are missing."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:404
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:432
 msgid "The last analysis could not read any pages. Try again in a minute."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:405
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:433
 msgid "Analysis running"
 msgstr ""
 
 #. translators: 1: suggestions used this month, 2: monthly limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:408
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:436
 #, php-format
 msgid "%1$s of %2$s suggestions used this month"
 msgstr ""
 
 #. translators: %1$s: suggestions used this month.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:410
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:438
 #, php-format
 msgid "%1$s suggestions used this month"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:412
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:440
 msgid "Suggested links"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:413
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:441
 #: templates/admin/partials/tool-empty.php:98
 msgid "No content links"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:414
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:442
 msgid "Dead ends"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:415
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:443
 msgid "Buried pages"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:416
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:444
 msgid "Weak anchors"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:417
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:445
 msgid "pages analyzed"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:418
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:446
 msgid "links per page"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:419
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:447
 msgid "pages with no content links"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:420
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:448
 msgid "dead ends"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:421
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:449
 msgid "buried pages"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:422
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:450
 msgid "weak anchors"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:423
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:451
 msgid "No new links to suggest. The internal linking on this site is already strong."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:424
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:452
 msgid "Every page gets at least one link from another page's content."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:425
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:453
 msgid "Every page sends the reader somewhere next."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:426
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:454
 msgid "Every page sits within three clicks of the homepage."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:427
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:455
 msgid "Every internal link describes where it goes."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:428
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:456
 msgid "Anchor text"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:429
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:457
 msgid "On page"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:430
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:458
 msgid "Links to"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:431
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:459
 msgid "Anchor"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:433
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:461
 msgid "After"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:434
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:462
 msgid "Approve"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:437
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:465
 msgid "Undo"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:438
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:466
 msgid "Apply all approved"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:439
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:467
 msgid "Open on dashboard"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:440
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:752
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:468
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:878
 msgid "Pending"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:441
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:469
 msgid "Approved"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:505
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:528
+msgid "Could not load rankings. brokenlinkchecker.io might be briefly unavailable."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:530
+msgid "Google"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:531
+msgid "Bing"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:532
+msgid "Google and Bing"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:533
 msgid "Both"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:511
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:534
+msgid "Desktop"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:535
+msgid "Mobile"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:536
+msgid "Desktop and mobile"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:537
+msgid "Change"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:539
 msgid "Track your first keywords"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:512
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:540
 msgid "Add the searches you want to rank for. First positions arrive within minutes."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:513
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:541
 msgid "One keyword per line, or separate with commas"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:514
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:542
 msgid "Ideas to start with"
 msgstr ""
 
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:543
+msgid "Start tracking"
+msgstr ""
+
 #. translators: %s: number of keywords.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:517
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:545
 #, php-format
 msgid "Start tracking %s keywords"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:518
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:546
 msgid "Start tracking 1 keyword"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:519
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:547
 msgid "Adding…"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:520
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:548
 msgid "Positions update weekly."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:521
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:549
 msgid "Positions update every morning."
 msgstr ""
 
 #. translators: %s: number of free keyword slots.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:523
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:551
 #, php-format
 msgid "%s keyword slots available. Each keyword uses 1 slot per engine and device."
 msgstr ""
 
 #. translators: 1: slots this addition uses, 2: free slots.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:525
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:553
 #, php-format
 msgid "Uses %1$s of %2$s available keyword slots"
 msgstr ""
 
 #. translators: 1: slots this addition needs, 2: free slots.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:527
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:555
 #, php-format
 msgid "Needs %1$s slots, only %2$s available"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:528
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:556
 msgid "What you will see"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:529
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:557
 msgid "your main keyword"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:530
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:558
 msgid "product + city"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:531
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:559
 msgid "how to …"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:532
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:560
 msgid "Trend"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:534
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:561
+msgid "Keyword"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:562
 msgid "Desktop and mobile positions side by side"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:535
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:563
 msgid "Weekly changes, best position and trend"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:536
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:564
 msgid "Search volume, CPC and intent for each keyword"
 msgstr ""
 
 #. translators: 1: slots used, 2: slot limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:539
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:567
 #, php-format
 msgid "%1$s of %2$s keyword slots used"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:540
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:568
 msgid "Get more"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:541
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:569
 msgid "Get more keywords"
 msgstr ""
 
 #. translators: 1: date of the last check, 2: date of the next check.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:543
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:571
 #, php-format
 msgid "Updated %1$s · next update %2$s"
 msgstr ""
 
 #. translators: %s: date of the next check.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:545
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:573
 #, php-format
 msgid "First update %s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:547
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:574
+msgid "Refresh now"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:575
 msgid "Checking…"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:550
+#. translators: 1: refreshes left, 2: weekly refresh allowance.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:577
+#, php-format
+msgid "%1$s of %2$s refreshes left this week"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:578
 msgid "Public report"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:551
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:579
 msgid "Share read-only rankings with clients or your team. No login needed."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:552
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:580
 msgid "Anyone with the link can view rankings. Updates automatically."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:553
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:581
 msgid "Anyone with the link and the password can view rankings. Updates automatically."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:554
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:582
 msgid "Generate public URL"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:555
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:583
 msgid "Generating…"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:556
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:584
 msgid "Copy"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:558
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:586
 msgid "Open"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:559
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:587
 msgid "Turn off the public link"
 msgstr ""
 
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:588
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:872
+msgid "Visibility"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:589
+msgid "Estimated traffic"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:590
+msgid "Average position"
+msgstr ""
+
 #. translators: %s: change in percentage points.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:564
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:592
 #, php-format
 msgid "%s pts"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:565
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:593
 msgid "/mo"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:566
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:594
 msgid "Filter keywords"
 msgstr ""
 
 #. translators: %s: number of selected keywords.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:568
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:596
 #, php-format
 msgid "%s selected"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:569
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:597
 msgid "Stop tracking"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:570
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:598
 msgid "Stop tracking the selected keywords? Their ranking history is deleted."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:572
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:600
 msgid "Select all keywords"
 msgstr ""
 
 #. translators: %s: keyword.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:574
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:602
 #, php-format
 msgid "Select %s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:576
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:603
+msgid "Best"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:604
 msgid "8 weeks"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:580
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:605
+msgid "Volume"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:606
+msgid "CPC"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:607
+msgid "Intent"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:608
 msgid "Ranking page"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:581
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:609
 msgid "Not tracked on this device"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:582
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:610
 msgid "Not in the top 100"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:584
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:612
 msgid "New keywords are being checked. Positions appear here in a few minutes."
 msgstr ""
 
 #. translators: %s: the filter text.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:586
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:614
 #, php-format
 msgid "No keywords match \"%s\"."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:593
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:615
+msgid "Daily ranking updates"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:616
+msgid "Positions update weekly on your plan. The Daily add-on re-checks every keyword every morning."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:617
+msgid "Get daily updates"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:619
+#: templates/admin/dashboard.php:548
+msgid "Add keywords"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:620
+msgid "One keyword per line, or separate them with commas."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:621
 msgid "Close"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:594
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:622
 msgid "Duplicates are removed automatically."
 msgstr ""
 
 #. translators: %s: number of keywords.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:596
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:624
 #, php-format
 msgid "%s keywords detected"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:597
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:625
 msgid "1 keyword detected"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:598
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:626
 msgid "Location and language"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:600
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:627
+msgid "Search engine"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:628
 msgid "Set for the whole tracker in Settings."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:601
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:629
 msgid "Device"
 msgstr ""
 
 #. translators: 1: keywords, 2: engines, 3: devices.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:603
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:631
 #, php-format
 msgid "%1$s × %2$s × %3$s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:604
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:632
 msgid "keyword"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:605
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:633
 #: templates/admin/upgrade.php:454
 #: templates/admin/upgrade.php:458
 msgid "keywords"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:606
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:634
 msgid "engine"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:607
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:635
 msgid "engines"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:608
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:636
 msgid "device"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:609
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:637
 msgid "devices"
 msgstr ""
 
 #. translators: 1: slots in use, 2: slot limit, 3: slots left after adding.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:611
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:639
 #, php-format
 msgid "%1$s of %2$s already in use. %3$s left after adding."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:612
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:640
 msgid "Remove keywords, pick one device, or get more slots."
 msgstr ""
 
 #. translators: 1: engine name, 2: device name.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:614
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:642
 #, php-format
 msgid "On %1$s, %2$s"
 msgstr ""
 
 #. translators: 1: number of keywords, 2: engine name, 3: device name.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:616
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:644
 #, php-format
 msgid "%1$s keywords on %2$s, %3$s"
 msgstr ""
 
 #. translators: 1: engine name, 2: device name.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:618
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:646
 #, php-format
 msgid "1 keyword on %1$s, %2$s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:620
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:648
 #: templates/admin/dashboard.php:538
 #: templates/admin/dashboard.php:596
 msgid "Tracking"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:621
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:649
 msgid "Where rankings are checked."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:622
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:650
 msgid "Most search traffic"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:623
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:651
 msgid "Also powers ChatGPT search"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:624
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:652
 msgid "Compare both side by side"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:626
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:653
+msgid "Default device"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:654
 msgid "Rankings can differ between desktop and mobile results. New keywords use this device."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:628
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:655
+msgid "Default location and language"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:656
+msgid "The country and language rankings are checked in. New keywords use this location. Keywords you already track keep theirs."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:657
+msgid "Email reports"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:658
 msgid "Get ranking changes by email after each update."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:629
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:659
 #: templates/admin/settings.php:366
 msgid "Send to"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:630
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:660
 msgid "Add another email"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:631
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:661
 msgid "name@example.com"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:632
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:662
 msgid "Press Enter or comma to add each address."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:633
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:663
 msgid "That is not a valid email address."
 msgstr ""
 
 #. translators: %s: email address.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:635
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:665
 #, php-format
 msgid "Remove %s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:636
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:666
 msgid "Public report password"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:637
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:667
 msgid "Optional. Visitors to the public link must enter it first."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:638
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:668
 msgid "A password is set. Enter a new one to replace it."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:639
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:669
 msgid "Generate a public URL on the tracker first."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:640
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:670
 msgid "Set password"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:641
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:671
 msgid "At least 4 characters"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:642
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:672
 msgid "Password set."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:675
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:726
+msgid "Target URL"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:727
+msgid "Target keyword"
+msgstr ""
+
+#. translators: %s: row number.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:729
+#, php-format
+msgid "Target URL %s"
+msgstr ""
+
+#. translators: %s: row number.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:731
+#, php-format
+msgid "Target keyword %s"
+msgstr ""
+
+#. translators: %s: row number.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:733
+#, php-format
+msgid "Remove target %s"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:734
+msgid "https://yoursite.com/page"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:735
+msgid "e.g. broken link checker"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:736
+msgid "Enter a full address that starts with https://"
+msgstr ""
+
+#. translators: 1: package name, 2: number of guest posts.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:738
+#, php-format
+msgid "%1$s · %2$s posts"
+msgstr ""
+
+#. translators: %s: number of guest posts.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:740
+#, php-format
+msgid "%s × 1,000+ words"
+msgstr ""
+
+#. translators: 1: delivery time in days, 2: delivery date, e.g. Nov 14.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:742
+#, php-format
+msgid "%1$s days · by %2$s"
+msgstr ""
+
+#. translators: %s: order total, e.g. $249.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:744
+#, php-format
+msgid "Place order · %s"
+msgstr ""
+
+#. translators: %s: order total, e.g. $249.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:746
+#, php-format
+msgid "Connect site and order · %s"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:747
+msgid "Opening secure checkout…"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:748
+msgid "Enter a target URL to continue."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:749
+msgid "Charged today. Refund in full if we miss the deadline."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:750
+msgid "Connecting is free and takes a minute. Checkout opens right after."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:751
+msgid "Order confirmed. We start on it today and report every live URL here."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:752
+msgid "Stripe is still confirming your payment. Your order appears here within a few minutes."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:753
+msgid "Checkout cancelled. Nothing was charged."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:754
+msgid "Site connected. Place your order below."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:755
+msgid "Site connected. Opening secure checkout for your order."
+msgstr ""
+
+#. translators: %s: due date, e.g. Nov 14.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:757
+#, php-format
+msgid "Due %s"
+msgstr ""
+
+#. translators: %s: number of guest posts.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:759
+#, php-format
+msgid "%s posts"
+msgstr ""
+
+#. translators: %s: address of the published guest post.
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:761
+#, php-format
+msgid "Live: %s"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:763
+msgid "Paid"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:764
+msgid "In progress"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:765
+msgid "Delivered"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:766
+msgid "Refunded"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:801
 msgid "best broken link checker for WordPress"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:676
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:802
 msgid "how to fix 404 errors in WordPress"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:677
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:803
 msgid "free WordPress SEO audit tool"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:681
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:807
 msgid "Could not load your AI visibility data. brokenlinkchecker.io might be briefly unavailable."
 msgstr ""
 
 #. translators: 1: AI Visibility credits used this month, 2: monthly credit allowance.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:683
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:809
 #, php-format
 msgid "%1$s of %2$s prompt credits used"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:685
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:811
 #: templates/admin/ai-visibility.php:34
 msgid "Run check now"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:686
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:812
 msgid "Checking now"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:687
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:813
 msgid "Brand mentions overview"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:688
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:814
 msgid "Not measured yet. The first reading arrives within the window below."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:689
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:815
 msgid "Your most recent weekly check across ChatGPT, Perplexity and Google AI."
 msgstr ""
 
 #. translators: %1$s: number of days until the first reading, from the account's cadence.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:691
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:817
 #, php-format
 msgid "Not measured yet. The first reading arrives within %1$s days."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:692
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:818
 msgid "Mentions"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:693
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:819
 msgid "No earlier reading to compare yet."
 msgstr ""
 
 #. translators: %1$s: increase in AI mentions since the previous reading.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:695
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:821
 #, php-format
 msgid "Up %1$s since the last reading."
 msgstr ""
 
 #. translators: %1$s: decrease in AI mentions since the previous reading.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:697
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:823
 #, php-format
 msgid "Down %1$s since the last reading."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:698
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:824
 msgid "No change since the last reading."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:699
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:825
 msgid "Cited alongside you"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:700
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:826
 msgid "The competitor list comes with a paid plan."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:701
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:827
 msgid "No other domains cited in this reading."
 msgstr ""
 
 #. translators: 1: competitor domain, 2: mentions for that domain.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:703
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:829
 #, php-format
 msgid "%1$s, %2$s mentions"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:705
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:831
 msgid "Visibility score"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:706
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:832
 msgid "Share of tracked prompts that cite you"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:707
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:833
 msgid "Available once a prompt has an answer"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:708
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:834
 msgid "Brand mentions"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:709
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:730
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:753
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:835
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:856
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:879
 msgid "Not measured yet"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:710
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:836
 msgid "Next check"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:712
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:838
 msgid "Due"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:713
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:839
 msgid "Expected any time now"
 msgstr ""
 
 #. translators: %1$s: number of days between checks (the account's cadence).
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:715
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:841
 #, php-format
 msgid "Checked every %1$s days"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:717
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:843
 msgid "Prompt added"
 msgstr ""
 
 #. translators: 1: prompts currently tracked, 2: the account's prompt credit limit.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:719
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:845
 #, php-format
 msgid "You are tracking %1$s of %2$s prompts."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:720
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:846
 msgid "First check queued"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:721
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:847
 msgid "Each prompt is asked on all three assistants."
 msgstr ""
 
 #. translators: %1$s: number of days until the first reading, from the account's cadence.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:723
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:849
 #, php-format
 msgid "Results within %1$s days"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:724
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:850
 msgid "Results appear on this page when they land."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:726
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:852
 msgid "Mentions per weekly check"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:727
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:853
 msgid "No readings yet. Your first weekly check will appear here."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:728
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:854
 msgid "One reading so far. A trend line appears after the next weekly check."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:729
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:855
 msgid "Mention rate by assistant"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:732
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:858
 msgid "Tracked prompts"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:733
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:859
 msgid "The questions your customers ask AI. One prompt per line, each line uses one credit."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:734
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:860
 msgid "No prompts yet. Add the questions your customers ask AI to see if you come up."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:735
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:861
 msgid "Data refreshes weekly. Results reflect answers at check time and can vary between runs."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:736
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:862
 msgid "Try:"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:737
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:863
 msgid "One prompt per line, for example: best broken link checker for WordPress"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:738
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:864
 msgid "Track prompts"
 msgstr ""
 
 #. translators: %1$s: prompt credits left after the ones already tracked.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:741
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:867
 #, php-format
 msgid "%1$s credits left"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:742
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:868
 msgid "Prompt"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:743
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:869
 msgid "ChatGPT"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:744
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:870
 msgid "Perplexity"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:745
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:871
 msgid "Google AI"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:748
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:873
+msgid "Checked"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:874
 msgid "Cited"
 msgstr ""
 
 #. translators: %1$s: citation position number.
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:750
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:876
 #, php-format
 msgid "Cited #%1$s"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:751
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:877
 msgid "Absent"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:754
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:880
 msgid "Not yet checked"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:755
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-assets.php:881
 msgid "Remove"
 msgstr ""
 
@@ -2363,6 +2391,7 @@ msgid "All Content Types"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-links-list-table.php:629
+#: templates/admin/guest-posts.php:147
 msgid "Posts"
 msgstr ""
 
@@ -2407,7 +2436,7 @@ msgstr ""
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:202
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:203
 #: templates/admin/dashboard.php:279
-#: templates/admin/partials/sidebar.php:111
+#: templates/admin/partials/sidebar.php:112
 #: templates/admin/scan-results.php:87
 msgid "Dashboard"
 msgstr ""
@@ -2415,7 +2444,7 @@ msgstr ""
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:116
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:210
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:211
-#: templates/admin/partials/sidebar.php:117
+#: templates/admin/partials/sidebar.php:118
 #: templates/admin/scan-results.php:48
 #: templates/admin/scan-results.php:88
 msgid "Broken link scan"
@@ -2423,56 +2452,56 @@ msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:122
 #: templates/admin/dashboard.php:535
-#: templates/admin/partials/sidebar.php:137
+#: templates/admin/partials/sidebar.php:146
 msgid "Keyword Rank Tracker"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:128
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:237
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:238
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:246
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:247
 #: templates/admin/dashboard.php:558
-#: templates/admin/partials/sidebar.php:143
+#: templates/admin/partials/sidebar.php:152
 #: templates/admin/seo-audit.php:15
 msgid "SEO / AEO Audit"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:134
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:246
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:247
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:255
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:256
 #: templates/admin/dashboard.php:610
 #: templates/admin/internal-links.php:15
-#: templates/admin/partials/sidebar.php:149
+#: templates/admin/partials/sidebar.php:158
 msgid "Internal Link Optimizer"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:140
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:255
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:256
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:264
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:265
 #: templates/admin/ai-visibility.php:22
 #: templates/admin/dashboard.php:593
-#: templates/admin/partials/sidebar.php:155
+#: templates/admin/partials/sidebar.php:164
 msgid "AI Visibility Tracker"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:146
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:264
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:265
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:273
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:274
 #: templates/admin/dashboard.php:632
-#: templates/admin/partials/sidebar.php:161
+#: templates/admin/partials/sidebar.php:170
 #: templates/admin/uptime.php:15
 msgid "Uptime Monitor"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:154
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:282
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:283
-#: templates/admin/partials/sidebar.php:169
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:291
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:292
+#: templates/admin/partials/sidebar.php:178
 msgid "Settings & billing"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:190
-#: templates/admin/partials/sidebar.php:45
-#: templates/admin/partials/sidebar.php:48
+#: templates/admin/partials/sidebar.php:46
+#: templates/admin/partials/sidebar.php:49
 msgid "Check for Broken Links"
 msgstr ""
 
@@ -2482,85 +2511,103 @@ msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:219
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:220
-#: templates/admin/partials/sidebar.php:123
+#: templates/admin/partials/sidebar.php:124
 #: templates/admin/reports.php:13
 #: templates/admin/reports.php:39
 msgid "Scan reports"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:273
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:274
-#: templates/admin/partials/sidebar.php:129
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:228
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:229
+#: templates/admin/guest-posts.php:18
+#: templates/admin/partials/sidebar.php:138
+msgid "Premium Guest Posts"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:237
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:238
+#: templates/admin/rank-tracker.php:28
+msgid "Rank Tracker"
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:282
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:283
+#: templates/admin/partials/sidebar.php:130
 #: templates/admin/seo-tip.php:12
 msgid "SEO / AEO Tip"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:291
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:292
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:300
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:301
 #: templates/admin/help.php:39
-#: templates/admin/partials/sidebar.php:187
+#: templates/admin/partials/sidebar.php:196
 msgid "Help"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:307
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:308
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:316
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:317
 msgid "Pro Tools"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:320
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:329
 #: templates/admin/upgrade.php:21
 msgid "Plans & upgrades"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:321
-#: templates/admin/partials/sidebar.php:96
-#: templates/admin/partials/sidebar.php:196
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:330
+#: templates/admin/partials/sidebar.php:97
+#: templates/admin/partials/sidebar.php:205
 #: templates/admin/settings.php:420
 #: templates/admin/upgrade.php:22
 msgid "Upgrade to Pro"
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:370
-msgid "The connect request expired before it was approved."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:371
-msgid "This site could not reach brokenlinkchecker.io. Your host may block outgoing requests."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:372
-msgid "brokenlinkchecker.io did not accept the connect code."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:373
-msgid "The connection was approved for a different site address."
-msgstr ""
-
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:374
-msgid "Could not complete the connection."
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:377
+#: templates/admin/rank-tracker.php:87
+msgid "Try again"
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:379
-msgid "Site connected. Pro is now active."
+msgid "The connect request expired before it was approved."
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:380
-msgid "Site connected."
+msgid "This site could not reach brokenlinkchecker.io. Your host may block outgoing requests."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:381
+msgid "brokenlinkchecker.io did not accept the connect code."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:382
+msgid "The connection was approved for a different site address."
 msgstr ""
 
 #: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:383
+msgid "Could not complete the connection."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:388
+msgid "Site connected. Pro is now active."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:389
+msgid "Site connected."
+msgstr ""
+
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:392
 msgid "Site disconnected."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:385
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:394
 msgid "Connection refreshed. Your plan and features are up to date."
 msgstr ""
 
-#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:576
+#: includes/admin/class-wpcbl-check-for-broken-links-admin-settings.php:596
 msgid "Settings for the Check for Broken Links plugin."
 msgstr ""
 
-#: includes/class-wpcbl-check-for-broken-links-connect.php:463
+#: includes/class-wpcbl-check-for-broken-links-connect.php:476
 msgid "Unknown plan."
 msgstr ""
 
@@ -2712,6 +2759,10 @@ msgstr ""
 
 #: includes/functions.php:233
 msgid "Post"
+msgstr ""
+
+#: includes/functions.php:237
+msgid "Page"
 msgstr ""
 
 #: templates/admin/ai-visibility.php:29
@@ -3023,6 +3074,10 @@ msgstr ""
 msgid "%1$s of %2$s set up"
 msgstr ""
 
+#: templates/admin/dashboard.php:538
+msgid "No keywords yet"
+msgstr ""
+
 #: templates/admin/dashboard.php:539
 msgid "Add the terms you want to rank for, checked weekly."
 msgstr ""
@@ -3245,6 +3300,115 @@ msgstr ""
 msgid "Your scan trend builds up here once a few scans have run."
 msgstr ""
 
+#: templates/admin/guest-posts.php:29
+msgid "Could not load the guest post packages"
+msgstr ""
+
+#: templates/admin/guest-posts.php:30
+msgid "brokenlinkchecker.io did not answer. Wait two minutes and reload this page."
+msgstr ""
+
+#: templates/admin/guest-posts.php:31
+msgid "Reload"
+msgstr ""
+
+#: templates/admin/guest-posts.php:49
+msgid "Boost your rankings and get cited in AI answers"
+msgstr ""
+
+#: templates/admin/guest-posts.php:50
+msgid "Each post is a 1,000+ word article published on a DR 50+ site with 10k+ monthly Ahrefs traffic. It carries a dofollow in-body link to your page. Every placement is indexed and reported with its live URL."
+msgstr ""
+
+#: templates/admin/guest-posts.php:55
+#: templates/admin/guest-posts.php:146
+msgid "Package"
+msgstr ""
+
+#: templates/admin/guest-posts.php:65
+msgid "MOST POPULAR"
+msgstr ""
+
+#. translators: 1: number of guest posts, 2: delivery time in days.
+#: templates/admin/guest-posts.php:73
+#, php-format
+msgid "%1$s posts · %2$s-day delivery"
+msgstr ""
+
+#. translators: %s: price per guest post, e.g. $42.
+#: templates/admin/guest-posts.php:84
+#, php-format
+msgid "%s / post"
+msgstr ""
+
+#. translators: %s: number of guest posts.
+#: templates/admin/guest-posts.php:93
+#, php-format
+msgid "%s Premium Guest Posts"
+msgstr ""
+
+#. translators: %s: delivery time in days.
+#: templates/admin/guest-posts.php:103
+#, php-format
+msgid "%s-day delivery"
+msgstr ""
+
+#: templates/admin/guest-posts.php:113
+msgid "Every order is covered"
+msgstr ""
+
+#: templates/admin/guest-posts.php:124
+msgid "Where should the posts link?"
+msgstr ""
+
+#: templates/admin/guest-posts.php:130
+msgid "+ Add another target page"
+msgstr ""
+
+#: templates/admin/guest-posts.php:131
+msgid "Posts are spread evenly across the target pages."
+msgstr ""
+
+#: templates/admin/guest-posts.php:135
+msgid "Order notes"
+msgstr ""
+
+#: templates/admin/guest-posts.php:136
+msgid "(optional)"
+msgstr ""
+
+#: templates/admin/guest-posts.php:139
+msgid "Niche preferences, sites to avoid, tone of voice"
+msgstr ""
+
+#: templates/admin/guest-posts.php:144
+msgid "Order summary"
+msgstr ""
+
+#: templates/admin/guest-posts.php:148
+msgid "Target pages"
+msgstr ""
+
+#: templates/admin/guest-posts.php:149
+msgid "Delivery"
+msgstr ""
+
+#: templates/admin/guest-posts.php:152
+msgid "Total"
+msgstr ""
+
+#: templates/admin/guest-posts.php:159
+msgid "Payment runs on Stripe. Your card never touches this site."
+msgstr ""
+
+#: templates/admin/guest-posts.php:171
+msgid "Your orders"
+msgstr ""
+
+#: templates/admin/guest-posts.php:172
+msgid "Every paid order on your account, with its live URLs as they land."
+msgstr ""
+
 #: templates/admin/help.php:14
 msgid "What does the Check for Broken Links plugin do?"
 msgstr ""
@@ -3387,40 +3551,44 @@ msgstr ""
 msgid "Built with <span class=\"cbl-footer-heart\">&#9829;</span> by <a href=\"%s\" target=\"_blank\" rel=\"noopener noreferrer\">brokenlinkchecker.io</a>"
 msgstr ""
 
-#: templates/admin/partials/sidebar.php:54
+#: templates/admin/partials/sidebar.php:55
 #: templates/admin/upgrade.php:600
 msgid "Free"
 msgstr ""
 
 #. translators: 1: plugin version (e.g. v3.0.1), 2: plan name.
-#: templates/admin/partials/sidebar.php:60
+#: templates/admin/partials/sidebar.php:61
 #, php-format
 msgid "%1$s · %2$s"
 msgstr ""
 
 #. translators: %s: plugin version (e.g. v3.0.1).
-#: templates/admin/partials/sidebar.php:69
+#: templates/admin/partials/sidebar.php:70
 #, php-format
 msgid "%s · Connect site"
 msgstr ""
 
-#: templates/admin/partials/sidebar.php:99
+#: templates/admin/partials/sidebar.php:100
 msgid "Automatic scans, AI fixes, rank tracking and uptime alerts."
 msgstr ""
 
-#: templates/admin/partials/sidebar.php:132
+#: templates/admin/partials/sidebar.php:133
+msgid "Link Building"
+msgstr ""
+
+#: templates/admin/partials/sidebar.php:141
 msgid "SEO Tools"
 msgstr ""
 
-#: templates/admin/partials/sidebar.php:164
+#: templates/admin/partials/sidebar.php:173
 msgid "Account"
 msgstr ""
 
-#: templates/admin/partials/sidebar.php:174
+#: templates/admin/partials/sidebar.php:183
 msgid "Documentation"
 msgstr ""
 
-#: templates/admin/partials/sidebar.php:180
+#: templates/admin/partials/sidebar.php:189
 msgid "White label"
 msgstr ""
 
@@ -3574,6 +3742,10 @@ msgstr ""
 
 #: templates/admin/rank-tracker.php:39
 msgid "Back to tracker"
+msgstr ""
+
+#: templates/admin/rank-tracker.php:48
+msgid "Export CSV"
 msgstr ""
 
 #: templates/admin/rank-tracker.php:49
@@ -3959,6 +4131,10 @@ msgstr ""
 
 #: templates/admin/settings.php:111
 msgid "Checks comments and post meta, including ACF."
+msgstr ""
+
+#: templates/admin/settings.php:124
+msgid "Settings saved."
 msgstr ""
 
 #: templates/admin/settings.php:133

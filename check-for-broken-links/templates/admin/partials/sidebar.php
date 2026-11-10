@@ -19,6 +19,7 @@ $wpcbl_sidebar_page_map = array(
 	'wpcbl-check-for-broken-links-seo-audit'   => 'seo-audit',
 	'wpcbl-check-for-broken-links-internal-links' => 'internal-links',
 	'wpcbl-check-for-broken-links-ai-visibility' => 'ai-visibility',
+	'wpcbl-check-for-broken-links-guest-posts'  => 'guest-posts',
 	'wpcbl-check-for-broken-links-settings'     => 'settings',
 	'wpcbl-check-for-broken-links-seo-tip'  => 'seo-tip',
 	'wpcbl-check-for-broken-links-help'     => 'help',
@@ -127,6 +128,14 @@ $wpcbl_sidebar_active = function ( $slug ) use ( $wpcbl_sidebar_current ) {
 			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'seo-tip' ) ); ?>">
 			<span class="dashicons dashicons-lightbulb"></span>
 			<?php esc_html_e( 'SEO / AEO Tip', 'check-for-broken-links' ); ?>
+		</a>
+
+		<span class="cbl-nav-group"><?php esc_html_e( 'Link Building', 'check-for-broken-links' ); ?></span>
+
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=wpcbl-check-for-broken-links-guest-posts' ) ); ?>"
+			class="cbl-nav-item cbl-nav-item-top<?php echo esc_attr( $wpcbl_sidebar_active( 'guest-posts' ) ); ?>">
+			<span class="dashicons dashicons-edit-page"></span>
+			<?php esc_html_e( 'Premium Guest Posts', 'check-for-broken-links' ); ?>
 		</a>
 
 		<span class="cbl-nav-group"><?php esc_html_e( 'SEO Tools', 'check-for-broken-links' ); ?></span>

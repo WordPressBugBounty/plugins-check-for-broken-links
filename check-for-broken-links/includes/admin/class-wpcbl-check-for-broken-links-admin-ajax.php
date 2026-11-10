@@ -77,6 +77,8 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 			add_action( 'wp_ajax_wpcbl_aiv_delete_prompt', array( $this, 'aiv_delete_prompt' ) );
 			add_action( 'wp_ajax_wpcbl_aiv_refresh', array( $this, 'aiv_refresh' ) );
 			add_action( 'wp_ajax_wpcbl_billing_change_plan', array( $this, 'billing_change_plan' ) );
+			add_action( 'wp_ajax_wpcbl_gp_checkout', array( $this, 'guest_posts_checkout' ) );
+			add_action( 'wp_ajax_wpcbl_gp_orders', array( $this, 'guest_posts_orders' ) );
 		}
 
 		/**
@@ -641,6 +643,13 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 				'email_recipients' => isset( $_POST['email_recipients'] ) ? sanitize_text_field( wp_unslash( $_POST['email_recipients'] ) ) : '',
 			);
 
+			// Default location and language for new keywords. Left out when
+			// empty so the project keeps the one it has.
+			$market = isset( $_POST['market'] ) ? sanitize_key( $_POST['market'] ) : '';
+			if ( '' !== $market ) {
+				$body['market'] = $market;
+			}
+
 			$connect->flush_rank_state();
 			$this->send_rank_result( $connect->rank_request( 'PUT', '/settings', $body ) );
 		}
@@ -787,6 +796,69 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Ajax' ) ) :
 
 			$connect->flush_uptime_state();
 			$this->send_rank_result( $connect->uptime_request( 'POST', '/monitors/' . $id . '/toggle' ) );
+		}
+
+		/**
+		 * Premium Guest Posts: place an order and return the Stripe Checkout
+		 * address the browser goes to next. The package key is all that
+		 * decides the price, and brokenlinkchecker.io reads the amount from
+		 * its own config, so nothing posted here can change what is charged.
+		 *
+		 * @since 3.1.7
+		 *
+		 * @return void
+		 */
+		public function guest_posts_checkout() {
+			$connect = $this->verify_seo_audit_request();
+
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- JSON, decoded then sanitized field by field in wpcbl_guest_posts_sanitize_order().
+			$raw   = isset( $_POST['order'] ) ? json_decode( wp_unslash( $_POST['order'] ), true ) : null;
+			$order = wpcbl_guest_posts_sanitize_order( is_array( $raw ) ? $raw : array() );
+
+			if ( '' === $order['package'] ) {
+				wp_send_json_error( esc_html__( 'Choose a package.', 'check-for-broken-links' ), 400 );
+			}
+			if ( empty( $order['targets'] ) ) {
+				wp_send_json_error( esc_html__( 'Enter at least one target URL, starting with https://.', 'check-for-broken-links' ), 400 );
+			}
+
+			$order['return_url'] = $connect->guest_posts_url();
+
+			$result = $connect->guest_posts_request( 'POST', '/checkout', $order );
+
+			if ( ! is_wp_error( $result ) && 200 === $result['code'] ) {
+				$url = isset( $result['data']['url'] ) ? esc_url_raw( $result['data']['url'], array( 'https' ) ) : '';
+
+				if ( empty( $result['data']['ok'] ) || '' === $url ) {
+					$message = isset( $result['data']['message'] ) ? sanitize_text_field( $result['data']['message'] ) : '';
+					wp_send_json_error( '' !== $message ? $message : esc_html__( 'Something went wrong. Please try again.', 'check-for-broken-links' ), 409 );
+				}
+
+				wp_send_json_success( array( 'url' => $url ) );
+			}
+
+			$this->send_rank_result( $result );
+		}
+
+		/**
+		 * Premium Guest Posts: the paid orders on the connected account.
+		 * With a Stripe session id (the browser just came back from
+		 * payment) the order is confirmed first, so it is in the list
+		 * without waiting for the webhook.
+		 *
+		 * @since 3.1.7
+		 *
+		 * @return void
+		 */
+		public function guest_posts_orders() {
+			$connect = $this->verify_seo_audit_request();
+			$session = isset( $_POST['session'] ) ? sanitize_text_field( wp_unslash( $_POST['session'] ) ) : '';
+
+			if ( '' !== $session && preg_match( '/^cs_\w+$/', $session ) ) {
+				$this->send_rank_result( $connect->guest_posts_request( 'POST', '/confirm', array( 'session' => $session ) ) );
+			}
+
+			$this->send_rank_result( $connect->guest_posts_request( 'GET' ) );
 		}
 
 		/**

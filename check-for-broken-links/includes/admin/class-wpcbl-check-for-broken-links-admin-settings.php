@@ -225,6 +225,15 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 
 			add_submenu_page(
 				'wpcbl-check-for-broken-links',
+				esc_html__( 'Premium Guest Posts', 'check-for-broken-links' ),
+				esc_html__( 'Premium Guest Posts', 'check-for-broken-links' ),
+				'manage_options',
+				'wpcbl-check-for-broken-links-guest-posts',
+				array( $this, 'guest_posts_page' )
+			);
+
+			add_submenu_page(
+				'wpcbl-check-for-broken-links',
 				esc_html__( 'Rank Tracker', 'check-for-broken-links' ),
 				esc_html__( 'Rank Tracker', 'check-for-broken-links' ),
 				'manage_options',
@@ -421,6 +430,17 @@ if ( ! class_exists( 'WPCBL_Check_Broken_Links_Admin_Settings' ) ) :
 		 */
 		public function uptime_page() {
 			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/uptime.php';
+		}
+
+		/**
+		 * Renders the Premium Guest Posts page.
+		 *
+		 * @since 3.1.7
+		 *
+		 * @return void
+		 */
+		public function guest_posts_page() {
+			include_once WPCBL_CHECK_BROKEN_LINKS_TEMPLATES_PATH . 'admin/guest-posts.php';
 		}
 
 		/**

@@ -45,6 +45,7 @@
 		pubBusy: false,
 		copied: false,
 		firstText: '',
+		firstMarket: '',
 		polls: 0,
 		pollTimer: null
 	};
@@ -319,6 +320,16 @@
 		return row.checks[ engine + ':' + row.device ] || null;
 	}
 
+	/** A location and language select, on the given market or the project default. */
+	function marketSelect( id, picked ) {
+		var select = h( 'select', { class: 'cbl-rt-select', id: id } );
+		( state.markets || [] ).forEach( function ( m ) {
+			select.appendChild( h( 'option', { value: m.key, text: m.label } ) );
+		} );
+		select.value = picked || ( state.project && state.project.market ) || select.value;
+		return select;
+	}
+
 	// ---- View: first run -------------------------------------------------
 
 	function renderFirstRun() {
@@ -329,6 +340,10 @@
 
 		var textarea = h( 'textarea', { class: 'cbl-rt-textarea', rows: 4, placeholder: T.kwPlaceholder, 'aria-label': T.firstTitle } );
 		textarea.value = ui.firstText;
+		var market = marketSelect( 'cbl-rt-first-market', ui.firstMarket );
+		market.addEventListener( 'change', function () {
+			ui.firstMarket = market.value;
+		} );
 		var slotLine = h( 'span', { class: 'cbl-rt-slot-line' } );
 		var ideasWrap = h( 'div', { class: 'cbl-rt-ideas' } );
 		var startBtn = h( 'button', { type: 'button', class: 'cbl-btn cbl-btn-primary cbl-rt-start' } );
@@ -384,7 +399,7 @@
 			}
 			startBtn.disabled = true;
 			startBtn.textContent = T.adding;
-			addKeywords( kws.join( '\n' ), state.project && state.project.market, device ).then( function ( ok ) {
+			addKeywords( kws.join( '\n' ), market.value, device ).then( function ( ok ) {
 				if ( ok ) {
 					ui.firstText = '';
 				} else {
@@ -407,6 +422,7 @@
 					h( 'span', { class: 'cbl-rt-muted' }, [ engineText, h( 'a', { href: CFG.settingsUrl, text: T.change } ) ] )
 				] )
 			] ),
+			h( 'div', { class: 'cbl-rt-field cbl-rt-first-market' }, [ h( 'label', { class: 'cbl-rt-label', for: 'cbl-rt-first-market', text: T.location } ), market ] ),
 			( CFG.ideas || [] ).length ? h( 'div', { class: 'cbl-rt-ideas-block' }, [
 				h( 'span', { class: 'cbl-rt-label-sm', text: T.ideasTitle } ),
 				ideasWrap
@@ -1019,11 +1035,7 @@
 		dialog( 'cbl-rt-add-title', function ( box, close ) {
 			var textarea = h( 'textarea', { class: 'cbl-rt-textarea', rows: 5, placeholder: ( CFG.ideas || [] ).slice( 0, 2 ).join( '\n' ) || T.kwPlaceholder, 'aria-describedby': 'cbl-rt-add-count', 'data-autofocus': true } );
 			var count = h( 'div', { id: 'cbl-rt-add-count', class: 'cbl-rt-muted cbl-rt-small' } );
-			var market = h( 'select', { class: 'cbl-rt-select', id: 'cbl-rt-add-market' } );
-			( state.markets || [] ).forEach( function ( m ) {
-				market.appendChild( h( 'option', { value: m.key, text: m.label } ) );
-			} );
-			market.value = ( state.project && state.project.market ) || market.value;
+			var market = marketSelect( 'cbl-rt-add-market' );
 
 			var deviceWrap = h( 'div', {} );
 			var slotTitle = h( 'span', { class: 'cbl-rt-slotbox-title' } );
@@ -1153,6 +1165,7 @@
 		var form = {
 			engine: s.engine || 'google',
 			device: s.device || 'desktop',
+			market: ( state.project && state.project.market ) || '',
 			emailOn: !! s.email_enabled,
 			emails: String( s.email_recipients || '' ).split( /[\s,;]+/ ).filter( Boolean )
 		};
@@ -1164,6 +1177,7 @@
 				post( 'wpcbl_rank_settings', {
 					engine: form.engine,
 					device: form.device,
+					market: form.market,
 					email_enabled: form.emailOn ? 1 : 0,
 					email_recipients: form.emails.join( ', ' )
 				} ).then( function () {
@@ -1174,6 +1188,12 @@
 						email_enabled: form.emailOn,
 						email_recipients: form.emails.join( ', ' )
 					} );
+					if ( form.market ) {
+						state.project = Object.assign( {}, state.project, { market: form.market } );
+						if ( marketMeta ) {
+							marketMeta.textContent = marketLabel( form.market );
+						}
+					}
 					window.clearTimeout( savedTimer );
 					savedTimer = window.setTimeout( function () {
 						savedState( 'idle' );
@@ -1232,6 +1252,13 @@
 			}, T.defaultDevice ) );
 		}
 		drawDevice();
+
+		var marketField = marketSelect( 'cbl-rt-set-market' );
+		form.market = marketField.value;
+		marketField.addEventListener( 'change', function () {
+			form.market = marketField.value;
+			save();
+		} );
 
 		// Email reports: switch + address chips.
 		var emailSwitch = h( 'button', { type: 'button', role: 'switch', class: 'cbl-rt-switch', 'aria-label': T.emailReports } );
@@ -1361,6 +1388,10 @@
 				h( 'div', { class: 'cbl-rt-set-row' }, [
 					h( 'div', {}, [ h( 'div', { class: 'cbl-rt-set-name', text: T.defaultDevice } ), h( 'div', { class: 'cbl-rt-muted', text: T.deviceLead } ) ] ),
 					deviceWrap
+				] ),
+				h( 'div', { class: 'cbl-rt-set-row' }, [
+					h( 'div', {}, [ h( 'label', { class: 'cbl-rt-set-name', for: 'cbl-rt-set-market', text: T.defaultLocation } ), h( 'div', { class: 'cbl-rt-muted', text: T.locationLead } ) ] ),
+					marketField
 				] )
 			] ),
 			h( 'section', { class: 'cbl-rt-card' }, [

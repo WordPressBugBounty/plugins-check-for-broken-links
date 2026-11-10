@@ -1,0 +1,426 @@
+/* Premium Guest Posts page (3.1.7). Loaded only on
+   wpcbl-check-for-broken-links-guest-posts. */
+
+.cbl-gp {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  color: var(--cbl-text-primary);
+}
+.cbl-gp > * {
+  min-width: 0;
+}
+.cbl-gp p {
+  margin: 0;
+}
+.cbl-gp[hidden],
+.cbl-gp [hidden] {
+  display: none !important;
+}
+
+/* Header */
+.cbl-gp .cbl-gp-title {
+  margin: 0 0 8px;
+  padding: 0;
+  font-size: 26px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.cbl-gp-sub {
+  max-width: 760px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--cbl-text-secondary);
+}
+.cbl-gp-note {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--cbl-text-secondary);
+}
+
+/* Flash: payment confirmed, cancelled, errors */
+.cbl-gp-flash {
+  padding: 12px 16px;
+  border-radius: var(--cbl-radius-md);
+  border: 1px solid var(--cbl-green-border);
+  background: var(--cbl-green-bg);
+  color: #0F6E56;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.cbl-gp-flash.is-error {
+  border-color: var(--cbl-red-border);
+  background: var(--cbl-red-bg);
+  color: #A32D2D;
+}
+.cbl-gp-flash.is-info {
+  border-color: var(--cbl-purple-border);
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple-text);
+}
+
+/* Packages. The whole card is the radio's label, so the click target is the
+   card. The real input stays in the DOM for keyboard and form semantics. */
+.cbl-gp-packages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+  padding-top: 6px;
+}
+.cbl-gp-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 22px;
+  background: var(--cbl-bg-primary);
+  border: 1px solid var(--cbl-border-color);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cbl-gp-card:hover {
+  border-color: var(--cbl-purple-border);
+}
+.cbl-gp-card.is-picked {
+  border: 2px solid var(--cbl-purple);
+  padding: 21px;
+  box-shadow: 0 12px 32px -14px rgba(107, 69, 212, 0.4);
+}
+.cbl-gp-card:focus-within {
+  outline: 2px solid var(--cbl-purple);
+  outline-offset: 2px;
+}
+.cbl-gp-flag {
+  position: absolute;
+  top: -11px;
+  left: 22px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--cbl-purple);
+  color: #fff;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.cbl-gp-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.cbl-gp-card-id {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.cbl-gp-name {
+  font-size: 16px;
+  font-weight: 700;
+}
+.cbl-gp-radio {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 2px solid #c9c9d1;
+  background: #fff;
+}
+.cbl-gp-card.is-picked .cbl-gp-radio {
+  border: 6px solid var(--cbl-purple);
+}
+.cbl-gp-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cbl-gp-amount {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.cbl-gp-features {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding-top: 16px;
+  border-top: 1px solid var(--cbl-bg-tertiary);
+}
+.cbl-gp-feature {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: #3a3a3a;
+}
+.cbl-gp-feature .dashicons {
+  flex: none;
+  color: var(--cbl-green);
+}
+
+/* Guarantees */
+.cbl-gp-guarantees {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 0 4px;
+}
+.cbl-gp-guarantee-lead {
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.cbl-gp-guarantees .cbl-gp-feature {
+  font-size: 12.5px;
+  color: var(--cbl-text-secondary);
+}
+
+/* Targets + summary */
+.cbl-gp-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+.cbl-gp-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 20px;
+  background: var(--cbl-bg-primary);
+  border: 1px solid var(--cbl-border-color);
+  border-radius: 14px;
+}
+.cbl-gp-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.cbl-gp-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+.cbl-gp-targets {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cbl-gp-target {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1.5fr) minmax(0, 1fr) 32px;
+  gap: 10px;
+  align-items: end;
+}
+.cbl-gp-num {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 5px;
+  border-radius: 50%;
+  background: var(--cbl-purple-bg);
+  color: var(--cbl-purple-text);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.cbl-gp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.cbl-gp-label {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+.cbl-admin-wrap .cbl-gp-field input,
+.cbl-admin-wrap .cbl-gp-field textarea {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  box-sizing: border-box;
+}
+.cbl-admin-wrap .cbl-gp-field input {
+  min-height: 38px;
+}
+.cbl-gp-remove {
+  width: 32px;
+  height: 38px;
+  border-radius: var(--cbl-radius-md);
+  border: 1px solid var(--cbl-border-color);
+  background: #fff;
+  color: var(--cbl-text-secondary);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+.cbl-gp-remove:hover {
+  color: #A32D2D;
+  border-color: var(--cbl-red-border);
+  background: var(--cbl-red-bg);
+}
+.cbl-gp-add {
+  align-self: flex-start;
+  padding: 0 0 0 38px;
+  border: 0;
+  background: none;
+  color: var(--cbl-purple);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cbl-gp-add:hover {
+  text-decoration: underline;
+}
+.cbl-gp-notes {
+  padding-top: 14px;
+  border-top: 1px solid var(--cbl-bg-tertiary);
+}
+
+.cbl-gp-summary {
+  position: sticky;
+  top: 48px;
+}
+.cbl-gp-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.cbl-gp-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13.5px;
+  color: var(--cbl-text-secondary);
+}
+.cbl-gp-line b {
+  color: var(--cbl-text-primary);
+  font-weight: 600;
+  text-align: right;
+}
+.cbl-gp-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-top: 14px;
+  border-top: 1px solid var(--cbl-bg-tertiary);
+  font-size: 14px;
+  font-weight: 700;
+}
+.cbl-gp-total-amount {
+  font-size: 24px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.cbl-btn.cbl-gp-cta {
+  width: 100%;
+  justify-content: center;
+  padding: 11px 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+/* Disabled reads as disabled, not as a washed-out primary: the price on the
+   button is the one thing a buyer checks before clicking. */
+.cbl-btn.cbl-gp-cta:disabled {
+  background: #e4e4e7;
+  border-color: #e4e4e7;
+  color: #52525b;
+  cursor: not-allowed;
+}
+.cbl-gp-hint {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--cbl-text-secondary);
+  text-align: center;
+}
+.cbl-gp-secure {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--cbl-text-hint);
+  text-align: center;
+}
+.cbl-gp-secure .dashicons {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+/* Orders */
+.cbl-gp-orders {
+  margin-top: 22px;
+}
+.cbl-gp-order-list {
+  display: flex;
+  flex-direction: column;
+}
+.cbl-gp-order {
+  display: grid;
+  grid-template-columns: 110px 130px minmax(0, 1fr) 110px 70px;
+  gap: 6px 14px;
+  align-items: start;
+  padding: 14px 0;
+  border-top: 1px solid var(--cbl-bg-tertiary);
+  font-size: 13px;
+}
+.cbl-gp-order-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.cbl-gp-order-cell strong {
+  font-weight: 600;
+}
+.cbl-gp-order-url {
+  overflow-wrap: anywhere;
+  color: var(--cbl-text-secondary);
+}
+.cbl-gp-order-live {
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+.cbl-gp-order-status {
+  justify-self: start;
+}
+.cbl-gp-order-amount {
+  justify-self: end;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1000px) {
+  .cbl-gp-cols {
+    grid-template-columns: 1fr;
+  }
+  .cbl-gp-summary {
+    position: static;
+  }
+}
+@media (max-width: 700px) {
+  .cbl-gp-target {
+    grid-template-columns: 28px minmax(0, 1fr) 32px;
+  }
+  .cbl-gp-target .cbl-gp-field:last-of-type {
+    grid-column: 2 / 4;
+  }
+  .cbl-gp-order {
+    grid-template-columns: 1fr 1fr;
+  }
+  .cbl-gp-order-targets {
+    grid-column: 1 / 3;
+  }
+}
